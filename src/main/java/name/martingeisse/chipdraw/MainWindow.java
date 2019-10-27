@@ -9,18 +9,16 @@ import java.awt.event.MouseEvent;
 
 public class MainWindow extends JFrame {
 
-    public static final int CELL_SIZE = 20;
-
     private final Design design = new Design(20, 10);
     private int drawLayerIndex = 0;
     private boolean drawing = false;
     private boolean erasing = false;
+    private int cellSize = 16;
 
     public MainWindow() {
         super("Chipdraw");
         setLayout(null);
-        setPreferredSize(new Dimension(design.getWidth() * CELL_SIZE, design.getHeight() * CELL_SIZE));
-        setSize(new Dimension(design.getWidth() * CELL_SIZE, design.getHeight() * CELL_SIZE));
+        updateWindowSize();
         getContentPane().setBackground(new Color(64, 64, 64));
         pack();
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
@@ -43,8 +41,8 @@ public class MainWindow extends JFrame {
             @Override
             public void mouseMoved(MouseEvent e) {
                 if (drawing || erasing) {
-                    int x = e.getX() / CELL_SIZE;
-                    int y = e.getY() / CELL_SIZE;
+                    int x = e.getX() / cellSize;
+                    int y = e.getY() / cellSize;
                     if (design.getLayers().get(drawLayerIndex).isValidPosition(x, y)) {
                         design.getLayers().get(drawLayerIndex).setCell(x, y, drawing);
                         repaint();
@@ -77,11 +75,27 @@ public class MainWindow extends JFrame {
                         drawLayerIndex = 2;
                         break;
 
+                    case '+':
+                        cellSize *= 2;
+                        // TODO does not work correctly because the title bar is part of the window size. Use a nested canvas instead!
+                        updateWindowSize();
+                        break;
+
+                    case '-':
+                        cellSize /= 2;
+                        updateWindowSize();
+                        break;
+
                 }
             }
         });
 
         repaint();
+    }
+
+    private void updateWindowSize() {
+        setPreferredSize(new Dimension(design.getWidth() * cellSize, design.getHeight() * cellSize));
+        setSize(new Dimension(design.getWidth() * cellSize, design.getHeight() * cellSize));
     }
 
     @Override
@@ -94,7 +108,7 @@ public class MainWindow extends JFrame {
                     design.getLayers().get(1).getCell(x, y) ? 255 : 0,
                     design.getLayers().get(2).getCell(x, y) ? 255 : 0
                 ));
-                g.fillRect(x * CELL_SIZE, y * CELL_SIZE, CELL_SIZE, CELL_SIZE);
+                g.fillRect(x * cellSize, y * cellSize, cellSize, cellSize);
             }
         }
     }
