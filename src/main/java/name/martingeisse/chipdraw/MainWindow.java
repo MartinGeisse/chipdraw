@@ -1,5 +1,8 @@
 package name.martingeisse.chipdraw;
 
+import name.martingeisse.chipdraw.technology.NoSuchTechnologyException;
+import name.martingeisse.chipdraw.technology.Technology;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.KeyAdapter;
@@ -15,27 +18,30 @@ public class MainWindow extends JFrame {
     private final Workbench workbench;
     private final JPanel mainPanel;
 
-    private Design design = new Design(20, 10);
+    private Design design;
+    private Technology technology;
     private int drawLayerIndex;
     private boolean drawing;
     private boolean erasing;
     private int cellSize;
 
-    public MainWindow(Workbench workbench) {
+    public MainWindow(Workbench workbench, Design design) throws NoSuchTechnologyException {
         super("Chipdraw");
         this.workbench = workbench;
+        this.design = design;
+        this.technology = workbench.getTechnologyRepository().getTechnology(design.getTechnologyId());
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         setResizable(false);
 
         mainPanel = new JPanel() {
             @Override
             protected void paintComponent(Graphics g) {
-                for (int x = 0; x < design.getWidth(); x++) {
-                    for (int y = 0; y < design.getHeight(); y++) {
+                for (int x = 0; x < MainWindow.this.design.getWidth(); x++) {
+                    for (int y = 0; y < MainWindow.this.design.getHeight(); y++) {
                         g.setColor(new Color(
-                                design.getLayers().get(0).getCell(x, y) ? 255 : 0,
-                                design.getLayers().get(1).getCell(x, y) ? 255 : 0,
-                                design.getLayers().get(2).getCell(x, y) ? 255 : 0
+                                MainWindow.this.design.getLayers().get(0).getCell(x, y) ? 255 : 0,
+                                MainWindow.this.design.getLayers().get(1).getCell(x, y) ? 255 : 0,
+                                MainWindow.this.design.getLayers().get(2).getCell(x, y) ? 255 : 0
                         ));
                         g.fillRect(x * cellSize, y * cellSize, cellSize, cellSize);
                     }
@@ -61,8 +67,8 @@ public class MainWindow extends JFrame {
                 if (drawing || erasing) {
                     int x = e.getX() / cellSize;
                     int y = e.getY() / cellSize;
-                    if (design.getLayers().get(drawLayerIndex).isValidPosition(x, y)) {
-                        design.getLayers().get(drawLayerIndex).setCell(x, y, drawing);
+                    if (MainWindow.this.design.getLayers().get(drawLayerIndex).isValidPosition(x, y)) {
+                        MainWindow.this.design.getLayers().get(drawLayerIndex).setCell(x, y, drawing);
                         mainPanel.repaint();
                     }
                 }
@@ -78,8 +84,8 @@ public class MainWindow extends JFrame {
         mainPanel.addMouseMotionListener(mouseAdapter);
         mainPanel.addKeyListener(new KeyAdapter() {
             @Override
-            public void keyTyped(KeyEvent e) {
-                switch (e.getKeyChar()) {
+            public void keyTyped(KeyEvent event) {
+                switch (event.getKeyChar()) {
 
                     case '1':
                         drawLayerIndex = 0;
@@ -109,14 +115,22 @@ public class MainWindow extends JFrame {
 
                     case 's':
                     case 'S':
-                        LoadAndSaveDialogs.showSaveDialog(MainWindow.this, design);
+                        LoadAndSaveDialogs.showSaveDialog(MainWindow.this, MainWindow.this.design);
                         break;
 
                     case 'l':
                     case 'L': {
                         Design design = LoadAndSaveDialogs.showLoadDialog(MainWindow.this);
                         if (design != null) {
+                            Technology technology;
+                            try {
+                                technology = MainWindow.this.workbench.getTechnologyRepository().getTechnology(design.getTechnologyId());
+                            } catch (NoSuchTechnologyException exception) {
+                                JOptionPane.showMessageDialog(MainWindow.this, exception.getMessage());
+                                break;
+                            }
                             MainWindow.this.design = design;
+                            MainWindow.this.technology = technology;
                             resetUi();
                         }
                         break;

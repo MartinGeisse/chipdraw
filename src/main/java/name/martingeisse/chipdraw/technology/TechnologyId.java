@@ -3,16 +3,16 @@ package name.martingeisse.chipdraw.technology;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
-public final class TechnologyId {
+import java.io.Serializable;
 
-    private final long hash1, hash2, hash3, hash4;
+public final class TechnologyId implements Serializable {
+
+    private final long hash1, hash2;
     private final String name;
 
-    public TechnologyId(long hash1, long hash2, long hash3, long hash4, String name) {
+    public TechnologyId(long hash1, long hash2, String name) {
         this.hash1 = hash1;
         this.hash2 = hash2;
-        this.hash3 = hash3;
-        this.hash4 = hash4;
         this.name = name;
     }
 
@@ -22,14 +22,6 @@ public final class TechnologyId {
 
     public long getHash2() {
         return hash2;
-    }
-
-    public long getHash3() {
-        return hash3;
-    }
-
-    public long getHash4() {
-        return hash4;
     }
 
     public String getName() {
@@ -48,8 +40,6 @@ public final class TechnologyId {
         return new EqualsBuilder()
             .append(hash1, that.hash1)
             .append(hash2, that.hash2)
-            .append(hash3, that.hash3)
-            .append(hash4, that.hash4)
             .append(name, that.name)
             .isEquals();
     }
@@ -59,8 +49,6 @@ public final class TechnologyId {
         return new HashCodeBuilder(17, 37)
             .append(hash1)
             .append(hash2)
-            .append(hash3)
-            .append(hash4)
             .append(name)
             .toHashCode();
     }
@@ -70,8 +58,6 @@ public final class TechnologyId {
         StringBuilder builder = new StringBuilder();
         appendHash(hash1, builder);
         appendHash(hash2, builder);
-        appendHash(hash3, builder);
-        appendHash(hash4, builder);
         builder.append('-');
         builder.append(name);
         return builder.toString();
