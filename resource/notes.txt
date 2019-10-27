@@ -1,0 +1,10 @@
+
+TODO:
+
+"new design" action, dialog, select technology
+
+invent fill patterns for more than 3 layers
+
+decouple zoom and window size, add scrolling
+
+
