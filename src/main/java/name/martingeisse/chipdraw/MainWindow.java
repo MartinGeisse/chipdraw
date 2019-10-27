@@ -13,6 +13,8 @@ public class MainWindow extends JFrame {
 
     private final Design design = new Design(20, 10);
     private int drawLayerIndex = 0;
+    private boolean drawing = false;
+    private boolean erasing = false;
 
     public MainWindow() {
         super("Chipdraw");
@@ -24,12 +26,40 @@ public class MainWindow extends JFrame {
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         setResizable(false);
 
-        addMouseListener(new MouseAdapter() {
+        MouseAdapter mouseAdapter = new MouseAdapter() {
+
             @Override
-            public void mouseClicked(MouseEvent e) {
-                handleMouseEvent(e);
+            public void mousePressed(MouseEvent e) {
+                drawing = (e.getButton() == MouseEvent.BUTTON1);
+                erasing = (e.getButton() == MouseEvent.BUTTON3);
+                mouseMoved(e);
             }
-        });
+
+            @Override
+            public void mouseReleased(MouseEvent e) {
+                drawing = erasing = false;
+            }
+
+            @Override
+            public void mouseMoved(MouseEvent e) {
+                if (drawing || erasing) {
+                    int x = e.getX() / CELL_SIZE;
+                    int y = e.getY() / CELL_SIZE;
+                    if (design.getLayers().get(drawLayerIndex).isValidPosition(x, y)) {
+                        design.getLayers().get(drawLayerIndex).setCell(x, y, drawing);
+                        repaint();
+                    }
+                }
+            }
+
+            @Override
+            public void mouseDragged(MouseEvent e) {
+                mouseMoved(e);
+            }
+
+        };
+        addMouseListener(mouseAdapter);
+        addMouseMotionListener(mouseAdapter);
         addKeyListener(new KeyAdapter() {
             @Override
             public void keyTyped(KeyEvent e) {
@@ -65,18 +95,6 @@ public class MainWindow extends JFrame {
                     design.getLayers().get(2).getCell(x, y) ? 255 : 0
                 ));
                 g.fillRect(x * CELL_SIZE, y * CELL_SIZE, CELL_SIZE, CELL_SIZE);
-            }
-        }
-    }
-
-    private void handleMouseEvent(MouseEvent e) {
-        int button = e.getButton();
-        if (button == MouseEvent.BUTTON1 || button == MouseEvent.BUTTON3) {
-            int x = e.getX() / CELL_SIZE;
-            int y = e.getY() / CELL_SIZE;
-            if (design.getLayers().get(drawLayerIndex).isValidPosition(x, y)) {
-                design.getLayers().get(drawLayerIndex).setCell(x, y, button == MouseEvent.BUTTON1);
-                repaint();
             }
         }
     }
