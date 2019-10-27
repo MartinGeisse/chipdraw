@@ -9,6 +9,8 @@ import java.awt.event.MouseEvent;
 
 public class MainWindow extends JFrame {
 
+    private final JPanel mainPanel;
+
     private Design design = new Design(20, 10);
     private int drawLayerIndex;
     private boolean drawing;
@@ -17,12 +19,24 @@ public class MainWindow extends JFrame {
 
     public MainWindow() {
         super("Chipdraw");
-        setLayout(null);
-        getContentPane().setBackground(new Color(64, 64, 64));
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         setResizable(false);
-        resetUi();
 
+        mainPanel = new JPanel() {
+            @Override
+            protected void paintComponent(Graphics g) {
+                for (int x = 0; x < design.getWidth(); x++) {
+                    for (int y = 0; y < design.getHeight(); y++) {
+                        g.setColor(new Color(
+                                design.getLayers().get(0).getCell(x, y) ? 255 : 0,
+                                design.getLayers().get(1).getCell(x, y) ? 255 : 0,
+                                design.getLayers().get(2).getCell(x, y) ? 255 : 0
+                        ));
+                        g.fillRect(x * cellSize, y * cellSize, cellSize, cellSize);
+                    }
+                }
+            }
+        };
         MouseAdapter mouseAdapter = new MouseAdapter() {
 
             @Override
@@ -44,7 +58,7 @@ public class MainWindow extends JFrame {
                     int y = e.getY() / cellSize;
                     if (design.getLayers().get(drawLayerIndex).isValidPosition(x, y)) {
                         design.getLayers().get(drawLayerIndex).setCell(x, y, drawing);
-                        repaint();
+                        mainPanel.repaint();
                     }
                 }
             }
@@ -55,9 +69,9 @@ public class MainWindow extends JFrame {
             }
 
         };
-        addMouseListener(mouseAdapter);
-        addMouseMotionListener(mouseAdapter);
-        addKeyListener(new KeyAdapter() {
+        mainPanel.addMouseListener(mouseAdapter);
+        mainPanel.addMouseMotionListener(mouseAdapter);
+        mainPanel.addKeyListener(new KeyAdapter() {
             @Override
             public void keyTyped(KeyEvent e) {
                 switch (e.getKeyChar()) {
@@ -76,7 +90,6 @@ public class MainWindow extends JFrame {
 
                     case '+':
                         cellSize *= 2;
-                        // TODO does not work correctly because the title bar is part of the window size. Use a nested canvas instead!
                         updateWindowSize();
                         break;
 
@@ -103,6 +116,11 @@ public class MainWindow extends JFrame {
                 }
             }
         });
+        mainPanel.setFocusable(true);
+        mainPanel.grabFocus();
+        add(mainPanel);
+        resetUi();
+        pack();
     }
 
     private void resetUi() {
@@ -114,24 +132,10 @@ public class MainWindow extends JFrame {
     }
 
     private void updateWindowSize() {
-        setPreferredSize(new Dimension(design.getWidth() * cellSize, design.getHeight() * cellSize));
-        setSize(new Dimension(design.getWidth() * cellSize, design.getHeight() * cellSize));
-        repaint();
-    }
-
-    @Override
-    public void paint(Graphics g) {
-        super.paint(g);
-        for (int x = 0; x < design.getWidth(); x++) {
-            for (int y = 0; y < design.getHeight(); y++) {
-                g.setColor(new Color(
-                        design.getLayers().get(0).getCell(x, y) ? 255 : 0,
-                        design.getLayers().get(1).getCell(x, y) ? 255 : 0,
-                        design.getLayers().get(2).getCell(x, y) ? 255 : 0
-                ));
-                g.fillRect(x * cellSize, y * cellSize, cellSize, cellSize);
-            }
-        }
+        mainPanel.setPreferredSize(new Dimension(design.getWidth() * cellSize, design.getHeight() * cellSize));
+        mainPanel.setSize(new Dimension(design.getWidth() * cellSize, design.getHeight() * cellSize));
+        mainPanel.repaint();
+        pack();
     }
 
 }
