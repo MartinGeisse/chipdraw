@@ -7,29 +7,25 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.io.DataOutputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
 
 public class MainWindow extends JFrame {
 
-    public static final String MEMORY_DUMP_FILENAME_EXTENSION = "ChipdrawMemoryDump";
-
-    private final Design design = new Design(20, 10);
-    private int drawLayerIndex = 0;
-    private boolean drawing = false;
-    private boolean erasing = false;
-    private int cellSize = 16;
+    private Design design = new Design(20, 10);
+    private int drawLayerIndex;
+    private boolean drawing;
+    private boolean erasing;
+    private int cellSize;
 
     public MainWindow() {
         super("Chipdraw");
         setLayout(null);
-        updateWindowSize();
         getContentPane().setBackground(new Color(64, 64, 64));
-        pack();
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         setResizable(false);
+        resetUi();
 
         MouseAdapter mouseAdapter = new MouseAdapter() {
 
@@ -95,42 +91,37 @@ public class MainWindow extends JFrame {
 
                     case 's':
                     case 'S':
+                        LoadAndSaveDialogs.showSaveDialog(MainWindow.this, design);
+                        break;
+
+                    case 'l':
+                    case 'L':
                     {
-                        JFileChooser chooser = new JFileChooser();
-                        chooser.setDialogType(JFileChooser.SAVE_DIALOG);
-                        chooser.setMultiSelectionEnabled(false);
-                        chooser.setFileFilter(new FileNameExtensionFilter("Chipdraw memory dump", MEMORY_DUMP_FILENAME_EXTENSION));
-                        if (chooser.showOpenDialog(MainWindow.this) == JFileChooser.APPROVE_OPTION) {
-                            String path = chooser.getSelectedFile().getPath();
-                            if (!path.endsWith('.' + MEMORY_DUMP_FILENAME_EXTENSION)) {
-                                path = path + '.' + MEMORY_DUMP_FILENAME_EXTENSION;
-                            }
-                            try (FileOutputStream fileOutputStream = new FileOutputStream(path)) {
-                                ObjectOutputStream objectOutputStream = new ObjectOutputStream(fileOutputStream);
-                                objectOutputStream.writeObject(design);
-                                objectOutputStream.flush();
-                                System.out.println("saved to: " + path);
-                            } catch (IOException exception) {
-                                System.err.println(exception);
-                            }
+                        Design design = LoadAndSaveDialogs.showLoadDialog(MainWindow.this);
+                        if (design != null) {
+                            MainWindow.this.design = design;
+                            resetUi();
                         }
                         break;
                     }
 
-                    case 'l':
-                    case 'L':
-                        break;
-
                 }
             }
         });
+    }
 
-        repaint();
+    private void resetUi() {
+        drawLayerIndex = 0;
+        drawing = false;
+        erasing = false;
+        cellSize = 16;
+        updateWindowSize();
     }
 
     private void updateWindowSize() {
         setPreferredSize(new Dimension(design.getWidth() * cellSize, design.getHeight() * cellSize));
         setSize(new Dimension(design.getWidth() * cellSize, design.getHeight() * cellSize));
+        repaint();
     }
 
     @Override
