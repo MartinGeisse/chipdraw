@@ -1,13 +1,20 @@
 package name.martingeisse.chipdraw;
 
 import javax.swing.*;
+import javax.swing.filechooser.FileNameExtensionFilter;
 import java.awt.*;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.io.DataOutputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectOutputStream;
 
 public class MainWindow extends JFrame {
+
+    public static final String MEMORY_DUMP_FILENAME_EXTENSION = "ChipdrawMemoryDump";
 
     private final Design design = new Design(20, 10);
     private int drawLayerIndex = 0;
@@ -90,9 +97,22 @@ public class MainWindow extends JFrame {
                     case 'S':
                     {
                         JFileChooser chooser = new JFileChooser();
+                        chooser.setDialogType(JFileChooser.SAVE_DIALOG);
                         chooser.setMultiSelectionEnabled(false);
+                        chooser.setFileFilter(new FileNameExtensionFilter("Chipdraw memory dump", MEMORY_DUMP_FILENAME_EXTENSION));
                         if (chooser.showOpenDialog(MainWindow.this) == JFileChooser.APPROVE_OPTION) {
-                            System.out.println("save to: " + chooser.getSelectedFile());
+                            String path = chooser.getSelectedFile().getPath();
+                            if (!path.endsWith('.' + MEMORY_DUMP_FILENAME_EXTENSION)) {
+                                path = path + '.' + MEMORY_DUMP_FILENAME_EXTENSION;
+                            }
+                            try (FileOutputStream fileOutputStream = new FileOutputStream(path)) {
+                                ObjectOutputStream objectOutputStream = new ObjectOutputStream(fileOutputStream);
+                                objectOutputStream.writeObject(design);
+                                objectOutputStream.flush();
+                                System.out.println("saved to: " + path);
+                            } catch (IOException exception) {
+                                System.err.println(exception);
+                            }
                         }
                         break;
                     }
