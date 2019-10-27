@@ -12,6 +12,7 @@ public class MainWindow extends JFrame {
     public static final int MIN_CELL_SIZE = 2;
     public static final int MAX_CELL_SIZE = 32;
 
+    private final Workbench workbench;
     private final JPanel mainPanel;
 
     private Design design = new Design(20, 10);
@@ -20,8 +21,9 @@ public class MainWindow extends JFrame {
     private boolean erasing;
     private int cellSize;
 
-    public MainWindow() {
+    public MainWindow(Workbench workbench) {
         super("Chipdraw");
+        this.workbench = workbench;
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         setResizable(false);
 
