@@ -2,7 +2,9 @@ package name.martingeisse.chipdraw;
 
 import com.google.common.collect.ImmutableList;
 
-public final class Design {
+import java.io.Serializable;
+
+public final class Design implements Serializable {
 
     private final int width;
     private final int height;

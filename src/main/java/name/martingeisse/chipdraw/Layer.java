@@ -1,6 +1,8 @@
 package name.martingeisse.chipdraw;
 
-public final class Layer {
+import java.io.Serializable;
+
+public final class Layer implements Serializable {
 
     private final int width, height;
     private final boolean[] cells;

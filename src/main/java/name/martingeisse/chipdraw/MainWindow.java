@@ -86,6 +86,21 @@ public class MainWindow extends JFrame {
                         updateWindowSize();
                         break;
 
+                    case 's':
+                    case 'S':
+                    {
+                        JFileChooser chooser = new JFileChooser();
+                        chooser.setMultiSelectionEnabled(false);
+                        if (chooser.showOpenDialog(MainWindow.this) == JFileChooser.APPROVE_OPTION) {
+                            System.out.println("save to: " + chooser.getSelectedFile());
+                        }
+                        break;
+                    }
+
+                    case 'l':
+                    case 'L':
+                        break;
+
                 }
             }
         });
