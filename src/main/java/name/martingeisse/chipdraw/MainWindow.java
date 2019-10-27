@@ -1,15 +1,11 @@
 package name.martingeisse.chipdraw;
 
 import javax.swing.*;
-import javax.swing.filechooser.FileNameExtensionFilter;
 import java.awt.*;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.ObjectOutputStream;
 
 public class MainWindow extends JFrame {
 
@@ -95,8 +91,7 @@ public class MainWindow extends JFrame {
                         break;
 
                     case 'l':
-                    case 'L':
-                    {
+                    case 'L': {
                         Design design = LoadAndSaveDialogs.showLoadDialog(MainWindow.this);
                         if (design != null) {
                             MainWindow.this.design = design;
@@ -130,9 +125,9 @@ public class MainWindow extends JFrame {
         for (int x = 0; x < design.getWidth(); x++) {
             for (int y = 0; y < design.getHeight(); y++) {
                 g.setColor(new Color(
-                    design.getLayers().get(0).getCell(x, y) ? 255 : 0,
-                    design.getLayers().get(1).getCell(x, y) ? 255 : 0,
-                    design.getLayers().get(2).getCell(x, y) ? 255 : 0
+                        design.getLayers().get(0).getCell(x, y) ? 255 : 0,
+                        design.getLayers().get(1).getCell(x, y) ? 255 : 0,
+                        design.getLayers().get(2).getCell(x, y) ? 255 : 0
                 ));
                 g.fillRect(x * cellSize, y * cellSize, cellSize, cellSize);
             }

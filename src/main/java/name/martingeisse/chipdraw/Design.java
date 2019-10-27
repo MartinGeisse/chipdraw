@@ -14,9 +14,9 @@ public final class Design implements Serializable {
         this.width = width;
         this.height = height;
         this.layers = ImmutableList.of(
-            new Layer(width, height),
-            new Layer(width, height),
-            new Layer(width, height)
+                new Layer(width, height),
+                new Layer(width, height),
+                new Layer(width, height)
         );
     }
 

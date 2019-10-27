@@ -36,7 +36,7 @@ public final class LoadAndSaveDialogs {
         try (FileInputStream fileInputStream = new FileInputStream(path)) {
             System.out.println("loading from: " + path);
             ObjectInputStream objectInputStream = new ObjectInputStream(fileInputStream);
-            return (Design)objectInputStream.readObject();
+            return (Design) objectInputStream.readObject();
         } catch (Exception exception) {
             JOptionPane.showMessageDialog(parent, "Error while loading: " + exception);
             return null;
