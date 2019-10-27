@@ -9,6 +9,9 @@ import java.awt.event.MouseEvent;
 
 public class MainWindow extends JFrame {
 
+    public static final int MIN_CELL_SIZE = 2;
+    public static final int MAX_CELL_SIZE = 32;
+
     private final JPanel mainPanel;
 
     private Design design = new Design(20, 10);
@@ -89,13 +92,17 @@ public class MainWindow extends JFrame {
                         break;
 
                     case '+':
-                        cellSize *= 2;
-                        updateWindowSize();
+                        if (cellSize < MAX_CELL_SIZE) {
+                            cellSize *= 2;
+                            updateWindowSize();
+                        }
                         break;
 
                     case '-':
-                        cellSize /= 2;
-                        updateWindowSize();
+                        if (cellSize > MIN_CELL_SIZE) {
+                            cellSize /= 2;
+                            updateWindowSize();
+                        }
                         break;
 
                     case 's':
