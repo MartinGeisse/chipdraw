@@ -9,6 +9,7 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.net.URI;
 
 public class MainWindow extends JFrame {
 
@@ -143,13 +144,40 @@ public class MainWindow extends JFrame {
         mainPanel.grabFocus();
         add(mainPanel);
 
-        JMenuBar menuBar = new JMenuBar();
-        JMenu fileMenu = new JMenu("File");
-        JMenuItem quitItem = new JMenuItem("Quit");
-        quitItem.addActionListener(event -> System.exit(0));
-        fileMenu.add(quitItem);
-        menuBar.add(fileMenu);
-        setJMenuBar(menuBar);
+        {
+            JMenuBar menuBar = new JMenuBar();
+            setJMenuBar(menuBar);
+
+            JMenu fileMenu = new JMenu("File");
+            menuBar.add(fileMenu);
+
+            JMenuItem quitItem = new JMenuItem("Quit");
+            quitItem.addActionListener(event -> System.exit(0));
+            fileMenu.add(quitItem);
+
+            JMenu helpMenu = new JMenu("Help");
+            menuBar.add(helpMenu);
+
+            JMenuItem helpContentsItem = new JMenuItem("Contents");
+            helpContentsItem.addActionListener(event -> {
+                Desktop desktop = Desktop.isDesktopSupported() ? Desktop.getDesktop() : null;
+                if (desktop != null && desktop.isSupported(Desktop.Action.BROWSE)) {
+                    try {
+                        desktop.browse(new URI("http://www.google.com")); // TODO host on Github
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+            });
+            helpMenu.add(helpContentsItem);
+
+            JMenuItem aboutItem = new JMenuItem("About");
+            aboutItem.addActionListener(event -> {
+                JOptionPane.showMessageDialog(MainWindow.this, "Chipdraw by Martin Geisse");
+            });
+            helpMenu.add(aboutItem);
+
+        }
 
         resetUi();
         pack();
