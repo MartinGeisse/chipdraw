@@ -142,6 +142,15 @@ public class MainWindow extends JFrame {
         mainPanel.setFocusable(true);
         mainPanel.grabFocus();
         add(mainPanel);
+
+        JMenuBar menuBar = new JMenuBar();
+        JMenu fileMenu = new JMenu("File");
+        JMenuItem quitItem = new JMenuItem("Quit");
+        quitItem.addActionListener(event -> System.exit(0));
+        fileMenu.add(quitItem);
+        menuBar.add(fileMenu);
+        setJMenuBar(menuBar);
+
         resetUi();
         pack();
     }
