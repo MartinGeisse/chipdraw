@@ -1,5 +1,6 @@
 package name.martingeisse.chipdraw;
 
+import name.martingeisse.chipdraw.drc.DrcAgent;
 import name.martingeisse.chipdraw.technology.NoSuchTechnologyException;
 import name.martingeisse.chipdraw.technology.Technology;
 
@@ -18,6 +19,7 @@ public class MainWindow extends JFrame {
 
     private final Workbench workbench;
     private final JPanel mainPanel;
+    private final DrcAgent drcAgent;
 
     private Design design;
     private Technology technology;
@@ -29,6 +31,7 @@ public class MainWindow extends JFrame {
     public MainWindow(Workbench workbench, Design design) throws NoSuchTechnologyException {
         super("Chipdraw");
         this.workbench = workbench;
+        this.drcAgent = new DrcAgent();
         this.design = design;
         this.technology = workbench.getTechnologyRepository().getTechnology(design.getTechnologyId());
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
@@ -71,6 +74,7 @@ public class MainWindow extends JFrame {
                     if (MainWindow.this.design.getLayers().get(drawLayerIndex).isValidPosition(x, y)) {
                         MainWindow.this.design.getLayers().get(drawLayerIndex).setCell(x, y, drawing);
                         mainPanel.repaint();
+                        drcAgent.trigger();
                     }
                 }
             }
@@ -133,6 +137,7 @@ public class MainWindow extends JFrame {
                             MainWindow.this.design = design;
                             MainWindow.this.technology = technology;
                             resetUi();
+                            drcAgent.setDesign(design);
                         }
                         break;
                     }
@@ -181,6 +186,7 @@ public class MainWindow extends JFrame {
 
         resetUi();
         pack();
+        drcAgent.setDesign(design);
     }
 
     private void resetUi() {
