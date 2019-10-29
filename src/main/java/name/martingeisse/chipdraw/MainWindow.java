@@ -164,7 +164,7 @@ public class MainWindow extends JFrame {
                 Desktop desktop = Desktop.isDesktopSupported() ? Desktop.getDesktop() : null;
                 if (desktop != null && desktop.isSupported(Desktop.Action.BROWSE)) {
                     try {
-                        desktop.browse(new URI("http://www.google.com")); // TODO host on Github
+                        desktop.browse(new URI("https://github.com/MartinGeisse/chipdraw/blob/master/doc/index.md")); // TODO link to commit for this version
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
