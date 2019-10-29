@@ -120,27 +120,13 @@ public class MainWindow extends JFrame {
 
                     case 's':
                     case 'S':
-                        LoadAndSaveDialogs.showSaveDialog(MainWindow.this, MainWindow.this.design);
+                        showSaveDialog();
                         break;
 
                     case 'l':
-                    case 'L': {
-                        Design design = LoadAndSaveDialogs.showLoadDialog(MainWindow.this);
-                        if (design != null) {
-                            Technology technology;
-                            try {
-                                technology = MainWindow.this.workbench.getTechnologyRepository().getTechnology(design.getTechnologyId());
-                            } catch (NoSuchTechnologyException exception) {
-                                JOptionPane.showMessageDialog(MainWindow.this, exception.getMessage());
-                                break;
-                            }
-                            MainWindow.this.design = design;
-                            MainWindow.this.technology = technology;
-                            resetUi();
-                            drcAgent.setDesign(design);
-                        }
+                    case 'L':
+                        showLoadDialog();
                         break;
-                    }
 
                 }
             }
@@ -155,6 +141,16 @@ public class MainWindow extends JFrame {
 
             JMenu fileMenu = new JMenu("File");
             menuBar.add(fileMenu);
+
+            JMenuItem loadItem = new JMenuItem("Load");
+            loadItem.addActionListener(event -> showLoadDialog());
+            fileMenu.add(loadItem);
+
+            JMenuItem saveItem = new JMenuItem("Save");
+            saveItem.addActionListener(event -> showSaveDialog());
+            fileMenu.add(saveItem);
+
+            fileMenu.addSeparator();
 
             JMenuItem quitItem = new JMenuItem("Quit");
             quitItem.addActionListener(event -> System.exit(0));
@@ -202,6 +198,28 @@ public class MainWindow extends JFrame {
         mainPanel.setSize(new Dimension(design.getWidth() * cellSize, design.getHeight() * cellSize));
         mainPanel.repaint();
         pack();
+    }
+
+    private void showSaveDialog() {
+        LoadAndSaveDialogs.showSaveDialog(MainWindow.this, MainWindow.this.design);
+    }
+
+    private void showLoadDialog() {
+        Design design = LoadAndSaveDialogs.showLoadDialog(MainWindow.this);
+        if (design == null) {
+            return;
+        }
+        Technology technology;
+        try {
+            technology = MainWindow.this.workbench.getTechnologyRepository().getTechnology(design.getTechnologyId());
+        } catch (NoSuchTechnologyException exception) {
+            JOptionPane.showMessageDialog(MainWindow.this, exception.getMessage());
+            return;
+        }
+        this.design = design;
+        this.technology = technology;
+        resetUi();
+        drcAgent.setDesign(design);
     }
 
 }
