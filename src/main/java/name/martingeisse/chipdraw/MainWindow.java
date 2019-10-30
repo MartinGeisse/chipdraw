@@ -136,48 +136,16 @@ public class MainWindow extends JFrame {
         add(mainPanel);
 
         {
-            JMenuBar menuBar = new JMenuBar();
-            setJMenuBar(menuBar);
-
-            JMenu fileMenu = new JMenu("File");
-            menuBar.add(fileMenu);
-
-            JMenuItem loadItem = new JMenuItem("Load");
-            loadItem.addActionListener(event -> showLoadDialog());
-            fileMenu.add(loadItem);
-
-            JMenuItem saveItem = new JMenuItem("Save");
-            saveItem.addActionListener(event -> showSaveDialog());
-            fileMenu.add(saveItem);
-
-            fileMenu.addSeparator();
-
-            JMenuItem quitItem = new JMenuItem("Quit");
-            quitItem.addActionListener(event -> System.exit(0));
-            fileMenu.add(quitItem);
-
-            JMenu helpMenu = new JMenu("Help");
-            menuBar.add(helpMenu);
-
-            JMenuItem helpContentsItem = new JMenuItem("Contents");
-            helpContentsItem.addActionListener(event -> {
-                Desktop desktop = Desktop.isDesktopSupported() ? Desktop.getDesktop() : null;
-                if (desktop != null && desktop.isSupported(Desktop.Action.BROWSE)) {
-                    try {
-                        desktop.browse(new URI("https://github.com/MartinGeisse/chipdraw/blob/master/doc/index.md")); // TODO link to commit for this version
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                }
-            });
-            helpMenu.add(helpContentsItem);
-
-            JMenuItem aboutItem = new JMenuItem("About");
-            aboutItem.addActionListener(event -> {
-                JOptionPane.showMessageDialog(MainWindow.this, "Chipdraw by Martin Geisse");
-            });
-            helpMenu.add(aboutItem);
-
+            MenuBarBuilder builder = new MenuBarBuilder();
+            builder.addMenu("File");
+            builder.add("Load", this::showLoadDialog);
+            builder.add("Save", this::showSaveDialog);
+            builder.addSeparator();
+            builder.add("Quit", () -> System.exit(0));
+            builder.addMenu("Help");
+            builder.addExternalLink("Contents", "https://github.com/MartinGeisse/chipdraw/blob/master/doc/index.md"); // TODO link to commit for this version
+            builder.add("About", () -> JOptionPane.showMessageDialog(MainWindow.this, "Chipdraw by Martin Geisse"));
+            setJMenuBar(builder.build());
         }
 
         resetUi();
