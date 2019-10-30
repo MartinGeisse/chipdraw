@@ -13,6 +13,12 @@ public final class Layer implements Serializable {
         this.cells = new boolean[width * height];
     }
 
+    public Layer createCopy() {
+        Layer copy = new Layer(width, height);
+        System.arraycopy(cells, 0, copy.cells, 0, cells.length);
+        return copy;
+    }
+
     public int getWidth() {
         return width;
     }
