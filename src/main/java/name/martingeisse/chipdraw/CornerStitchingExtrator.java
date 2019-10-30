@@ -60,11 +60,7 @@ public final class CornerStitchingExtrator {
 		}
 
 		System.out.println("found rectangle: " + topLeftX + ", " + topLeftY + " / " + rectangleWidth + " x " + rectangleHeight);
-		for (int x = topLeftX; x < topLeftX + rectangleWidth; x++) {
-			for (int y = topLeftY; y < topLeftY + rectangleHeight; y++) {
-				copy.setCell(x, y, false);
-			}
-		}
+		copy.drawRectangle(topLeftX, topLeftY, rectangleWidth, rectangleHeight, false);
 	}
 
 }
