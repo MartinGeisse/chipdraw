@@ -1,5 +1,6 @@
 package name.martingeisse.chipdraw.drc;
 
+import com.google.common.collect.ImmutableList;
 import name.martingeisse.chipdraw.Design;
 
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -15,20 +16,24 @@ import java.util.concurrent.atomic.AtomicReference;
 public final class DrcAgent {
 
     private final AtomicReference<Design> trigger;
+    private final AtomicReference<ImmutableList<Violation>> result;
     private Design design;
 
     public DrcAgent() {
         this.trigger = new AtomicReference<>(null);
+        this.result = new AtomicReference<>(null);
         this.design = null;
         new Thread(this::backgroundMain).start();
     }
 
     public void setDesign(Design design) {
         trigger.set(design);
+        result.set(null);
     }
 
     public void trigger() {
         trigger.set(design);
+        result.set(null);
     }
 
     private void backgroundMain() {
@@ -37,9 +42,11 @@ public final class DrcAgent {
                 waitForTrigger();
                 DrcContext context = new DrcContext(design);
                 new Drc().perform(context);
-                for (Violation violation : context.getViolations()) {
+                ImmutableList<Violation> violations = context.getViolations();
+                for (Violation violation : violations) {
                     System.out.println("*** " + violation.getFullText());
                 }
+                result.set(violations);
                 System.out.println("DRC finished");
             }
         } catch (InterruptedException e) {

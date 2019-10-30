@@ -39,10 +39,10 @@ public class MainWindow extends JFrame {
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         setResizable(false);
 
-        sideBar = new JPanel() {
-        };
+        sideBar = new JPanel();
         sideBar.setPreferredSize(new Dimension(100, 0));
         add(sideBar, BorderLayout.LINE_START);
+        sideBar.add(new JButton("DRC"), BorderLayout.PAGE_END);
 
         Paint layer0Paint;
         {
@@ -97,8 +97,8 @@ public class MainWindow extends JFrame {
                     int y = e.getY() / cellSize;
                     if (MainWindow.this.design.getLayers().get(drawLayerIndex).isValidPosition(x, y)) {
                         MainWindow.this.design.getLayers().get(drawLayerIndex).setCell(x, y, drawing);
-                        mainPanel.repaint();
                         drcAgent.trigger();
+                        mainPanel.repaint();
                     }
                 }
             }
@@ -213,8 +213,8 @@ public class MainWindow extends JFrame {
         }
         this.design = design;
         this.technology = technology;
-        resetUi();
         drcAgent.setDesign(design);
+        resetUi();
     }
 
 }
