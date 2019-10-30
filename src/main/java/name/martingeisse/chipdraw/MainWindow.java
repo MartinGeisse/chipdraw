@@ -10,6 +10,8 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.geom.Rectangle2D;
+import java.awt.image.BufferedImage;
 
 public class MainWindow extends JFrame {
 
@@ -42,17 +44,34 @@ public class MainWindow extends JFrame {
         sideBar.setPreferredSize(new Dimension(100, 0));
         add(sideBar, BorderLayout.LINE_START);
 
+        Paint layer0Paint;
+        {
+            BufferedImage image = new BufferedImage(3, 3, BufferedImage.TYPE_INT_RGB);
+            image.setRGB(0, 0, 0xff0000);
+            image.setRGB(1, 1, 0xff0000);
+            image.setRGB(2, 2, 0xff0000);
+            layer0Paint = new TexturePaint(image, new Rectangle2D.Float(0, 0, 3, 3));
+        }
+
         mainPanel = new JPanel() {
             @Override
-            protected void paintComponent(Graphics g) {
+            protected void paintComponent(Graphics _g) {
+                Graphics2D g = (Graphics2D)_g;
+                g.setColor(Color.black);
+                g.fillRect(0, 0, getWidth(), getHeight());
                 for (int x = 0; x < MainWindow.this.design.getWidth(); x++) {
                     for (int y = 0; y < MainWindow.this.design.getHeight(); y++) {
-                        g.setColor(new Color(
-                                MainWindow.this.design.getLayers().get(0).getCell(x, y) ? 255 : 0,
-                                MainWindow.this.design.getLayers().get(1).getCell(x, y) ? 255 : 0,
-                                MainWindow.this.design.getLayers().get(2).getCell(x, y) ? 255 : 0
-                        ));
-                        g.fillRect(x * cellSize, y * cellSize, cellSize, cellSize);
+                        boolean l0 = MainWindow.this.design.getLayers().get(0).getCell(x, y);
+                        boolean l1 = MainWindow.this.design.getLayers().get(1).getCell(x, y);
+                        boolean l2 = MainWindow.this.design.getLayers().get(2).getCell(x, y);
+
+                        if (l1 || l2) {
+                            g.setColor(new Color(0, l1 ? 255 : 0, l2 ? 255 : 0));
+                            g.fillRect(x * cellSize, y * cellSize, cellSize, cellSize);
+                        } else if (l0) {
+                            g.setPaint(layer0Paint);
+                            g.fillRect(x * cellSize, y * cellSize, cellSize, cellSize);
+                        }
                     }
                 }
             }
