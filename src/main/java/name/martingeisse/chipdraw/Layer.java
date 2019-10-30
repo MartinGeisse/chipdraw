@@ -2,6 +2,9 @@ package name.martingeisse.chipdraw;
 
 import java.io.Serializable;
 
+/**
+ * TODO rename "cells" to "pixels"? The former already has a meaning in chip design.
+ */
 public final class Layer implements Serializable {
 
 	private final int width, height;

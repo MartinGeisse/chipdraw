@@ -35,7 +35,11 @@ public final class DrcAgent {
         try {
             while (true) { // TODO stop thread when closing the window
                 waitForTrigger();
-                Thread.sleep(3_000); // TODO simulates work to be done
+                DrcContext context = new DrcContext(design);
+                new Drc().perform(context);
+                for (Violation violation : context.getViolations()) {
+                    System.out.println("*** " + violation.getFullText());
+                }
                 System.out.println("DRC finished");
             }
         } catch (InterruptedException e) {
