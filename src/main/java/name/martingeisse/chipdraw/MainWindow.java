@@ -10,7 +10,6 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.net.URI;
 
 public class MainWindow extends JFrame {
 
@@ -18,6 +17,7 @@ public class MainWindow extends JFrame {
     public static final int MAX_CELL_SIZE = 32;
 
     private final Workbench workbench;
+    private final JPanel sideBar;
     private final JPanel mainPanel;
     private final DrcAgent drcAgent;
 
@@ -36,6 +36,11 @@ public class MainWindow extends JFrame {
         this.technology = workbench.getTechnologyRepository().getTechnology(design.getTechnologyId());
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         setResizable(false);
+
+        sideBar = new JPanel() {
+        };
+        sideBar.setPreferredSize(new Dimension(100, 0));
+        add(sideBar, BorderLayout.LINE_START);
 
         mainPanel = new JPanel() {
             @Override
