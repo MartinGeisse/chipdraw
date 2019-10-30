@@ -18,7 +18,7 @@ public final class CornerStitchingExtrator {
 		for (Layer layer : design.getLayers()) {
 			System.out.println("* Layer");
 			Layer copy = layer.createCopy();
-			for (int x = 0; x < copy.getWidth(); x++) {
+			for (int x = 0; x < copy.getWidth(); x++) { // TODO swap loops, but first fix current bug for 2x2 filled
 				for (int y = 0; y < copy.getHeight(); y++) {
 					if (layer.getCell(x, y)) {
 						extractRectangle(copy, x, y);
@@ -39,13 +39,11 @@ public final class CornerStitchingExtrator {
 
 		// determine the height of the rectangle by extending downwards
 		int rectangleHeight = 1;
-		extendHeight: while (topLeftY + rectangleHeight < copy.getHeight()) {
+		while (topLeftY + rectangleHeight < copy.getHeight()) {
 
 			// check if all extension pixels are set
-			for (int x = topLeftX; x < topLeftX + rectangleWidth; x++) {
-				if (!copy.getCell(x, topLeftY + rectangleHeight)) {
-					break extendHeight;
-				}
+			if (!copy.isReactangleUniformAutoclip(topLeftX, topLeftY + rectangleHeight, rectangleWidth, 1, true)) {
+				break;
 			}
 
 			// check that the extension row cannot be filled by a wider rectangle
