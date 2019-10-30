@@ -18,9 +18,9 @@ public final class CornerStitchingExtrator {
 		for (Layer layer : design.getLayers()) {
 			System.out.println("* Layer");
 			Layer copy = layer.createCopy();
-			for (int x = 0; x < copy.getWidth(); x++) { // TODO swap loops, but first fix current bug for 2x2 filled
-				for (int y = 0; y < copy.getHeight(); y++) {
-					if (layer.getCell(x, y)) {
+			for (int y = 0; y < copy.getHeight(); y++) {
+				for (int x = 0; x < copy.getWidth(); x++) {
+					if (copy.getCell(x, y)) {
 						extractRectangle(copy, x, y);
 					}
 				}
@@ -28,7 +28,6 @@ public final class CornerStitchingExtrator {
 		}
 	}
 
-	// TODO refactor until readable!
 	private static void extractRectangle(Layer copy, int topLeftX, int topLeftY) {
 
 		// determine width of the first row which is also the width of the rectangle
