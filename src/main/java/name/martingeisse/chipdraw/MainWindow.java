@@ -40,8 +40,17 @@ public class MainWindow extends JFrame {
         setResizable(false);
 
         sideBar = new JPanel();
-        sideBar.setPreferredSize(new Dimension(100, 0));
+        sideBar.setLayout(new BorderLayout());
+        // sideBar.setPreferredSize(new Dimension(100, 0));
         add(sideBar, BorderLayout.LINE_START);
+        {
+            JTable table = new JTable(new Object[][] {
+                {"a", "b", "c"},
+                {"d", "e", "f"},
+            }, new Object[] {"foo", "bar", "baz"});
+            sideBar.add(table, BorderLayout.PAGE_START);
+
+        }
         sideBar.add(new JButton("DRC"), BorderLayout.PAGE_END);
 
         Paint layer0Paint;
