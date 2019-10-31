@@ -41,15 +41,16 @@ public class MainWindow extends JFrame {
 
         sideBar = new JPanel();
         sideBar.setLayout(new BorderLayout());
-        // sideBar.setPreferredSize(new Dimension(100, 0));
+        sideBar.setPreferredSize(new Dimension(200, 0));
         add(sideBar, BorderLayout.LINE_START);
         {
             JTable table = new JTable(new Object[][] {
                 {"a", "b", "c"},
                 {"d", "e", "f"},
             }, new Object[] {"foo", "bar", "baz"});
-            sideBar.add(table, BorderLayout.PAGE_START);
-
+            JScrollPane scrollPane = new JScrollPane(table);
+            table.setFillsViewportHeight(true);
+            sideBar.add(scrollPane, BorderLayout.PAGE_START);
         }
         sideBar.add(new JButton("DRC"), BorderLayout.PAGE_END);
 
