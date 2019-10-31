@@ -89,7 +89,6 @@ public class MainWindow extends JFrame {
                 MainWindow.this.repaint();
             });
         }
-        sideBar.add(new JLabel(Icons.get("eye.png")), BorderLayout.CENTER); // TODO test remove
         {
             JButton button = new JButton("DRC");
             button.setFocusable(false);
