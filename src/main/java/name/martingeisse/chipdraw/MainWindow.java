@@ -39,7 +39,8 @@ public class MainWindow extends JFrame {
         this.design = design;
         this.technology = workbench.getTechnologyRepository().getTechnology(design.getTechnologyId());
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-        setResizable(false);
+        setSize(800, 600);
+        setResizable(true);
 
         sideBar = new JPanel();
         sideBar.setLayout(new BorderLayout());
@@ -107,9 +108,19 @@ public class MainWindow extends JFrame {
         mainPanel = new JPanel() {
             @Override
             protected void paintComponent(Graphics _g) {
-                Graphics2D g = (Graphics2D)_g;
-                g.setColor(Color.black);
-                g.fillRect(0, 0, getWidth(), getHeight());
+                Graphics2D g = (Graphics2D) _g;
+
+                int panelWidth = mainPanel.getWidth();
+                int panelHeight = mainPanel.getHeight();
+                int designDisplayWidth = design.getWidth() * cellSize;
+                int designDisplayHeight = design.getHeight() * cellSize;
+                if (designDisplayWidth < panelWidth || designDisplayHeight < panelHeight) {
+                    g.setColor(Color.LIGHT_GRAY);
+                    g.fillRect(0, 0, panelWidth, panelHeight);
+                }
+
+                g.setColor(Color.BLACK);
+                g.fillRect(0, 0, designDisplayWidth, designDisplayHeight);
                 for (int x = 0; x < MainWindow.this.design.getWidth(); x++) {
                     for (int y = 0; y < MainWindow.this.design.getHeight(); y++) {
                         boolean l0 = MainWindow.this.design.getLayers().get(0).getCell(x, y) && layerUiState.getVisible(0);
@@ -182,14 +193,14 @@ public class MainWindow extends JFrame {
                     case '+':
                         if (cellSize < MAX_CELL_SIZE) {
                             cellSize *= 2;
-                            updateWindowSize();
+                            updateMainPanelSize();
                         }
                         break;
 
                     case '-':
                         if (cellSize > MIN_CELL_SIZE) {
                             cellSize /= 2;
-                            updateWindowSize();
+                            updateMainPanelSize();
                         }
                         break;
 
@@ -207,8 +218,9 @@ public class MainWindow extends JFrame {
             }
         });
         mainPanel.setFocusable(true);
+        JScrollPane mainPanelScrollPane = new JScrollPane(mainPanel, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
+        add(mainPanelScrollPane);
         mainPanel.grabFocus();
-        add(mainPanel);
 
         {
             MenuBarBuilder builder = new MenuBarBuilder();
@@ -227,7 +239,6 @@ public class MainWindow extends JFrame {
         }
 
         resetUi();
-        pack();
         drcAgent.setDesign(design);
     }
 
@@ -236,14 +247,14 @@ public class MainWindow extends JFrame {
         drawing = false;
         erasing = false;
         cellSize = 16;
-        updateWindowSize();
+        updateMainPanelSize();
     }
 
-    private void updateWindowSize() {
-        mainPanel.setPreferredSize(new Dimension(design.getWidth() * cellSize, design.getHeight() * cellSize));
-        mainPanel.setSize(new Dimension(design.getWidth() * cellSize, design.getHeight() * cellSize));
+    private void updateMainPanelSize() {
+        Dimension size = new Dimension(design.getWidth() * cellSize, design.getHeight() * cellSize);
+        mainPanel.setPreferredSize(size);
+        mainPanel.setSize(size);
         mainPanel.repaint();
-        pack();
     }
 
     private void showSaveDialog() {
