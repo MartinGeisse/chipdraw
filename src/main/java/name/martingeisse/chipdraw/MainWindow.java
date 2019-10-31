@@ -1,6 +1,7 @@
 package name.martingeisse.chipdraw;
 
 import name.martingeisse.chipdraw.drc.DrcAgent;
+import name.martingeisse.chipdraw.icons.Icons;
 import name.martingeisse.chipdraw.technology.NoSuchTechnologyException;
 import name.martingeisse.chipdraw.technology.Technology;
 
@@ -71,6 +72,7 @@ public class MainWindow extends JFrame {
             JScrollPane scrollPane = new JScrollPane(table);
             sideBar.add(scrollPane, BorderLayout.PAGE_START);
         }
+        sideBar.add(new JLabel(Icons.get("eye.png")), BorderLayout.CENTER); // TODO test remove
         sideBar.add(new JButton("DRC"), BorderLayout.PAGE_END);
 
         Paint layer0Paint;
