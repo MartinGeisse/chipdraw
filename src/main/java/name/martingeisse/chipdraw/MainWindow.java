@@ -22,6 +22,7 @@ public class MainWindow extends JFrame {
     private final JPanel sideBar;
     private final JPanel mainPanel;
     private final DrcAgent drcAgent;
+    private final LayerUiState layerUiState = new LayerUiState();
 
     private Design design;
     private Technology technology;
@@ -44,12 +45,30 @@ public class MainWindow extends JFrame {
         sideBar.setPreferredSize(new Dimension(200, 0));
         add(sideBar, BorderLayout.LINE_START);
         {
-            JTable table = new JTable(new Object[][] {
-                {"a", "b", "c"},
-                {"d", "e", "f"},
-            }, new Object[] {"foo", "bar", "baz"});
-            JScrollPane scrollPane = new JScrollPane(table);
+            JTable table = new JTable(layerUiState.new SidebarTableModel());
+            table.addMouseListener(new MouseAdapter() {
+                @Override
+                public void mousePressed(MouseEvent e) {
+                    if (e.getButton() != MouseEvent.BUTTON1) {
+                        return;
+                    }
+                    int rowIndex = table.rowAtPoint(e.getPoint());
+                    int columnIndex = table.columnAtPoint(e.getPoint());
+                    if (rowIndex < 0 || rowIndex >= 3) {
+                        return;
+                    }
+                    if (columnIndex == 0) {
+                        layerUiState.setEditing(rowIndex);
+                        table.repaint();
+                    } else if (columnIndex == 1) {
+                        layerUiState.toggleVisible(rowIndex);
+                        table.repaint();
+                    }
+                }
+            });
+            table.setRowSelectionAllowed(false);
             table.setFillsViewportHeight(true);
+            JScrollPane scrollPane = new JScrollPane(table);
             sideBar.add(scrollPane, BorderLayout.PAGE_START);
         }
         sideBar.add(new JButton("DRC"), BorderLayout.PAGE_END);
