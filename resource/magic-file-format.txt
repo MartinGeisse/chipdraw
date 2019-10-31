@@ -1,0 +1,23 @@
+
+The magic file format is very similar to our current understanding of what a design is.
+
+Format-wise differences:
+- (no longer) using a simple identifier as the technology ID
+- we don't support labels yet
+
+Conceptual differences:
+- a magic / SCMOS file contains layers for transistors. We would not do that -- we would rather define a transistor
+    to "emerge" for the overlap of diffusion and poly (this has the assumption that any overlap between diffusion
+    and poly MUST be a transistor).
+
+This conceptual difference is more of a technology-related difference than a difference in the format -- we could use
+the same format for our technology. However, the main point of using Magic's file format is that we can exchange files
+with Magic and related programs easily. This requires, apart from the file format, that our technology is represented
+in all tools, and here is the problem: We don't really want to work in Magic/SCMOS because it's harder than
+necessary, and we can't easly import our technology into Magic because (1) writing technology definition files seems
+to be much more complex and (2) we don't even know if magic can handle the way we represent transistors (IIRC, their
+model is slightly different from their file format).
+
+For now, IMHO we are better off treating Magic's format as a "foreign" format with importers / exporters that may
+lose information. Using Magic's format natively involves understanding the design process and how the tools are
+working together -- which may be different for different users.
