@@ -1,18 +1,17 @@
 package name.martingeisse.chipdraw;
 
 import com.google.common.collect.ImmutableList;
-import name.martingeisse.chipdraw.technology.TechnologyId;
 
 import java.io.Serializable;
 
 public final class Design implements Serializable {
 
-    private final TechnologyId technologyId;
+    private final String technologyId;
     private final int width;
     private final int height;
     private final ImmutableList<Layer> layers;
 
-    public Design(TechnologyId technologyId, int width, int height) {
+    public Design(String technologyId, int width, int height) {
         this.technologyId = technologyId;
         this.width = width;
         this.height = height;
@@ -23,7 +22,7 @@ public final class Design implements Serializable {
         );
     }
 
-    public TechnologyId getTechnologyId() {
+    public String getTechnologyId() {
         return technologyId;
     }
 

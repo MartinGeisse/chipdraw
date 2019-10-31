@@ -2,14 +2,14 @@ package name.martingeisse.chipdraw.technology;
 
 public final class NoSuchTechnologyException extends Exception {
 
-    private final TechnologyId id;
+    private final String id;
 
-    public NoSuchTechnologyException(TechnologyId id) {
+    public NoSuchTechnologyException(String id) {
         super("no such technology: " + id);
         this.id = id;
     }
 
-    public TechnologyId getId() {
+    public String getId() {
         return id;
     }
 

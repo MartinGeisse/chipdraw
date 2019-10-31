@@ -8,7 +8,7 @@ public class Main {
 
     public static void main(String[] args) {
 
-        TechnologyId defaultTechnologyId = new TechnologyId(0, 0, "default");
+        String defaultTechnologyId = "default";
 
         SimpleTechnologyRepository technologyRepository = new SimpleTechnologyRepository();
         technologyRepository.add(new Technology(defaultTechnologyId, 3));
