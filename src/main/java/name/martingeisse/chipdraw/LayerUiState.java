@@ -1,6 +1,7 @@
 package name.martingeisse.chipdraw;
 
 import javax.swing.table.AbstractTableModel;
+import javax.swing.table.TableModel;
 
 /**
  *
@@ -11,7 +12,7 @@ public final class LayerUiState {
 	private final boolean[] visible = new boolean[] {true, true, true};
 	private int editing = 0;
 
-	public SidebarTableModel getSidebarTableModel() {
+	public TableModel getSidebarTableModel() {
 		return sidebarTableModel;
 	}
 

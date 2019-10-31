@@ -83,6 +83,10 @@ public class MainWindow extends JFrame {
             table.setFocusable(false);
             JScrollPane scrollPane = new JScrollPane(table);
             sideBar.add(scrollPane, BorderLayout.PAGE_START);
+
+            layerUiState.getSidebarTableModel().addTableModelListener(event -> {
+                MainWindow.this.repaint();
+            });
         }
         sideBar.add(new JLabel(Icons.get("eye.png")), BorderLayout.CENTER); // TODO test remove
         {
@@ -108,9 +112,9 @@ public class MainWindow extends JFrame {
                 g.fillRect(0, 0, getWidth(), getHeight());
                 for (int x = 0; x < MainWindow.this.design.getWidth(); x++) {
                     for (int y = 0; y < MainWindow.this.design.getHeight(); y++) {
-                        boolean l0 = MainWindow.this.design.getLayers().get(0).getCell(x, y);
-                        boolean l1 = MainWindow.this.design.getLayers().get(1).getCell(x, y);
-                        boolean l2 = MainWindow.this.design.getLayers().get(2).getCell(x, y);
+                        boolean l0 = MainWindow.this.design.getLayers().get(0).getCell(x, y) && layerUiState.getVisible(0);
+                        boolean l1 = MainWindow.this.design.getLayers().get(1).getCell(x, y) && layerUiState.getVisible(1);
+                        boolean l2 = MainWindow.this.design.getLayers().get(2).getCell(x, y) && layerUiState.getVisible(2);
 
                         if (l1 || l2) {
                             g.setColor(new Color(0, l1 ? 255 : 0, l2 ? 255 : 0));
