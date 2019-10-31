@@ -4,6 +4,7 @@ import name.martingeisse.chipdraw.drc.DrcAgent;
 import name.martingeisse.chipdraw.icons.Icons;
 import name.martingeisse.chipdraw.technology.NoSuchTechnologyException;
 import name.martingeisse.chipdraw.technology.Technology;
+import name.martingeisse.chipdraw.ui.SingleIconBooleanCellRenderer;
 
 import javax.swing.*;
 import java.awt.*;
@@ -42,10 +43,21 @@ public class MainWindow extends JFrame {
 
         sideBar = new JPanel();
         sideBar.setLayout(new BorderLayout());
-        sideBar.setPreferredSize(new Dimension(200, 0));
+        sideBar.setPreferredSize(new Dimension(150, 0));
         add(sideBar, BorderLayout.LINE_START);
         {
-            JTable table = new JTable(layerUiState.getSidebarTableModel());
+            JTable table = new JTable(layerUiState.getSidebarTableModel()) {
+                @Override
+                protected void configureEnclosingScrollPane() {
+                }
+            };
+            table.setShowGrid(false);
+            table.setIntercellSpacing(new Dimension(0, 0));
+            table.getColumnModel().getColumn(0).setCellRenderer(new SingleIconBooleanCellRenderer(Icons.get("pencil.png")));
+            table.getColumnModel().getColumn(0).setMinWidth(20);
+            table.getColumnModel().getColumn(1).setCellRenderer(new SingleIconBooleanCellRenderer(Icons.get("eye.png")));
+            table.getColumnModel().getColumn(1).setMinWidth(20);
+            table.getColumnModel().getColumn(2).setPreferredWidth(10_000);
             table.addMouseListener(new MouseAdapter() {
                 @Override
                 public void mousePressed(MouseEvent e) {
