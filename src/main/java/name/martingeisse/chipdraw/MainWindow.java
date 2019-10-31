@@ -68,11 +68,16 @@ public class MainWindow extends JFrame {
             });
             table.setRowSelectionAllowed(false);
             table.setFillsViewportHeight(true);
+            table.setFocusable(false);
             JScrollPane scrollPane = new JScrollPane(table);
             sideBar.add(scrollPane, BorderLayout.PAGE_START);
         }
         sideBar.add(new JLabel(Icons.get("eye.png")), BorderLayout.CENTER); // TODO test remove
-        sideBar.add(new JButton("DRC"), BorderLayout.PAGE_END);
+        {
+            JButton button = new JButton("DRC");
+            button.setFocusable(false);
+            sideBar.add(button, BorderLayout.PAGE_END);
+        }
 
         Paint layer0Paint;
         {
