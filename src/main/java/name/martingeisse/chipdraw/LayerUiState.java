@@ -7,8 +7,13 @@ import javax.swing.table.AbstractTableModel;
  */
 public final class LayerUiState {
 
+	private final SidebarTableModel sidebarTableModel = new SidebarTableModel();
 	private final boolean[] visible = new boolean[] {true, true, true};
 	private int editing = 0;
+
+	public SidebarTableModel getSidebarTableModel() {
+		return sidebarTableModel;
+	}
 
 	public boolean getVisible(int layer) {
 		return visible[layer];
@@ -16,10 +21,12 @@ public final class LayerUiState {
 
 	public void setVisible(int layer, boolean value) {
 		visible[layer] = value;
+		sidebarTableModel.fireTableCellUpdated(layer, 1);
 	}
 
 	public void toggleVisible(int layer) {
 		visible[layer] = !visible[layer];
+		sidebarTableModel.fireTableCellUpdated(layer, 1);
 	}
 
 	public int getEditing() {
@@ -27,10 +34,13 @@ public final class LayerUiState {
 	}
 
 	public void setEditing(int editing) {
+		int old = this.editing;
 		this.editing = editing;
+		sidebarTableModel.fireTableCellUpdated(old, 0);
+		sidebarTableModel.fireTableCellUpdated(editing, 0);
 	}
 
-	public class SidebarTableModel extends AbstractTableModel {
+	private class SidebarTableModel extends AbstractTableModel {
 
 		@Override
 		public int getRowCount() {

@@ -27,7 +27,6 @@ public class MainWindow extends JFrame {
 
     private Design design;
     private Technology technology;
-    private int drawLayerIndex;
     private boolean drawing;
     private boolean erasing;
     private int cellSize;
@@ -46,7 +45,7 @@ public class MainWindow extends JFrame {
         sideBar.setPreferredSize(new Dimension(200, 0));
         add(sideBar, BorderLayout.LINE_START);
         {
-            JTable table = new JTable(layerUiState.new SidebarTableModel());
+            JTable table = new JTable(layerUiState.getSidebarTableModel());
             table.addMouseListener(new MouseAdapter() {
                 @Override
                 public void mousePressed(MouseEvent e) {
@@ -126,8 +125,8 @@ public class MainWindow extends JFrame {
                 if (drawing || erasing) {
                     int x = e.getX() / cellSize;
                     int y = e.getY() / cellSize;
-                    if (MainWindow.this.design.getLayers().get(drawLayerIndex).isValidPosition(x, y)) {
-                        MainWindow.this.design.getLayers().get(drawLayerIndex).setCell(x, y, drawing);
+                    if (MainWindow.this.design.getLayers().get(layerUiState.getEditing()).isValidPosition(x, y)) {
+                        MainWindow.this.design.getLayers().get(layerUiState.getEditing()).setCell(x, y, drawing);
                         drcAgent.trigger();
                         mainPanel.repaint();
                     }
@@ -148,15 +147,15 @@ public class MainWindow extends JFrame {
                 switch (event.getKeyChar()) {
 
                     case '1':
-                        drawLayerIndex = 0;
+                        layerUiState.setEditing(0);
                         break;
 
                     case '2':
-                        drawLayerIndex = 1;
+                        layerUiState.setEditing(1);
                         break;
 
                     case '3':
-                        drawLayerIndex = 2;
+                        layerUiState.setEditing(2);
                         break;
 
                     case '+':
@@ -212,7 +211,7 @@ public class MainWindow extends JFrame {
     }
 
     private void resetUi() {
-        drawLayerIndex = 0;
+        layerUiState.setEditing(0);
         drawing = false;
         erasing = false;
         cellSize = 16;
