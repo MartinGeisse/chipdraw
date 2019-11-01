@@ -1,11 +1,14 @@
 package name.martingeisse.chipdraw;
 
 import com.google.common.collect.ImmutableList;
+import name.martingeisse.chipdraw.technology.LayerSchema;
 import name.martingeisse.chipdraw.technology.NoSuchTechnologyException;
 import name.martingeisse.chipdraw.technology.Technology;
 import name.martingeisse.chipdraw.technology.TechnologyRepository;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
 public final class Design implements Serializable {
 
@@ -20,15 +23,22 @@ public final class Design implements Serializable {
         this.technology = technology;
         this.width = width;
         this.height = height;
-        this.layers = ImmutableList.of(
-                new Layer(width, height),
-                new Layer(width, height),
-                new Layer(width, height)
-        );
+
+        List<Layer> layers = new ArrayList<>();
+        for (LayerSchema layerSchema : technology.getLayerSchemas()) {
+            layers.add(new Layer(layerSchema, width, height));
+        }
+        this.layers = ImmutableList.copyOf(layers);
     }
 
     void initializeAfterDeserialization(TechnologyRepository technologyRepository) throws NoSuchTechnologyException {
         this.technology = technologyRepository.getTechnology(technologyId);
+        if (technology.getLayerSchemas().size() != layers.size()) {
+            throw new RuntimeException("number of layers in this technology has changed");
+        }
+        for (int i = 0; i < layers.size(); i++) {
+            layers.get(i).initializeAfterDeserialization(technology.getLayerSchemas().get(i));
+        }
     }
 
     public Technology getTechnology() {
