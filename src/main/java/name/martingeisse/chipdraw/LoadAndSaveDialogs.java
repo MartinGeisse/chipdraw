@@ -24,8 +24,8 @@ public final class LoadAndSaveDialogs {
         }
         try {
             designPersistence.save(design, path);
-        } catch (IOException exception) {
-            JOptionPane.showMessageDialog(parent, "Error while saving: " + exception);
+        } catch (IOException e) {
+            JOptionPane.showMessageDialog(parent, "Error while saving: " + e);
         }
     }
 
@@ -36,8 +36,8 @@ public final class LoadAndSaveDialogs {
         }
         try {
             return designPersistence.load(path);
-        } catch (Exception exception) {
-            JOptionPane.showMessageDialog(parent, "Error while loading: " + exception);
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(parent, "Error while loading: " + e);
             return null;
         }
     }
