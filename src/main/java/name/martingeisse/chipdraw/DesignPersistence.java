@@ -27,6 +27,7 @@ public final class DesignPersistence {
             System.out.println("loading from: " + path);
             ObjectInputStream objectInputStream = new ObjectInputStream(fileInputStream);
             Design design = (Design) objectInputStream.readObject();
+            design.initializeAfterDeserialization(technologyRepository);
             return design;
         } catch (ClassNotFoundException e) {
             throw new IOException("deserialization problem", e);

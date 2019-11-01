@@ -28,7 +28,6 @@ public class MainWindow extends JFrame {
     private final LoadAndSaveDialogs loadAndSaveDialogs;
 
     private Design design;
-    private Technology technology;
     private boolean drawing;
     private boolean erasing;
     private int cellSize;
@@ -38,7 +37,6 @@ public class MainWindow extends JFrame {
         this.workbench = workbench;
         this.drcAgent = new DrcAgent();
         this.design = design;
-        this.technology = workbench.getTechnologyRepository().getTechnology(design.getTechnologyId());
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         setSize(800, 600);
         setResizable(true);
@@ -273,15 +271,7 @@ public class MainWindow extends JFrame {
         if (design == null) {
             return;
         }
-        Technology technology;
-        try {
-            technology = MainWindow.this.workbench.getTechnologyRepository().getTechnology(design.getTechnologyId());
-        } catch (NoSuchTechnologyException exception) {
-            JOptionPane.showMessageDialog(MainWindow.this, exception.getMessage());
-            return;
-        }
         this.design = design;
-        this.technology = technology;
         drcAgent.setDesign(design);
         resetUi();
     }

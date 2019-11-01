@@ -1,18 +1,23 @@
 package name.martingeisse.chipdraw;
 
 import com.google.common.collect.ImmutableList;
+import name.martingeisse.chipdraw.technology.NoSuchTechnologyException;
+import name.martingeisse.chipdraw.technology.Technology;
+import name.martingeisse.chipdraw.technology.TechnologyRepository;
 
 import java.io.Serializable;
 
 public final class Design implements Serializable {
 
     private final String technologyId;
+    private transient Technology technology;
     private final int width;
     private final int height;
     private final ImmutableList<Layer> layers;
 
-    public Design(String technologyId, int width, int height) {
-        this.technologyId = technologyId;
+    public Design(Technology technology, int width, int height) {
+        this.technologyId = technology.getId();
+        this.technology = technology;
         this.width = width;
         this.height = height;
         this.layers = ImmutableList.of(
@@ -22,8 +27,12 @@ public final class Design implements Serializable {
         );
     }
 
-    public String getTechnologyId() {
-        return technologyId;
+    void initializeAfterDeserialization(TechnologyRepository technologyRepository) throws NoSuchTechnologyException {
+        this.technology = technologyRepository.getTechnology(technologyId);
+    }
+
+    public Technology getTechnology() {
+        return technology;
     }
 
     public int getWidth() {

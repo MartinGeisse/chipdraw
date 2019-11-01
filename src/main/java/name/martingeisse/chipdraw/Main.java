@@ -21,12 +21,13 @@ public class Main {
         LayerSchema diffToPolyVia = new LayerSchema("diffToPolyVia");
         LayerSchema polyToMetal1Via = new LayerSchema("polyToMetal1Via");
         ImmutableList<LayerSchema> layerSchemas = ImmutableList.of(nwell, pwell, ndiff, pdiff, poly, metal1,
-            diffToPolyVia, polyToMetal1Via);
-        technologyRepository.add(new Technology(defaultTechnologyId, layerSchemas));
+                diffToPolyVia, polyToMetal1Via);
+        Technology technology = new Technology(defaultTechnologyId, layerSchemas);
+        technologyRepository.add(technology);
 
         Workbench workbench = new Workbench(technologyRepository);
 
-        Design design = new Design(defaultTechnologyId, 20, 10);
+        Design design = new Design(technology, 20, 10);
 
         try {
             new MainWindow(workbench, design).setVisible(true);
