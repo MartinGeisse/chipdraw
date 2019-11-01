@@ -11,10 +11,10 @@ public final class LoadAndSaveDialogs {
 
     private static final FileNameExtensionFilter FILE_NAME_EXTENSION_FILTER = new FileNameExtensionFilter("Chipdraw memory dump", MEMORY_DUMP_FILENAME_EXTENSION);
 
-    private LoadAndSaveDialogs() {
+    public LoadAndSaveDialogs() {
     }
 
-    public static void showSaveDialog(Component parent, Design design) {
+    public void showSaveDialog(Component parent, Design design) {
         String path = chooseFile(parent, JFileChooser.SAVE_DIALOG);
         if (path != null) {
             try (FileOutputStream fileOutputStream = new FileOutputStream(path)) {
@@ -28,7 +28,7 @@ public final class LoadAndSaveDialogs {
         }
     }
 
-    public static Design showLoadDialog(Component parent) {
+    public Design showLoadDialog(Component parent) {
         String path = chooseFile(parent, JFileChooser.OPEN_DIALOG);
         if (path == null) {
             return null;

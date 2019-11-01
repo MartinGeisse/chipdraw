@@ -25,6 +25,7 @@ public class MainWindow extends JFrame {
     private final JPanel mainPanel;
     private final DrcAgent drcAgent;
     private final LayerUiState layerUiState = new LayerUiState();
+    private final LoadAndSaveDialogs loadAndSaveDialogs;
 
     private Design design;
     private Technology technology;
@@ -239,6 +240,7 @@ public class MainWindow extends JFrame {
 
         resetUi();
         drcAgent.setDesign(design);
+        loadAndSaveDialogs = new LoadAndSaveDialogs();
     }
 
     private void resetUi() {
@@ -257,11 +259,11 @@ public class MainWindow extends JFrame {
     }
 
     private void showSaveDialog() {
-        LoadAndSaveDialogs.showSaveDialog(MainWindow.this, MainWindow.this.design);
+        loadAndSaveDialogs.showSaveDialog(MainWindow.this, MainWindow.this.design);
     }
 
     private void showLoadDialog() {
-        Design design = LoadAndSaveDialogs.showLoadDialog(MainWindow.this);
+        Design design = loadAndSaveDialogs.showLoadDialog(MainWindow.this);
         if (design == null) {
             return;
         }
