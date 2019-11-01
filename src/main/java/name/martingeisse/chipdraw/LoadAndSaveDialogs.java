@@ -1,5 +1,8 @@
 package name.martingeisse.chipdraw;
 
+import name.martingeisse.chipdraw.technology.NoSuchTechnologyException;
+import name.martingeisse.chipdraw.technology.TechnologyRepository;
+
 import javax.swing.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import java.awt.*;
@@ -13,8 +16,8 @@ public final class LoadAndSaveDialogs {
 
     private final DesignPersistence designPersistence;
 
-    public LoadAndSaveDialogs() {
-        this.designPersistence = new DesignPersistence();
+    public LoadAndSaveDialogs(TechnologyRepository technologyRepository) {
+        this.designPersistence = new DesignPersistence(technologyRepository);
     }
 
     public void showSaveDialog(Component parent, Design design) {
@@ -29,7 +32,7 @@ public final class LoadAndSaveDialogs {
         }
     }
 
-    public Design showLoadDialog(Component parent) {
+    public Design showLoadDialog(Component parent) throws NoSuchTechnologyException {
         String path = chooseFile(parent, JFileChooser.OPEN_DIALOG);
         if (path == null) {
             return null;

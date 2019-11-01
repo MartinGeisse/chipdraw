@@ -7,6 +7,12 @@ import java.io.*;
 
 public final class DesignPersistence {
 
+    private final TechnologyRepository technologyRepository;
+
+    public DesignPersistence(TechnologyRepository technologyRepository) {
+        this.technologyRepository = technologyRepository;
+    }
+
     public void save(Design design, String path) throws IOException {
         try (FileOutputStream fileOutputStream = new FileOutputStream(path)) {
             ObjectOutputStream objectOutputStream = new ObjectOutputStream(fileOutputStream);
@@ -16,7 +22,7 @@ public final class DesignPersistence {
         }
     }
 
-    public Design load(String path) throws IOException {
+    public Design load(String path) throws IOException, NoSuchTechnologyException {
         try (FileInputStream fileInputStream = new FileInputStream(path)) {
             System.out.println("loading from: " + path);
             ObjectInputStream objectInputStream = new ObjectInputStream(fileInputStream);

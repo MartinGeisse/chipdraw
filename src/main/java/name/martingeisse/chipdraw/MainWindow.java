@@ -240,7 +240,7 @@ public class MainWindow extends JFrame {
 
         resetUi();
         drcAgent.setDesign(design);
-        loadAndSaveDialogs = new LoadAndSaveDialogs();
+        loadAndSaveDialogs = new LoadAndSaveDialogs(workbench.getTechnologyRepository());
     }
 
     private void resetUi() {
@@ -263,7 +263,13 @@ public class MainWindow extends JFrame {
     }
 
     private void showLoadDialog() {
-        Design design = loadAndSaveDialogs.showLoadDialog(MainWindow.this);
+        Design design;
+        try {
+            design = loadAndSaveDialogs.showLoadDialog(MainWindow.this);
+        } catch (NoSuchTechnologyException exception) {
+            JOptionPane.showMessageDialog(MainWindow.this, exception.getMessage());
+            return;
+        }
         if (design == null) {
             return;
         }
