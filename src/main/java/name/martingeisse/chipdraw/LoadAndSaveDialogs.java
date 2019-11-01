@@ -36,7 +36,7 @@ public final class LoadAndSaveDialogs {
         }
         try {
             return designPersistence.load(path);
-        } catch (Exception e) {
+        } catch (IOException e) {
             JOptionPane.showMessageDialog(parent, "Error while loading: " + e);
             return null;
         }
