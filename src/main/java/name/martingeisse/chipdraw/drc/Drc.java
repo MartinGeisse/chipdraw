@@ -11,7 +11,7 @@ public final class Drc {
             check(context, layer, x, 0);
             check(context, layer, x, layer.getHeight() - 1);
         }
-        for (int y = 0; y < layer.getHeight(); y++) {
+        for (int y = 1; y < layer.getHeight() - 1; y++) {
             check(context, layer, 0, y);
             check(context, layer, layer.getWidth() - 1, y);
         }
