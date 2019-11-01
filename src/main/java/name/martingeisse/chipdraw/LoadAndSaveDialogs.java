@@ -16,15 +16,16 @@ public final class LoadAndSaveDialogs {
 
     public void showSaveDialog(Component parent, Design design) {
         String path = chooseFile(parent, JFileChooser.SAVE_DIALOG);
-        if (path != null) {
-            try (FileOutputStream fileOutputStream = new FileOutputStream(path)) {
-                ObjectOutputStream objectOutputStream = new ObjectOutputStream(fileOutputStream);
-                objectOutputStream.writeObject(design);
-                objectOutputStream.flush();
-                System.out.println("saved to: " + path);
-            } catch (IOException exception) {
-                JOptionPane.showMessageDialog(parent, "Error while saving: " + exception);
-            }
+        if (path == null) {
+            return;
+        }
+        try (FileOutputStream fileOutputStream = new FileOutputStream(path)) {
+            ObjectOutputStream objectOutputStream = new ObjectOutputStream(fileOutputStream);
+            objectOutputStream.writeObject(design);
+            objectOutputStream.flush();
+            System.out.println("saved to: " + path);
+        } catch (IOException exception) {
+            JOptionPane.showMessageDialog(parent, "Error while saving: " + exception);
         }
     }
 
