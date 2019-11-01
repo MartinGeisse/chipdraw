@@ -11,7 +11,10 @@ public final class LoadAndSaveDialogs {
 
     private static final FileNameExtensionFilter FILE_NAME_EXTENSION_FILTER = new FileNameExtensionFilter("Chipdraw memory dump", MEMORY_DUMP_FILENAME_EXTENSION);
 
+    private final DesignPersistence designPersistence;
+
     public LoadAndSaveDialogs() {
+        this.designPersistence = new DesignPersistence();
     }
 
     public void showSaveDialog(Component parent, Design design) {
@@ -19,11 +22,8 @@ public final class LoadAndSaveDialogs {
         if (path == null) {
             return;
         }
-        try (FileOutputStream fileOutputStream = new FileOutputStream(path)) {
-            ObjectOutputStream objectOutputStream = new ObjectOutputStream(fileOutputStream);
-            objectOutputStream.writeObject(design);
-            objectOutputStream.flush();
-            System.out.println("saved to: " + path);
+        try {
+            designPersistence.save(design, path);
         } catch (IOException exception) {
             JOptionPane.showMessageDialog(parent, "Error while saving: " + exception);
         }
@@ -34,10 +34,8 @@ public final class LoadAndSaveDialogs {
         if (path == null) {
             return null;
         }
-        try (FileInputStream fileInputStream = new FileInputStream(path)) {
-            System.out.println("loading from: " + path);
-            ObjectInputStream objectInputStream = new ObjectInputStream(fileInputStream);
-            return (Design) objectInputStream.readObject();
+        try {
+            return designPersistence.load(path);
         } catch (Exception exception) {
             JOptionPane.showMessageDialog(parent, "Error while loading: " + exception);
             return null;
