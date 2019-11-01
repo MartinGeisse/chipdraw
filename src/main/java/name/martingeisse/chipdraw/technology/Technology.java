@@ -35,6 +35,20 @@ public final class Technology {
         return id;
     }
 
+    public int getLayerCount() {
+        return layerSchemas.size();
+    }
+
+    public boolean isLayerIndexValid(int layerIndex) {
+        return (layerIndex >= 0 && layerIndex < layerSchemas.size());
+    }
+
+    public void validateLayerIndex(int layerIndex) {
+        if (!isLayerIndexValid(layerIndex)) {
+            throw new IllegalArgumentException("invalid layer index: " + layerIndex);
+        }
+    }
+
     public ImmutableList<LayerSchema> getLayerSchemas() {
         return layerSchemas;
     }

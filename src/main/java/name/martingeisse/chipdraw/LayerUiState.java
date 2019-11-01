@@ -1,31 +1,44 @@
 package name.martingeisse.chipdraw;
 
+import name.martingeisse.chipdraw.technology.Technology;
+
 import javax.swing.table.AbstractTableModel;
 import javax.swing.table.TableModel;
+import java.util.Arrays;
 
 /**
  *
  */
 public final class LayerUiState {
 
+	private final Technology technology;
 	private final SidebarTableModel sidebarTableModel = new SidebarTableModel();
-	private final boolean[] visible = new boolean[] {true, true, true};
+	private final boolean[] visible;
 	private int editing = 0;
+
+	public LayerUiState(Technology technology) {
+		this.technology = technology;
+		this.visible = new boolean[technology.getLayerSchemas().size()];
+		Arrays.fill(visible, true);
+	}
 
 	public TableModel getSidebarTableModel() {
 		return sidebarTableModel;
 	}
 
 	public boolean getVisible(int layer) {
+		technology.validateLayerIndex(layer);
 		return visible[layer];
 	}
 
 	public void setVisible(int layer, boolean value) {
+		technology.validateLayerIndex(layer);
 		visible[layer] = value;
 		sidebarTableModel.fireTableCellUpdated(layer, 1);
 	}
 
 	public void toggleVisible(int layer) {
+		technology.validateLayerIndex(layer);
 		visible[layer] = !visible[layer];
 		sidebarTableModel.fireTableCellUpdated(layer, 1);
 	}
@@ -35,6 +48,7 @@ public final class LayerUiState {
 	}
 
 	public void setEditing(int editing) {
+		technology.validateLayerIndex(editing);
 		int old = this.editing;
 		this.editing = editing;
 		sidebarTableModel.fireTableCellUpdated(old, 0);
@@ -45,7 +59,7 @@ public final class LayerUiState {
 
 		@Override
 		public int getRowCount() {
-			return 3;
+			return technology.getLayerSchemas().size();
 		}
 
 		@Override
@@ -88,7 +102,7 @@ public final class LayerUiState {
 					return visible[rowIndex];
 
 				case 2:
-					return "Layer " + rowIndex;
+					return technology.getLayerSchemas().get(rowIndex).getName();
 
 				default:
 					return null;

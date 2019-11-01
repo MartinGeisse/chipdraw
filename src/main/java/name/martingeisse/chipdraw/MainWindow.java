@@ -24,10 +24,10 @@ public class MainWindow extends JFrame {
     private final JPanel sideBar;
     private final JPanel mainPanel;
     private final DrcAgent drcAgent;
-    private final LayerUiState layerUiState = new LayerUiState();
     private final LoadAndSaveDialogs loadAndSaveDialogs;
 
     private Design design;
+    private LayerUiState layerUiState;
     private boolean drawing;
     private boolean erasing;
     private int cellSize;
@@ -37,6 +37,7 @@ public class MainWindow extends JFrame {
         this.workbench = workbench;
         this.drcAgent = new DrcAgent();
         this.design = design;
+        this.layerUiState = new LayerUiState(design.getTechnology());
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         setSize(800, 600);
         setResizable(true);
@@ -66,7 +67,7 @@ public class MainWindow extends JFrame {
                     }
                     int rowIndex = table.rowAtPoint(e.getPoint());
                     int columnIndex = table.columnAtPoint(e.getPoint());
-                    if (rowIndex < 0 || rowIndex >= 3) {
+                    if (!design.getTechnology().isLayerIndexValid(rowIndex)) {
                         return;
                     }
                     if (columnIndex == 0) {
@@ -177,15 +178,25 @@ public class MainWindow extends JFrame {
                 switch (event.getKeyChar()) {
 
                     case '1':
-                        layerUiState.setEditing(0);
-                        break;
-
                     case '2':
-                        layerUiState.setEditing(1);
-                        break;
-
                     case '3':
-                        layerUiState.setEditing(2);
+                    case '4':
+                    case '5':
+                    case '6':
+                    case '7':
+                    case '8':
+                    case '9': {
+                        int layer = event.getKeyChar() - '1';
+                        if (design.getTechnology().isLayerIndexValid(layer)) {
+                            layerUiState.setEditing(layer);
+                        }
+                        break;
+                    }
+
+                    case '0':
+                        if (design.getTechnology().isLayerIndexValid(9)) {
+                            layerUiState.setEditing(9);
+                        }
                         break;
 
                     case '+':
@@ -272,6 +283,7 @@ public class MainWindow extends JFrame {
             return;
         }
         this.design = design;
+        this.layerUiState = new LayerUiState(design.getTechnology());
         drcAgent.setDesign(design);
         resetUi();
     }
