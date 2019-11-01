@@ -1,5 +1,7 @@
 package name.martingeisse.chipdraw.technology;
 
+import com.google.common.collect.ImmutableList;
+
 /**
  * Using a simple string / identifier as the technology ID: My original plan was to use an identifier plus a hash code,
  * to detect version changes or other differences in technologies using the same identifier on different machines.
@@ -12,18 +14,29 @@ package name.martingeisse.chipdraw.technology;
 public final class Technology {
 
     private final String id;
-    private final int layerCount;
+    private final ImmutableList<LayerSchema> layerSchemas;
 
-    public Technology(String id, int layerCount) {
+    public Technology(String id, ImmutableList<LayerSchema> layerSchemas) {
         this.id = id;
-        this.layerCount = layerCount;
+        this.layerSchemas = layerSchemas;
+        for (LayerSchema layerSchema : layerSchemas) {
+            if (layerSchema.getIndex() >= 0) {
+                throw new IllegalArgumentException("layer schema is already used by a Technology object: " + layerSchema.getName());
+            }
+        }
+        int index = 0;
+        for (LayerSchema layerSchema : layerSchemas) {
+            layerSchema.setIndex(index);
+            index++;
+        }
     }
 
     public String getId() {
         return id;
     }
 
-    public int getLayerCount() {
-        return layerCount;
+    public ImmutableList<LayerSchema> getLayerSchemas() {
+        return layerSchemas;
     }
+
 }
