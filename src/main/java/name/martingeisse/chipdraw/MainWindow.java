@@ -108,7 +108,7 @@ public class MainWindow extends JFrame {
                 if (violationsToShow.size() > 5) {
                     violationsToShow = violationsToShow.subList(0, 5);
                 }
-                StringBuilder builder = new StringBuilder("DRC violations: ");
+                StringBuilder builder = new StringBuilder("DRC violations (first 5): ");
                 for (Violation violation : violationsToShow) {
                     builder.append("\n").append(violation.getFullText());
                 }
