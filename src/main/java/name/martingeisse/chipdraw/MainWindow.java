@@ -34,6 +34,7 @@ public class MainWindow extends JFrame {
     private boolean drawing;
     private boolean erasing;
     private int cellSize;
+    private ImmutableList<Violation> drcViolations;
 
     public MainWindow(Workbench workbench, Design design) throws NoSuchTechnologyException {
         super("Chipdraw");
@@ -96,8 +97,23 @@ public class MainWindow extends JFrame {
             drcButton = new JButton("DRC");
             drcButton.setFocusable(false);
             sideBar.add(drcButton, BorderLayout.PAGE_END);
-            setDrcButtonColor(null);
-            drcAgent.addResultListener(this::setDrcButtonColor);
+            consumeDrcResult(null);
+            drcAgent.addResultListener(this::consumeDrcResult);
+            drcButton.addActionListener(event -> {
+                ImmutableList<Violation> violationsToShow = drcViolations;
+                if (violationsToShow.isEmpty()) {
+                    JOptionPane.showMessageDialog(MainWindow.this, "DRC OK");
+                    return;
+                }
+                if (violationsToShow.size() > 5) {
+                    violationsToShow = violationsToShow.subList(0, 5);
+                }
+                StringBuilder builder = new StringBuilder("DRC violations: ");
+                for (Violation violation : violationsToShow) {
+                    builder.append("\n").append(violation.getFullText());
+                }
+                JOptionPane.showMessageDialog(MainWindow.this, builder.toString());
+            });
         }
 
         Paint layer0Paint;
@@ -163,7 +179,7 @@ public class MainWindow extends JFrame {
                     int y = e.getY() / cellSize;
                     if (MainWindow.this.design.getLayers().get(layerUiState.getEditing()).isValidPosition(x, y)) {
                         MainWindow.this.design.getLayers().get(layerUiState.getEditing()).setCell(x, y, drawing);
-                        setDrcButtonColor(null);
+                        consumeDrcResult(null);
                         drcAgent.trigger();
                         mainPanel.repaint();
                     }
@@ -254,7 +270,6 @@ public class MainWindow extends JFrame {
         }
 
         resetUi();
-        setDrcButtonColor(null);
         drcAgent.setDesign(design);
         loadAndSaveDialogs = new LoadAndSaveDialogs(workbench.getTechnologyRepository());
     }
@@ -291,12 +306,13 @@ public class MainWindow extends JFrame {
         }
         this.design = design;
         this.layerUiState = new LayerUiState(design.getTechnology());
-        setDrcButtonColor(null);
+        consumeDrcResult(null);
         drcAgent.setDesign(design);
         resetUi();
     }
 
-    private void setDrcButtonColor(ImmutableList<Violation> violations) {
+    private void consumeDrcResult(ImmutableList<Violation> violations) {
+        this.drcViolations = violations;
         if (violations == null) {
             drcButton.setForeground(new Color(128, 128, 0));
         } else if (violations.isEmpty()) {
