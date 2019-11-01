@@ -3,8 +3,9 @@ package name.martingeisse.chipdraw.drc;
 import com.google.common.collect.ImmutableList;
 import name.martingeisse.chipdraw.Design;
 
-import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.function.Consumer;
 
 /**
  * Performs the DRC for a single window (possibly changing designs), or in general, one design at a time.
@@ -16,24 +17,30 @@ import java.util.concurrent.atomic.AtomicReference;
 public final class DrcAgent {
 
     private final AtomicReference<Design> trigger;
-    private final AtomicReference<ImmutableList<Violation>> result;
+    private final ConcurrentHashMap<Object, Consumer<ImmutableList<Violation>>> resultListeners;
     private Design design;
 
     public DrcAgent() {
         this.trigger = new AtomicReference<>(null);
-        this.result = new AtomicReference<>(null);
+        this.resultListeners = new ConcurrentHashMap<>();
         this.design = null;
         new Thread(this::backgroundMain).start();
     }
 
+    public void addResultListener(Consumer<ImmutableList<Violation>> listener) {
+        resultListeners.put(listener, listener);
+    }
+
+    public void removeResultListener(Consumer<ImmutableList<Violation>> listener) {
+        resultListeners.remove(listener);
+    }
+
     public void setDesign(Design design) {
         trigger.set(design);
-        result.set(null);
     }
 
     public void trigger() {
         trigger.set(design);
-        result.set(null);
     }
 
     private void backgroundMain() {
@@ -46,8 +53,10 @@ public final class DrcAgent {
                 for (Violation violation : violations) {
                     System.out.println("*** " + violation.getFullText());
                 }
-                result.set(violations);
                 System.out.println("DRC finished");
+                for (Consumer<ImmutableList<Violation>> resultListener : resultListeners.values()) {
+                    resultListener.accept(violations);
+                }
             }
         } catch (InterruptedException e) {
         }
