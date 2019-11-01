@@ -1,6 +1,8 @@
 package name.martingeisse.chipdraw;
 
+import com.google.common.collect.ImmutableList;
 import name.martingeisse.chipdraw.drc.DrcAgent;
+import name.martingeisse.chipdraw.drc.Violation;
 import name.martingeisse.chipdraw.icons.Icons;
 import name.martingeisse.chipdraw.technology.NoSuchTechnologyException;
 import name.martingeisse.chipdraw.technology.Technology;
@@ -25,6 +27,7 @@ public class MainWindow extends JFrame {
     private final JPanel mainPanel;
     private final DrcAgent drcAgent;
     private final LoadAndSaveDialogs loadAndSaveDialogs;
+    private final JButton drcButton;
 
     private Design design;
     private LayerUiState layerUiState;
@@ -90,9 +93,11 @@ public class MainWindow extends JFrame {
             });
         }
         {
-            JButton button = new JButton("DRC");
-            button.setFocusable(false);
-            sideBar.add(button, BorderLayout.PAGE_END);
+            drcButton = new JButton("DRC");
+            drcButton.setFocusable(false);
+            sideBar.add(drcButton, BorderLayout.PAGE_END);
+            setDrcButtonColor(null);
+            drcAgent.addResultListener(this::setDrcButtonColor);
         }
 
         Paint layer0Paint;
@@ -158,6 +163,7 @@ public class MainWindow extends JFrame {
                     int y = e.getY() / cellSize;
                     if (MainWindow.this.design.getLayers().get(layerUiState.getEditing()).isValidPosition(x, y)) {
                         MainWindow.this.design.getLayers().get(layerUiState.getEditing()).setCell(x, y, drawing);
+                        setDrcButtonColor(null);
                         drcAgent.trigger();
                         mainPanel.repaint();
                     }
@@ -248,6 +254,7 @@ public class MainWindow extends JFrame {
         }
 
         resetUi();
+        setDrcButtonColor(null);
         drcAgent.setDesign(design);
         loadAndSaveDialogs = new LoadAndSaveDialogs(workbench.getTechnologyRepository());
     }
@@ -284,8 +291,19 @@ public class MainWindow extends JFrame {
         }
         this.design = design;
         this.layerUiState = new LayerUiState(design.getTechnology());
+        setDrcButtonColor(null);
         drcAgent.setDesign(design);
         resetUi();
+    }
+
+    private void setDrcButtonColor(ImmutableList<Violation> violations) {
+        if (violations == null) {
+            drcButton.setForeground(new Color(128, 128, 0));
+        } else if (violations.isEmpty()) {
+            drcButton.setForeground(new Color(0, 128, 0));
+        } else {
+            drcButton.setForeground(new Color(128, 0, 0));
+        }
     }
 
 }
