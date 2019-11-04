@@ -95,6 +95,10 @@ public final class Technology {
         return globalLayerIndexToPlaneIndex[globalLayerIndex];
     }
 
+    public PlaneSchema getPlaneSchemaForGlobalLayerIndex(int globalLayerIndex) {
+        return getLayerSchemas().get(getPlaneIndexForGlobalLayerIndex(globalLayerIndex));
+    }
+
     public int getLocalLayerIndexForGlobalLayerIndex(int globalLayerIndex) {
         validateGlobalLayerIndex(globalLayerIndex);
         return globalLayerIndexToLocalLayerIndex[globalLayerIndex];

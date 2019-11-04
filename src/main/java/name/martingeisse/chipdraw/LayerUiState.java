@@ -1,5 +1,6 @@
 package name.martingeisse.chipdraw;
 
+import name.martingeisse.chipdraw.technology.PlaneSchema;
 import name.martingeisse.chipdraw.technology.Technology;
 
 import javax.swing.table.AbstractTableModel;
@@ -26,6 +27,30 @@ public final class LayerUiState {
 		return sidebarTableModel;
 	}
 
+	public boolean isPlaneVisible(int planeIndex) {
+		return false; // TODO
+	}
+
+	public void setPlaneVisible(int planeIndex) {
+		// TODO
+	}
+
+	public void togglePlaneVisible(int planeIndex) {
+		// TODO
+	}
+
+	public boolean isLayerVisible(int globalLayerIndex) {
+		return isPlaneVisible(technology.getPlaneIndexForGlobalLayerIndex(globalLayerIndex));
+	}
+
+	public void setLayerVisible(int globalLayerIndex) {
+		setPlaneVisible(technology.getPlaneIndexForGlobalLayerIndex(globalLayerIndex));
+	}
+
+	public void toggleLayerVisible(int globalLayerIndex) {
+		togglePlaneVisible(technology.getPlaneIndexForGlobalLayerIndex(globalLayerIndex));
+	}
+
 	public boolean getVisible(int layer) {
 		technology.validateLayerIndex(layer);
 		return visible[layer];
@@ -43,10 +68,12 @@ public final class LayerUiState {
 		sidebarTableModel.fireTableCellUpdated(layer, 1);
 	}
 
+	// TODO rename to getEditingLayer
 	public int getEditing() {
 		return editing;
 	}
 
+	// TODO rename to setEditingLayer
 	public void setEditing(int editing) {
 		technology.validateLayerIndex(editing);
 		int old = this.editing;
@@ -59,7 +86,7 @@ public final class LayerUiState {
 
 		@Override
 		public int getRowCount() {
-			return technology.getLayerSchemas().size();
+			return technology.getGlobalLayerCount();
 		}
 
 		@Override
@@ -96,13 +123,16 @@ public final class LayerUiState {
 			switch (columnIndex) {
 
 				case 0:
-					return rowIndex == editing;
+					return rowIndex == editing; // TODO
 
 				case 1:
-					return visible[rowIndex];
+					return isLayerVisible(rowIndex);
 
-				case 2:
-					return technology.getLayerSchemas().get(rowIndex).getName();
+				case 2: {
+					PlaneSchema planeSchema = technology.getPlaneSchemaForGlobalLayerIndex(rowIndex);
+					int localIndex = technology.getLocalLayerIndexForGlobalLayerIndex(rowIndex);
+					return planeSchema.getLayerNames().get(localIndex);
+				}
 
 				default:
 					return null;
