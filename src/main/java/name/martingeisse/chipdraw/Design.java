@@ -10,6 +10,21 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Note: Chipdraw works with a list of layers with boolean-typed pixels. Magic sometimes works like this but sometimes
+ * it works with fewer layers and enum-typed pixels -- I don't fully understand *when* the distinction is made, but
+ * both systems work in obvious ways when abiding to the following rules:
+ * - each enum-typed pixel can be "empty" instead of any enum value
+ * - each boolean layer corresponds to a combination of an enum-typed layer and an enum value
+ * - each enum-typed layer corresponds to a set of boolean layers, one per value
+ * - an enum pixel is empty when no enum-type-associated boolean pixel is true
+ * - when an enum pixel is nonempty, all enum-type-associated pixels are false except for the one for that enum value
+ *
+ * For example, when writing to a boolean layer, the previously set boolean pixel for the same enum-type must be unset.
+ * In concrete terms, this means:
+ * - writing a pwell pixel clears the corresponding nwell pixel and vice versa
+ * - writing a pdiff pixel clears the corresponding ndigg pixel and vice versa
+ */
 public final class Design implements Serializable {
 
     private final String technologyId;
