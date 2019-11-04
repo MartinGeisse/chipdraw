@@ -39,7 +39,7 @@ public final class Design implements Serializable {
     private transient Technology technology;
     private final int width;
     private final int height;
-    private final ImmutableList<Plane> layers;
+    private final ImmutableList<Plane> planes;
 
     public Design(Technology technology, int width, int height) {
         this.technologyId = technology.getId();
@@ -47,20 +47,20 @@ public final class Design implements Serializable {
         this.width = width;
         this.height = height;
 
-        List<Plane> layers = new ArrayList<>();
+        List<Plane> planes = new ArrayList<>();
         for (PlaneSchema layerSchema : technology.getLayerSchemas()) {
-            layers.add(new Plane(layerSchema, width, height));
+            planes.add(new Plane(layerSchema, width, height));
         }
-        this.layers = ImmutableList.copyOf(layers);
+        this.planes = ImmutableList.copyOf(planes);
     }
 
     void initializeAfterDeserialization(TechnologyRepository technologyRepository) throws NoSuchTechnologyException {
         this.technology = technologyRepository.getTechnology(technologyId);
-        if (technology.getLayerSchemas().size() != layers.size()) {
+        if (technology.getLayerSchemas().size() != planes.size()) {
             throw new RuntimeException("number of layers in this technology has changed");
         }
-        for (int i = 0; i < layers.size(); i++) {
-            layers.get(i).initializeAfterDeserialization(technology.getLayerSchemas().get(i));
+        for (int i = 0; i < planes.size(); i++) {
+            planes.get(i).initializeAfterDeserialization(technology.getLayerSchemas().get(i));
         }
     }
 
@@ -77,7 +77,7 @@ public final class Design implements Serializable {
     }
 
     public ImmutableList<Plane> getLayers() {
-        return layers;
+        return planes;
     }
 
 }
