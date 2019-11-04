@@ -24,6 +24,14 @@ import java.util.List;
  * In concrete terms, this means:
  * - writing a pwell pixel clears the corresponding nwell pixel and vice versa
  * - writing a pdiff pixel clears the corresponding ndigg pixel and vice versa
+ *
+ * This decision may currently be harmless, but working this way in not natural to the data at hand and may be
+ * cumbersome in the future. What if we changed it?
+ * - visibility is then controlled at the layer level. For example, all well types must be visible or invisible. This
+ *   is a feature. For the UI, we can keep the eye icon per entry in the sidebar table (which then represents a layer
+ *   AND pixel type), but they turn off/on all at once. That's perfectly ok for now.
+ * - We need better terminology. The research paper behind magic calls each well type a "layer", and the sidebar then
+ *   shows layers. All interacting layers taken together are a "plane", and visiblity is controlled per plane.
  */
 public final class Design implements Serializable {
 
