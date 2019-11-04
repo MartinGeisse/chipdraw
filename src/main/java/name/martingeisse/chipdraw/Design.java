@@ -1,7 +1,7 @@
 package name.martingeisse.chipdraw;
 
 import com.google.common.collect.ImmutableList;
-import name.martingeisse.chipdraw.technology.LayerSchema;
+import name.martingeisse.chipdraw.technology.PlaneSchema;
 import name.martingeisse.chipdraw.technology.NoSuchTechnologyException;
 import name.martingeisse.chipdraw.technology.Technology;
 import name.martingeisse.chipdraw.technology.TechnologyRepository;
@@ -48,7 +48,7 @@ public final class Design implements Serializable {
         this.height = height;
 
         List<Layer> layers = new ArrayList<>();
-        for (LayerSchema layerSchema : technology.getLayerSchemas()) {
+        for (PlaneSchema layerSchema : technology.getLayerSchemas()) {
             layers.add(new Layer(layerSchema, width, height));
         }
         this.layers = ImmutableList.copyOf(layers);

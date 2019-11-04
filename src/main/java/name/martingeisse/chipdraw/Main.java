@@ -12,12 +12,12 @@ public class Main {
         SimpleTechnologyRepository technologyRepository = new SimpleTechnologyRepository();
 
         String defaultTechnologyId = "default";
-        LayerSchema well = new LayerSchema("well", ImmutableList.of("nwell", "pwell"));
-        LayerSchema diff = new LayerSchema("diff", ImmutableList.of("ndiff", "pdiff"));
-        LayerSchema poly = new LayerSchema("poly");
-        LayerSchema contact = new LayerSchema("contact");
-        LayerSchema metal1 = new LayerSchema("metal1");
-        ImmutableList<LayerSchema> layerSchemas = ImmutableList.of(well, diff, poly, contact, metal1);
+        PlaneSchema well = new PlaneSchema("well", ImmutableList.of("nwell", "pwell"));
+        PlaneSchema diff = new PlaneSchema("diff", ImmutableList.of("ndiff", "pdiff"));
+        PlaneSchema poly = new PlaneSchema("poly");
+        PlaneSchema contact = new PlaneSchema("contact");
+        PlaneSchema metal1 = new PlaneSchema("metal1");
+        ImmutableList<PlaneSchema> layerSchemas = ImmutableList.of(well, diff, poly, contact, metal1);
         Technology technology = new Technology(defaultTechnologyId, layerSchemas);
         technologyRepository.add(technology);
 

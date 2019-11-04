@@ -14,19 +14,19 @@ import com.google.common.collect.ImmutableList;
 public final class Technology {
 
     private final String id;
-    private final ImmutableList<LayerSchema> layerSchemas;
+    private final ImmutableList<PlaneSchema> planeSchemas;
 
-    public Technology(String id, ImmutableList<LayerSchema> layerSchemas) {
+    public Technology(String id, ImmutableList<PlaneSchema> planeSchemas) {
         this.id = id;
-        this.layerSchemas = layerSchemas;
-        for (LayerSchema layerSchema : layerSchemas) {
-            if (layerSchema.getIndex() >= 0) {
-                throw new IllegalArgumentException("layer schema is already used by a Technology object: " + layerSchema.getName());
+        this.planeSchemas = planeSchemas;
+        for (PlaneSchema planeSchema : planeSchemas) {
+            if (planeSchema.getIndex() >= 0) {
+                throw new IllegalArgumentException("plane schema is already used by a Technology object: " + planeSchema.getName());
             }
         }
         int index = 0;
-        for (LayerSchema layerSchema : layerSchemas) {
-            layerSchema.setIndex(index);
+        for (PlaneSchema planeSchema : planeSchemas) {
+            planeSchema.setIndex(index);
             index++;
         }
     }
@@ -36,11 +36,11 @@ public final class Technology {
     }
 
     public int getLayerCount() {
-        return layerSchemas.size();
+        return planeSchemas.size();
     }
 
     public boolean isLayerIndexValid(int layerIndex) {
-        return (layerIndex >= 0 && layerIndex < layerSchemas.size());
+        return (layerIndex >= 0 && layerIndex < planeSchemas.size());
     }
 
     public void validateLayerIndex(int layerIndex) {
@@ -49,8 +49,8 @@ public final class Technology {
         }
     }
 
-    public ImmutableList<LayerSchema> getLayerSchemas() {
-        return layerSchemas;
+    public ImmutableList<PlaneSchema> getLayerSchemas() {
+        return planeSchemas;
     }
 
 }

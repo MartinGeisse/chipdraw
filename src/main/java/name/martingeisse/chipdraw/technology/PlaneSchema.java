@@ -2,22 +2,25 @@ package name.martingeisse.chipdraw.technology;
 
 import com.google.common.collect.ImmutableList;
 
-public final class LayerSchema {
+public final class PlaneSchema {
 
     private int index = -1;
     private final String name;
     private final ImmutableList<String> layerNames;
 
-    public LayerSchema(String name, ImmutableList<String> layerNames) {
-        this.name = name;
-        this.layerNames = layerNames;
-    }
-
     /**
      * Constructor for a single-layer plane.
      */
-    public LayerSchema(String name) {
+    public PlaneSchema(String name) {
         this(name, ImmutableList.of(name));
+    }
+
+    /**
+     * Constructor for a multi-layer plane.
+     */
+    public PlaneSchema(String name, ImmutableList<String> layerNames) {
+        this.name = name;
+        this.layerNames = layerNames;
     }
 
     void setIndex(int index) {

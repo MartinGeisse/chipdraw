@@ -1,8 +1,6 @@
 package name.martingeisse.chipdraw;
 
-import name.martingeisse.chipdraw.technology.LayerSchema;
-import name.martingeisse.chipdraw.technology.NoSuchTechnologyException;
-import name.martingeisse.chipdraw.technology.TechnologyRepository;
+import name.martingeisse.chipdraw.technology.PlaneSchema;
 
 import java.io.Serializable;
 
@@ -11,18 +9,18 @@ import java.io.Serializable;
  */
 public final class Layer implements Serializable {
 
-    private transient LayerSchema layerSchema;
+    private transient PlaneSchema layerSchema;
     private final int width, height;
     private final boolean[] cells;
 
-    public Layer(LayerSchema layerSchema, int width, int height) {
+    public Layer(PlaneSchema layerSchema, int width, int height) {
         this.layerSchema = layerSchema;
         this.width = width;
         this.height = height;
         this.cells = new boolean[width * height];
     }
 
-    void initializeAfterDeserialization(LayerSchema layerSchema) {
+    void initializeAfterDeserialization(PlaneSchema layerSchema) {
 		this.layerSchema = layerSchema;
     }
 
@@ -32,7 +30,7 @@ public final class Layer implements Serializable {
         return copy;
     }
 
-    public LayerSchema getLayerSchema() {
+    public PlaneSchema getLayerSchema() {
         return layerSchema;
     }
 
