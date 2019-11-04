@@ -1,4 +1,4 @@
-package name.martingeisse.chipdraw;
+package name.martingeisse.chipdraw.ui;
 
 import javax.swing.*;
 import java.awt.*;

@@ -5,7 +5,7 @@ import name.martingeisse.chipdraw.drc.DrcAgent;
 import name.martingeisse.chipdraw.drc.Violation;
 import name.martingeisse.chipdraw.icons.Icons;
 import name.martingeisse.chipdraw.technology.NoSuchTechnologyException;
-import name.martingeisse.chipdraw.technology.Technology;
+import name.martingeisse.chipdraw.ui.MenuBarBuilder;
 import name.martingeisse.chipdraw.ui.SingleIconBooleanCellRenderer;
 
 import javax.swing.*;
