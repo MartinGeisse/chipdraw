@@ -15,20 +15,21 @@ public final class CornerStitchingExtrator {
 		System.out.println("* Corner-stitching extraction");
 		System.out.println("*");
 		System.out.println();
-		for (Plane layer : design.getLayers()) {
-			System.out.println("* Layer");
-			Plane copy = layer.createCopy();
+		for (Plane plane : design.getLayers()) {
+			System.out.println("* Plane");
+			Plane copy = plane.createCopy();
 			for (int y = 0; y < copy.getHeight(); y++) {
 				for (int x = 0; x < copy.getWidth(); x++) {
-					if (copy.getCell(x, y)) {
-						extractRectangle(copy, x, y);
+					boolean layer = copy.getCell(x, y);
+					if (layer) {
+						extractRectangle(copy, x, y, layer);
 					}
 				}
 			}
 		}
 	}
 
-	private static void extractRectangle(Plane copy, int topLeftX, int topLeftY) {
+	private static void extractRectangle(Plane copy, int topLeftX, int topLeftY, boolean layer) {
 
 		// determine width of the first row which is also the width of the rectangle
 		int rectangleWidth = 1;
@@ -56,7 +57,7 @@ public final class CornerStitchingExtrator {
 			rectangleHeight++;
 		}
 
-		System.out.println("found rectangle: " + topLeftX + ", " + topLeftY + " / " + rectangleWidth + " x " + rectangleHeight);
+		System.out.println("found rectangle: " + topLeftX + ", " + topLeftY + " / " + rectangleWidth + " x " + rectangleHeight + ", layer " + layer);
 		copy.drawRectangle(topLeftX, topLeftY, rectangleWidth, rectangleHeight, false);
 	}
 
