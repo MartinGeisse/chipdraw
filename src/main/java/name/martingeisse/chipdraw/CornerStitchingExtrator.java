@@ -15,9 +15,9 @@ public final class CornerStitchingExtrator {
 		System.out.println("* Corner-stitching extraction");
 		System.out.println("*");
 		System.out.println();
-		for (Layer layer : design.getLayers()) {
+		for (Plane layer : design.getLayers()) {
 			System.out.println("* Layer");
-			Layer copy = layer.createCopy();
+			Plane copy = layer.createCopy();
 			for (int y = 0; y < copy.getHeight(); y++) {
 				for (int x = 0; x < copy.getWidth(); x++) {
 					if (copy.getCell(x, y)) {
@@ -28,7 +28,7 @@ public final class CornerStitchingExtrator {
 		}
 	}
 
-	private static void extractRectangle(Layer copy, int topLeftX, int topLeftY) {
+	private static void extractRectangle(Plane copy, int topLeftX, int topLeftY) {
 
 		// determine width of the first row which is also the width of the rectangle
 		int rectangleWidth = 1;

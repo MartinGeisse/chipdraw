@@ -39,7 +39,7 @@ public final class Design implements Serializable {
     private transient Technology technology;
     private final int width;
     private final int height;
-    private final ImmutableList<Layer> layers;
+    private final ImmutableList<Plane> layers;
 
     public Design(Technology technology, int width, int height) {
         this.technologyId = technology.getId();
@@ -47,9 +47,9 @@ public final class Design implements Serializable {
         this.width = width;
         this.height = height;
 
-        List<Layer> layers = new ArrayList<>();
+        List<Plane> layers = new ArrayList<>();
         for (PlaneSchema layerSchema : technology.getLayerSchemas()) {
-            layers.add(new Layer(layerSchema, width, height));
+            layers.add(new Plane(layerSchema, width, height));
         }
         this.layers = ImmutableList.copyOf(layers);
     }
@@ -76,7 +76,7 @@ public final class Design implements Serializable {
         return height;
     }
 
-    public ImmutableList<Layer> getLayers() {
+    public ImmutableList<Plane> getLayers() {
         return layers;
     }
 

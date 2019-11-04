@@ -7,31 +7,31 @@ import java.io.Serializable;
 /**
  * TODO rename "cells" to "pixels"? The former already has a meaning in chip design.
  */
-public final class Layer implements Serializable {
+public final class Plane implements Serializable {
 
-    private transient PlaneSchema layerSchema;
+    private transient PlaneSchema planeSchema;
     private final int width, height;
     private final boolean[] cells;
 
-    public Layer(PlaneSchema layerSchema, int width, int height) {
-        this.layerSchema = layerSchema;
+    public Plane(PlaneSchema planeSchema, int width, int height) {
+        this.planeSchema = planeSchema;
         this.width = width;
         this.height = height;
         this.cells = new boolean[width * height];
     }
 
-    void initializeAfterDeserialization(PlaneSchema layerSchema) {
-		this.layerSchema = layerSchema;
+    void initializeAfterDeserialization(PlaneSchema planeSchema) {
+		this.planeSchema = planeSchema;
     }
 
-    public Layer createCopy() {
-        Layer copy = new Layer(layerSchema, width, height);
+    public Plane createCopy() {
+        Plane copy = new Plane(planeSchema, width, height);
         System.arraycopy(cells, 0, copy.cells, 0, cells.length);
         return copy;
     }
 
     public PlaneSchema getLayerSchema() {
-        return layerSchema;
+        return planeSchema;
     }
 
     public int getWidth() {
