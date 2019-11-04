@@ -15,27 +15,28 @@ public final class ConnectivityExtractor {
 		System.out.println("* Connectivity extraction");
 		System.out.println("*");
 		System.out.println();
-		for (Plane layer : design.getLayers()) {
-			System.out.println("* Layer");
-			Plane copy = layer.createCopy();
+		for (Plane plane : design.getLayers()) {
+			System.out.println("* Plane");
+			Plane copy = plane.createCopy();
 			for (int y = 0; y < copy.getHeight(); y++) {
 				for (int x = 0; x < copy.getWidth(); x++) {
-					if (copy.getCell(x, y)) {
-						System.out.println("found patch at " + x + ", " + y);
-						clear(copy, x, y);
+					boolean layer = copy.getCell(x, y);
+					if (layer) {
+						System.out.println("found patch at " + x + ", " + y + ", layer " + layer);
+						clear(copy, x, y, layer);
 					}
 				}
 			}
 		}
 	}
 
-	private static void clear(Plane copy, int x, int y) {
-		if (copy.getCellAutoclip(x, y)) {
+	private static void clear(Plane copy, int x, int y, boolean layer) {
+		if (copy.getCellAutoclip(x, y) == layer) {
 			copy.setCell(x, y, false);
-			clear(copy, x - 1, y);
-			clear(copy, x + 1, y);
-			clear(copy, x, y - 1);
-			clear(copy, x, y + 1);
+			clear(copy, x - 1, y, layer);
+			clear(copy, x + 1, y, layer);
+			clear(copy, x, y - 1, layer);
+			clear(copy, x, y + 1, layer);
 		}
 	}
 
