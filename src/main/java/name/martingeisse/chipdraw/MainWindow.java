@@ -36,7 +36,7 @@ public class MainWindow extends JFrame {
     private int cellSize;
     private ImmutableList<Violation> drcViolations;
 
-    public MainWindow(Workbench workbench, Design design) throws NoSuchTechnologyException {
+    public MainWindow(Workbench workbench, Design design) {
         super("Chipdraw");
         this.workbench = workbench;
         this.drcAgent = new DrcAgent();
@@ -71,14 +71,14 @@ public class MainWindow extends JFrame {
                     }
                     int rowIndex = table.rowAtPoint(e.getPoint());
                     int columnIndex = table.columnAtPoint(e.getPoint());
-                    if (!design.getTechnology().isGlobalLayerIndexValid(rowIndex)) {
+                    if (!design.getTechnology().isGlobalMaterialIndexValid(rowIndex)) {
                         return;
                     }
                     if (columnIndex == 0) {
-                        layerUiState.setEditing(rowIndex); // TODO
+                        layerUiState.setEditingGlobalMaterialIndex(rowIndex);
                         table.repaint();
                     } else if (columnIndex == 1) {
-                        layerUiState.toggleVisible(rowIndex); // TODO
+                        layerUiState.toggleMaterialVisible(rowIndex);
                         table.repaint();
                     }
                 }
@@ -186,15 +186,16 @@ public class MainWindow extends JFrame {
                 if (drawing || erasing) {
                     int x = e.getX() / cellSize;
                     int y = e.getY() / cellSize;
-
-                    // TODO
-                    if (MainWindow.this.design.getPlanes().get(layerUiState.getEditing()).isValidPosition(x, y)) {
-                        MainWindow.this.design.getPlanes().get(layerUiState.getEditing()).setCell(x, y, drawing);
+                    int globalMaterialIndex = layerUiState.getEditingGlobalMaterialIndex();
+                    int localMaterialIndex = design.getTechnology().getLocalMaterialIndexForGlobalMaterialIndex(globalMaterialIndex);
+                    int planeIndex = design.getTechnology().getPlaneIndexForGlobalMaterialIndex(globalMaterialIndex);
+                    Plane plane = design.getPlanes().get(planeIndex);
+                    if (plane.isValidPosition(x, y)) {
+                        plane.setCell(x, y, localMaterialIndex);
                         consumeDrcResult(null);
                         drcAgent.trigger();
                         mainPanel.repaint();
                     }
-
                 }
             }
 
@@ -220,16 +221,16 @@ public class MainWindow extends JFrame {
                     case '7':
                     case '8':
                     case '9': {
-                        int layer = event.getKeyChar() - '1';
-                        if (design.getTechnology().isGlobalLayerIndexValid(layer)) {
-                            layerUiState.setEditing(layer); // TODO
+                        int globalMaterialIndex = event.getKeyChar() - '1';
+                        if (design.getTechnology().isGlobalMaterialIndexValid(globalMaterialIndex)) {
+                            layerUiState.setEditingGlobalMaterialIndex(globalMaterialIndex);
                         }
                         break;
                     }
 
                     case '0':
-                        if (design.getTechnology().isGlobalLayerIndexValid(9)) {
-                            layerUiState.setEditing(9); // TODO
+                        if (design.getTechnology().isGlobalMaterialIndexValid(9)) {
+                            layerUiState.setEditingGlobalMaterialIndex(9);
                         }
                         break;
 
@@ -287,7 +288,7 @@ public class MainWindow extends JFrame {
     }
 
     private void resetUi() {
-        layerUiState.setEditing(0); // TODO
+        layerUiState.setEditingGlobalMaterialIndex(0);
         drawing = false;
         erasing = false;
         cellSize = 16;
