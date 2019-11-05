@@ -121,7 +121,7 @@ public class MainWindow extends JFrame {
             private final Paint pwellPaint = createHatching(0xff0000);
             private final Paint ndiffPaint = createCrossHatching(0x0000ff);
             private final Paint pdiffPaint = createCrossHatching(0xff0000);
-            private final Paint polyPaint = Color.GREEN;
+            private final Paint polyPaint = new Color(0, 128, 0);
             private final Paint metalPaint = Color.LIGHT_GRAY;
 
             private int getPixel(int planeIndex, int x, int y) {
@@ -184,7 +184,7 @@ public class MainWindow extends JFrame {
                     int planeIndex = design.getTechnology().getPlaneIndexForGlobalMaterialIndex(globalMaterialIndex);
                     Plane plane = design.getPlanes().get(planeIndex);
                     if (plane.isValidPosition(x, y)) {
-                        plane.setCell(x, y, localMaterialIndex);
+                        plane.setCell(x, y, drawing ? localMaterialIndex : Plane.EMPTY_CELL);
                         consumeDrcResult(null);
                         drcAgent.trigger();
                         mainPanel.repaint();
