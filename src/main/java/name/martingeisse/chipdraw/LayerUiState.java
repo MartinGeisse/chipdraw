@@ -37,13 +37,13 @@ public final class LayerUiState {
 	public void setPlaneVisible(int planeIndex, boolean visible) {
 		technology.validatePlaneIndex(planeIndex);
 		planesVisible[planeIndex] = visible;
-		sidebarTableModel.fireTableCellUpdated(row, 1);
+		sidebarTableModel.fireTableDataChanged();
 	}
 
 	public void togglePlaneVisible(int planeIndex) {
 		technology.validatePlaneIndex(planeIndex);
 		planesVisible[planeIndex] = !planesVisible[planeIndex];
-		sidebarTableModel.fireTableCellUpdated(row, 1);
+		sidebarTableModel.fireTableDataChanged();
 	}
 
 //endregion
