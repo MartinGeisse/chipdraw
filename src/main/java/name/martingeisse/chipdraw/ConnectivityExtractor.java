@@ -15,7 +15,7 @@ public final class ConnectivityExtractor {
 		System.out.println("* Connectivity extraction");
 		System.out.println("*");
 		System.out.println();
-		for (Plane plane : design.getLayers()) {
+		for (Plane plane : design.getPlanes()) {
 			System.out.println("* Plane");
 			Plane copy = plane.createCopy();
 			for (int y = 0; y < copy.getHeight(); y++) {

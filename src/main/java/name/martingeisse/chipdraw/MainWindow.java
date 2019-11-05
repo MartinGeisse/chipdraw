@@ -151,9 +151,9 @@ public class MainWindow extends JFrame {
 
                         // TODO
 
-                        boolean l0 = MainWindow.this.design.getLayers().get(0).getCell(x, y) && layerUiState.getVisible(0);
-                        boolean l1 = MainWindow.this.design.getLayers().get(1).getCell(x, y) && layerUiState.getVisible(1);
-                        boolean l2 = MainWindow.this.design.getLayers().get(2).getCell(x, y) && layerUiState.getVisible(2);
+                        boolean l0 = MainWindow.this.design.getPlanes().get(0).getCell(x, y) && layerUiState.getVisible(0);
+                        boolean l1 = MainWindow.this.design.getPlanes().get(1).getCell(x, y) && layerUiState.getVisible(1);
+                        boolean l2 = MainWindow.this.design.getPlanes().get(2).getCell(x, y) && layerUiState.getVisible(2);
 
                         if (l1 || l2) {
                             g.setColor(new Color(0, l1 ? 255 : 0, l2 ? 255 : 0));
@@ -188,8 +188,8 @@ public class MainWindow extends JFrame {
                     int y = e.getY() / cellSize;
 
                     // TODO
-                    if (MainWindow.this.design.getLayers().get(layerUiState.getEditing()).isValidPosition(x, y)) {
-                        MainWindow.this.design.getLayers().get(layerUiState.getEditing()).setCell(x, y, drawing);
+                    if (MainWindow.this.design.getPlanes().get(layerUiState.getEditing()).isValidPosition(x, y)) {
+                        MainWindow.this.design.getPlanes().get(layerUiState.getEditing()).setCell(x, y, drawing);
                         consumeDrcResult(null);
                         drcAgent.trigger();
                         mainPanel.repaint();

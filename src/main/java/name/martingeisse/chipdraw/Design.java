@@ -76,7 +76,7 @@ public final class Design implements Serializable {
         return height;
     }
 
-    public ImmutableList<Plane> getLayers() {
+    public ImmutableList<Plane> getPlanes() {
         return planes;
     }
 

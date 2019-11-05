@@ -6,20 +6,20 @@ public final class Drc {
 
     public void perform(DrcContext context) {
         // sample DRC: ensures that layer 0 does not touch the design boundaries
-        Plane layer = context.getDesign().getLayers().get(0);
-        for (int x = 0; x < layer.getWidth(); x++) {
-            check(context, layer, x, 0);
-            check(context, layer, x, layer.getHeight() - 1);
+        Plane plane = context.getDesign().getPlanes().get(0);
+        for (int x = 0; x < plane.getWidth(); x++) {
+            check(context, plane, x, 0);
+            check(context, plane, x, plane.getHeight() - 1);
         }
-        for (int y = 1; y < layer.getHeight() - 1; y++) {
-            check(context, layer, 0, y);
-            check(context, layer, layer.getWidth() - 1, y);
+        for (int y = 1; y < plane.getHeight() - 1; y++) {
+            check(context, plane, 0, y);
+            check(context, plane, plane.getWidth() - 1, y);
         }
     }
 
-    private static void check(DrcContext context, Plane layer, int x, int y) {
-        if (layer.getCell(x, y)) {
-            context.report(x, y, "layer 0 must keep a padding of at least 1 cell from the design boundary");
+    private static void check(DrcContext context, Plane plane, int x, int y) {
+        if (plane.getCell(x, y)) {
+            context.report(x, y, "plane 0 must keep a padding of at least 1 cell from the design boundary");
         }
     }
 
