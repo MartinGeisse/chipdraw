@@ -17,26 +17,26 @@ public final class ConnectivityExtractor {
 		System.out.println();
 		for (Plane plane : design.getPlanes()) {
 			System.out.println("* Plane");
-			Plane copy = plane.createCopy();
+			Plane copy = new Plane(plane);
 			for (int y = 0; y < copy.getHeight(); y++) {
 				for (int x = 0; x < copy.getWidth(); x++) {
-					boolean layer = copy.getCell(x, y);
-					if (layer) {
-						System.out.println("found patch at " + x + ", " + y + ", layer " + layer);
-						clear(copy, x, y, layer);
+					int localMaterialIndex = copy.getCell(x, y);
+					if (localMaterialIndex != Plane.EMPTY_CELL) {
+						System.out.println("found patch at " + x + ", " + y + ", local material index: " + localMaterialIndex);
+						clear(copy, x, y, localMaterialIndex);
 					}
 				}
 			}
 		}
 	}
 
-	private static void clear(Plane copy, int x, int y, boolean layer) {
-		if (copy.getCellAutoclip(x, y) == layer) {
-			copy.setCell(x, y, false);
-			clear(copy, x - 1, y, layer);
-			clear(copy, x + 1, y, layer);
-			clear(copy, x, y - 1, layer);
-			clear(copy, x, y + 1, layer);
+	private static void clear(Plane copy, int x, int y, int localMaterialIndex) {
+		if (copy.getCellAutoclip(x, y) == localMaterialIndex) {
+			copy.setCell(x, y, Plane.EMPTY_CELL);
+			clear(copy, x - 1, y, localMaterialIndex);
+			clear(copy, x + 1, y, localMaterialIndex);
+			clear(copy, x, y - 1, localMaterialIndex);
+			clear(copy, x, y + 1, localMaterialIndex);
 		}
 	}
 
