@@ -1,4 +1,7 @@
-package name.martingeisse.chipdraw;
+package name.martingeisse.chipdraw.extractor;
+
+import name.martingeisse.chipdraw.Design;
+import name.martingeisse.chipdraw.Plane;
 
 /**
  *

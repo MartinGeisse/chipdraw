@@ -3,6 +3,8 @@ package name.martingeisse.chipdraw;
 import com.google.common.collect.ImmutableList;
 import name.martingeisse.chipdraw.drc.DrcAgent;
 import name.martingeisse.chipdraw.drc.Violation;
+import name.martingeisse.chipdraw.extractor.ConnectivityExtractor;
+import name.martingeisse.chipdraw.extractor.CornerStitchingExtrator;
 import name.martingeisse.chipdraw.icons.Icons;
 import name.martingeisse.chipdraw.technology.NoSuchTechnologyException;
 import name.martingeisse.chipdraw.ui.DesignPixelPanel;
@@ -273,7 +275,7 @@ public class MainWindow extends JFrame {
             builder.add("Quit", () -> System.exit(0));
             builder.addMenu("Test");
             builder.add("Corner Stitching Extractor", () -> CornerStitchingExtrator.extract(design));
-            builder.add("Connectivity Extractor", () -> ConnectivityExtractor.extract(design));
+            builder.add("Connectivity Extractor", () -> new ConnectivityExtractor.Test().extract(design));
             builder.addMenu("Help");
             builder.addExternalLink("Contents", "https://github.com/MartinGeisse/chipdraw/blob/master/doc/index.md"); // TODO link to commit for this version
             builder.add("About", () -> JOptionPane.showMessageDialog(MainWindow.this, About.ABOUT_TEXT));
