@@ -6,6 +6,7 @@ import name.martingeisse.chipdraw.drc.Violation;
 import name.martingeisse.chipdraw.extractor.ConnectivityExtractor;
 import name.martingeisse.chipdraw.extractor.CornerStitchingExtrator;
 import name.martingeisse.chipdraw.icons.Icons;
+import name.martingeisse.chipdraw.magic.MagicExportDialog;
 import name.martingeisse.chipdraw.technology.NoSuchTechnologyException;
 import name.martingeisse.chipdraw.ui.DesignPixelPanel;
 import name.martingeisse.chipdraw.ui.MenuBarBuilder;
@@ -276,6 +277,7 @@ public class MainWindow extends JFrame {
             builder.addMenu("Test");
             builder.add("Corner Stitching Extractor", () -> new CornerStitchingExtrator.Test().extract(design));
             builder.add("Connectivity Extractor", () -> new ConnectivityExtractor.Test().extract(design));
+            builder.add("Magic Export", () -> MagicExportDialog.showExportDialog(this, design));
             builder.addMenu("Help");
             builder.addExternalLink("Contents", "https://github.com/MartinGeisse/chipdraw/blob/master/doc/index.md"); // TODO link to commit for this version
             builder.add("About", () -> JOptionPane.showMessageDialog(MainWindow.this, About.ABOUT_TEXT));
