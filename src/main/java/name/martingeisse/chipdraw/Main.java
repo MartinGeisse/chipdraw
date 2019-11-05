@@ -17,8 +17,8 @@ public class Main {
         PlaneSchema poly = new PlaneSchema("poly");
         PlaneSchema contact = new PlaneSchema("contact");
         PlaneSchema metal1 = new PlaneSchema("metal1");
-        ImmutableList<PlaneSchema> layerSchemas = ImmutableList.of(well, diff, poly, contact, metal1);
-        Technology technology = new Technology(defaultTechnologyId, layerSchemas);
+        ImmutableList<PlaneSchema> planeSchemas = ImmutableList.of(well, diff, poly, contact, metal1);
+        Technology technology = new Technology(defaultTechnologyId, planeSchemas);
         technologyRepository.add(technology);
 
         Workbench workbench = new Workbench(technologyRepository);
