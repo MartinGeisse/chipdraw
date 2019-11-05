@@ -37,11 +37,11 @@ public class MainWindow extends JFrame {
     private int cellSize;
     private ImmutableList<Violation> drcViolations;
 
-    public MainWindow(Workbench workbench, Design design) {
+    public MainWindow(Workbench _workbench, Design _design) {
         super("Chipdraw");
-        this.workbench = workbench;
+        this.workbench = _workbench;
         this.drcAgent = new DrcAgent();
-        this.design = design;
+        this.design = _design;
         this.layerUiState = new LayerUiState(design.getTechnology());
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         setSize(800, 600);
@@ -117,30 +117,49 @@ public class MainWindow extends JFrame {
             });
         }
 
-        // TODO
-        Paint layer0Paint;
-        {
-            BufferedImage image = new BufferedImage(3, 3, BufferedImage.TYPE_INT_RGB);
-            image.setRGB(0, 0, 0xff0000);
-            image.setRGB(1, 1, 0xff0000);
-            image.setRGB(2, 2, 0xff0000);
-            layer0Paint = new TexturePaint(image, new Rectangle2D.Float(0, 0, 3, 3));
-        }
-
         mainPanel = new DesignPixelPanel(this) {
-            @Override
-            protected void drawPixel(int cellX, int cellY, int screenX, int screenY, int screenSize) {
-                boolean l0 = MainWindow.this.design.getPlanes().get(0).getCell(x, y) && layerUiState.getVisible(0);
-                boolean l1 = MainWindow.this.design.getPlanes().get(1).getCell(x, y) && layerUiState.getVisible(1);
-                boolean l2 = MainWindow.this.design.getPlanes().get(2).getCell(x, y) && layerUiState.getVisible(2);
 
-                if (l1 || l2) {
-                    g.setColor(new Color(0, l1 ? 255 : 0, l2 ? 255 : 0));
-                    g.fillRect(x * cellSize, y * cellSize, cellSize, cellSize);
-                } else if (l0) {
-                    g.setPaint(layer0Paint);
-                    g.fillRect(x * cellSize, y * cellSize, cellSize, cellSize);
+            private final Paint nwellPaint = createHatching(0x0000ff);
+            private final Paint pwellPaint = createHatching(0xff0000);
+            private final Paint ndiffPaint = createCrossHatching(0x0000ff);
+            private final Paint pdiffPaint = createCrossHatching(0xff0000);
+            private final Paint polyPaint = Color.GREEN;
+            private final Paint metalPaint = Color.LIGHT_GRAY;
+
+            private int getPixel(int planeIndex, int x, int y) {
+                if (layerUiState.isPlaneVisible(planeIndex)) {
+                    return design.getPlanes().get(planeIndex).getCell(x, y);
+                } else {
+                    return Plane.EMPTY_CELL;
                 }
+            }
+
+            @Override
+            protected void drawPixel(Graphics2D g, int cellX, int cellY, int screenX, int screenY, int screenSize) {
+
+                // read pixel per plane
+                int wellPlane = getPixel(0, cellX, cellY);
+                int diffPlane = getPixel(1, cellX, cellY);
+                int polyPlane = getPixel(2, cellX, cellY);
+                // TODO: 3 = contact
+                int metalPlane = getPixel(4, cellX, cellY);
+
+                // select paint
+                if (metalPlane != Plane.EMPTY_CELL) {
+                    g.setPaint(metalPaint);
+                } else if (polyPlane != Plane.EMPTY_CELL) {
+                    g.setPaint(polyPaint);
+                } else if (diffPlane != Plane.EMPTY_CELL) {
+                    g.setPaint(diffPlane == 0 ? ndiffPaint : pdiffPaint);
+                } else if (wellPlane != Plane.EMPTY_CELL) {
+                    g.setPaint(wellPlane == 0 ? nwellPaint : pwellPaint);
+                } else {
+                    return;
+                }
+
+                // draw the pixel
+                g.fillRect(screenX, screenY, screenSize, screenSize);
+
             }
         };
         MouseAdapter mouseAdapter = new MouseAdapter() {
@@ -287,15 +306,15 @@ public class MainWindow extends JFrame {
     }
 
     private void showSaveDialog() {
-        loadAndSaveDialogs.showSaveDialog(MainWindow.this, MainWindow.this.design);
+        loadAndSaveDialogs.showSaveDialog(this, design);
     }
 
     private void showLoadDialog() {
         Design design;
         try {
-            design = loadAndSaveDialogs.showLoadDialog(MainWindow.this);
+            design = loadAndSaveDialogs.showLoadDialog(this);
         } catch (NoSuchTechnologyException exception) {
-            JOptionPane.showMessageDialog(MainWindow.this, exception.getMessage());
+            JOptionPane.showMessageDialog(this, exception.getMessage());
             return;
         }
         if (design == null) {

@@ -25,11 +25,7 @@ public class Main {
 
         Design design = new Design(technology, 20, 10);
 
-        try {
-            new MainWindow(workbench, design).setVisible(true);
-        } catch (NoSuchTechnologyException e) {
-            JOptionPane.showMessageDialog(null, e.getMessage());
-        }
+        new MainWindow(workbench, design).setVisible(true);
 
     }
 
