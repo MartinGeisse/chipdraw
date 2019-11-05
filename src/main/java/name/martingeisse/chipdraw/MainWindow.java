@@ -274,7 +274,7 @@ public class MainWindow extends JFrame {
             builder.addSeparator();
             builder.add("Quit", () -> System.exit(0));
             builder.addMenu("Test");
-            builder.add("Corner Stitching Extractor", () -> CornerStitchingExtrator.extract(design));
+            builder.add("Corner Stitching Extractor", () -> new CornerStitchingExtrator.Test().extract(design));
             builder.add("Connectivity Extractor", () -> new ConnectivityExtractor.Test().extract(design));
             builder.addMenu("Help");
             builder.addExternalLink("Contents", "https://github.com/MartinGeisse/chipdraw/blob/master/doc/index.md"); // TODO link to commit for this version

@@ -6,33 +6,25 @@ import name.martingeisse.chipdraw.Plane;
 /**
  *
  */
-public final class CornerStitchingExtrator {
+public abstract class CornerStitchingExtrator extends AbstractPerPlaneExtractor {
 
-	// prevent instantiation
-	private CornerStitchingExtrator() {
-	}
+	private int localMaterialIndex = -1;
 
-	public static void extract(Design design) {
-		System.out.println();
-		System.out.println("*");
-		System.out.println("* Corner-stitching extraction");
-		System.out.println("*");
-		System.out.println();
-		for (Plane plane : design.getPlanes()) {
-			System.out.println("* Plane");
-			Plane copy = new Plane(plane);
-			for (int y = 0; y < copy.getHeight(); y++) {
-				for (int x = 0; x < copy.getWidth(); x++) {
-					int localMaterialIndex = copy.getCell(x, y);
-					if (localMaterialIndex != Plane.EMPTY_CELL) {
-						extractRectangle(copy, x, y, localMaterialIndex);
-					}
+	@Override
+	protected void handlePlane(Plane plane) {
+		Plane copy = new Plane(plane);
+		for (int y = 0; y < copy.getHeight(); y++) {
+			for (int x = 0; x < copy.getWidth(); x++) {
+				localMaterialIndex = copy.getCell(x, y);
+				if (localMaterialIndex != Plane.EMPTY_CELL) {
+					extractRectangle(copy, x, y);
 				}
 			}
 		}
 	}
 
-	private static void extractRectangle(Plane copy, int topLeftX, int topLeftY, int localMaterialIndex) {
+	private void extractRectangle(Plane copy, int topLeftX, int topLeftY) {
+		beginRectangle(localMaterialIndex);
 
 		// determine width of the first row which is also the width of the rectangle
 		int rectangleWidth = 1;
@@ -60,8 +52,39 @@ public final class CornerStitchingExtrator {
 			rectangleHeight++;
 		}
 
-		System.out.println("found rectangle: " + topLeftX + ", " + topLeftY + " / " + rectangleWidth + " x " + rectangleHeight + ", local material index " + localMaterialIndex);
+		finishRectangle(localMaterialIndex, topLeftX, topLeftY, rectangleWidth, rectangleHeight);
 		copy.drawRectangle(topLeftX, topLeftY, rectangleWidth, rectangleHeight, Plane.EMPTY_CELL);
+	}
+
+	protected void beginRectangle(int localMaterialIndex) {
+	}
+
+	protected void finishRectangle(int localMaterialIndex, int x, int y, int width, int height) {
+	}
+
+	public static class Test extends CornerStitchingExtrator {
+
+		@Override
+		protected void beginDesign(Design design) {
+			System.out.println();
+			System.out.println("*");
+			System.out.println("* Corner-stitching extraction");
+			System.out.println("*");
+			System.out.println();
+		}
+
+		@Override
+		protected boolean beginPlane(Plane plane) {
+			System.out.println("* Plane");
+			return true;
+		}
+
+		@Override
+		protected void finishRectangle(int localMaterialIndex, int x, int y, int width, int height) {
+			System.out.println("found rectangle: " + x + ", " + y + " / " + width + " x " + height +
+					", local material index " + localMaterialIndex);
+		}
+
 	}
 
 }
