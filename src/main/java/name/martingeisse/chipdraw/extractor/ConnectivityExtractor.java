@@ -6,25 +6,19 @@ import name.martingeisse.chipdraw.Plane;
 /**
  *
  */
-public abstract class ConnectivityExtractor {
+public abstract class ConnectivityExtractor extends AbstractPerPlaneExtractor {
 
-	public final void extract(Design design) {
-		beginDesign(design);
-		for (Plane plane : design.getPlanes()) {
-			if (beginPlane(plane)) {
-				Plane copy = new Plane(plane);
-				for (int y = 0; y < copy.getHeight(); y++) {
-					for (int x = 0; x < copy.getWidth(); x++) {
-						int localMaterialIndex = copy.getCell(x, y);
-						if (localMaterialIndex != Plane.EMPTY_CELL && handleFirst(x, y, localMaterialIndex)) {
-							clear(copy, x, y);
-						}
-					}
+	@Override
+	protected void handlePlane(Plane plane) {
+		Plane copy = new Plane(plane);
+		for (int y = 0; y < copy.getHeight(); y++) {
+			for (int x = 0; x < copy.getWidth(); x++) {
+				int localMaterialIndex = copy.getCell(x, y);
+				if (localMaterialIndex != Plane.EMPTY_CELL && handleFirst(x, y, localMaterialIndex)) {
+					clear(copy, x, y);
 				}
-				finishPlane(plane);
 			}
 		}
-		finishDesign(design);
 	}
 
 	private void clear(Plane copy, int x, int y) {
@@ -36,19 +30,6 @@ public abstract class ConnectivityExtractor {
 			clear(copy, x, y - 1);
 			clear(copy, x, y + 1);
 		}
-	}
-
-	protected void beginDesign(Design design) {
-	}
-
-	protected void finishDesign(Design design) {
-	}
-
-	protected boolean beginPlane(Plane plane) {
-		return true;
-	}
-
-	protected void finishPlane(Plane plane) {
 	}
 
 	protected abstract boolean handleFirst(int x, int y, int localMaterialIndex);
