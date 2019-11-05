@@ -19,7 +19,7 @@ public final class LayerUiState {
 
 	public LayerUiState(Technology technology) {
 		this.technology = technology;
-		this.visible = new boolean[technology.getLayerSchemas().size()];
+		this.visible = new boolean[technology.getPlaneSchemas().size()];
 		Arrays.fill(visible, true);
 	}
 

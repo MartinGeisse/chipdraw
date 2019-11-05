@@ -48,19 +48,19 @@ public final class Design implements Serializable {
         this.height = height;
 
         List<Plane> planes = new ArrayList<>();
-        for (PlaneSchema layerSchema : technology.getLayerSchemas()) {
-            planes.add(new Plane(layerSchema, width, height));
+        for (PlaneSchema planeSchema : technology.getPlaneSchemas()) {
+            planes.add(new Plane(planeSchema, width, height));
         }
         this.planes = ImmutableList.copyOf(planes);
     }
 
     void initializeAfterDeserialization(TechnologyRepository technologyRepository) throws NoSuchTechnologyException {
         this.technology = technologyRepository.getTechnology(technologyId);
-        if (technology.getLayerSchemas().size() != planes.size()) {
+        if (technology.getPlaneSchemas().size() != planes.size()) {
             throw new RuntimeException("number of layers in this technology has changed");
         }
         for (int i = 0; i < planes.size(); i++) {
-            planes.get(i).initializeAfterDeserialization(technology.getLayerSchemas().get(i));
+            planes.get(i).initializeAfterDeserialization(technology.getPlaneSchemas().get(i));
         }
     }
 

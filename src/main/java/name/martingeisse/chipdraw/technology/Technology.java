@@ -67,8 +67,7 @@ public final class Technology {
         return (planeIndex >= 0 && planeIndex < planeSchemas.size());
     }
 
-    // TODO rename
-    public ImmutableList<PlaneSchema> getLayerSchemas() {
+    public ImmutableList<PlaneSchema> getPlaneSchemas() {
         return planeSchemas;
     }
 
@@ -96,7 +95,7 @@ public final class Technology {
     }
 
     public PlaneSchema getPlaneSchemaForGlobalLayerIndex(int globalLayerIndex) {
-        return getLayerSchemas().get(getPlaneIndexForGlobalLayerIndex(globalLayerIndex));
+        return getPlaneSchemas().get(getPlaneIndexForGlobalLayerIndex(globalLayerIndex));
     }
 
     public int getLocalLayerIndexForGlobalLayerIndex(int globalLayerIndex) {
