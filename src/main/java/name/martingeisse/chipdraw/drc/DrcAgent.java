@@ -18,13 +18,17 @@ public final class DrcAgent {
 
     private final AtomicReference<Design> trigger;
     private final ConcurrentHashMap<Object, Consumer<ImmutableList<Violation>>> resultListeners;
+    private final Thread thread;
     private Design design;
+    private boolean stopped = false;
 
     public DrcAgent() {
         this.trigger = new AtomicReference<>(null);
         this.resultListeners = new ConcurrentHashMap<>();
         this.design = null;
-        new Thread(this::backgroundMain).start();
+        thread = new Thread(this::backgroundMain);
+        thread.setDaemon(true);
+        thread.start();
     }
 
     public void addResultListener(Consumer<ImmutableList<Violation>> listener) {
@@ -45,15 +49,11 @@ public final class DrcAgent {
 
     private void backgroundMain() {
         try {
-            while (true) { // TODO stop thread when closing the window
+            while (!stopped) {
                 waitForTrigger();
                 DrcContext context = new DrcContext(design);
                 new Drc().perform(context);
                 ImmutableList<Violation> violations = context.getViolations();
-                for (Violation violation : violations) {
-                    System.out.println("*** " + violation.getFullText());
-                }
-                System.out.println("DRC finished");
                 for (Consumer<ImmutableList<Violation>> resultListener : resultListeners.values()) {
                     resultListener.accept(violations);
                 }
@@ -72,6 +72,11 @@ public final class DrcAgent {
             }
             Thread.sleep(100);
         }
+    }
+
+    public void dispose() {
+        stopped = true;
+        thread.interrupt();
     }
 
 }

@@ -11,10 +11,7 @@ import name.martingeisse.chipdraw.ui.SingleIconBooleanCellRenderer;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
+import java.awt.event.*;
 
 public class MainWindow extends JFrame {
 
@@ -41,9 +38,16 @@ public class MainWindow extends JFrame {
         this.drcAgent = new DrcAgent();
         this.design = _design;
         this.materialUiState = new MaterialUiState(design.getTechnology());
-        setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
         setSize(800, 600);
         setResizable(true);
+
+        addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosed(WindowEvent e) {
+                drcAgent.dispose();
+            }
+        });
 
         sideBar = new JPanel();
         sideBar.setLayout(new BorderLayout());
@@ -262,6 +266,7 @@ public class MainWindow extends JFrame {
         {
             MenuBarBuilder builder = new MenuBarBuilder();
             builder.addMenu("File");
+            builder.add("New", () -> new MainWindow(workbench, new Design(design.getTechnology(), 20, 10)).setVisible(true));
             builder.add("Load", this::showLoadDialog);
             builder.add("Save", this::showSaveDialog);
             builder.addSeparator();
