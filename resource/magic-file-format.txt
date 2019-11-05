@@ -21,3 +21,16 @@ model is slightly different from their file format).
 For now, IMHO we are better off treating Magic's format as a "foreign" format with importers / exporters that may
 lose information. Using Magic's format natively involves understanding the design process and how the tools are
 working together -- which may be different for different users.
+
+---------------------------------------------------------------------------------
+
+Format:
+- OpenGL coordinate system (x = right, y = up)
+- integer coordinates = grid nodes, not cell centers
+- transistor areas are ecluded from poly (expected, since it's the same plane)
+- transistor areas are excluded from diffusion (unxpected since they are on different planes)
+    -> no, same plane!
+- polycontact areas are excluded from poly (unexpected since they are on different planes)
+    -> no, same plane!
+- ndcontact areas are excluded from diffusion
+-> all inter-layer things exclude those areas from the affected planes EXCEPT that well contacts do not exclude from wells
