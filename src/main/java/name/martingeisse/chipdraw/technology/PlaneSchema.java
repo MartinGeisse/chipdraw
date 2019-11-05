@@ -9,14 +9,14 @@ public final class PlaneSchema {
     private final ImmutableList<String> materialNames;
 
     /**
-     * Constructor for a single-layer plane.
+     * Constructor for a single-material plane.
      */
     public PlaneSchema(String name) {
         this(name, ImmutableList.of(name));
     }
 
     /**
-     * Constructor for a multi-layer plane.
+     * Constructor for a multi-material plane.
      */
     public PlaneSchema(String name, ImmutableList<String> materialNames) {
         this.name = name;

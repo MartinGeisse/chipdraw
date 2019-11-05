@@ -5,7 +5,7 @@ import name.martingeisse.chipdraw.Plane;
 public final class Drc {
 
     public void perform(DrcContext context) {
-        // sample DRC: ensures that layer 0 does not touch the design boundaries
+        // sample DRC: ensures that plane 0 does not touch the design boundaries
         Plane plane = context.getDesign().getPlanes().get(0);
         for (int x = 0; x < plane.getWidth(); x++) {
             check(context, plane, x, 0);
