@@ -6,7 +6,7 @@ public final class PlaneSchema {
 
     private int index = -1;
     private final String name;
-    private final ImmutableList<String> layerNames;
+    private final ImmutableList<String> materialNames;
 
     /**
      * Constructor for a single-layer plane.
@@ -18,9 +18,9 @@ public final class PlaneSchema {
     /**
      * Constructor for a multi-layer plane.
      */
-    public PlaneSchema(String name, ImmutableList<String> layerNames) {
+    public PlaneSchema(String name, ImmutableList<String> materialNames) {
         this.name = name;
-        this.layerNames = layerNames;
+        this.materialNames = materialNames;
     }
 
     void setIndex(int index) {
@@ -35,8 +35,8 @@ public final class PlaneSchema {
         return name;
     }
 
-    public ImmutableList<String> getLayerNames() {
-        return layerNames;
+    public ImmutableList<String> getMaterialNames() {
+        return materialNames;
     }
 
 }

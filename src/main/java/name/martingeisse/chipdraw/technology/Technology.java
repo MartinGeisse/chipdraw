@@ -15,9 +15,9 @@ public final class Technology {
 
     private final String id;
     private final ImmutableList<PlaneSchema> planeSchemas;
-    private final int globalLayerCount;
-    private final int[] globalLayerIndexToPlaneIndex;
-    private final int[] globalLayerIndexToLocalLayerIndex;
+    private final int globalMaterialCount;
+    private final int[] globalMaterialIndexToPlaneIndex;
+    private final int[] globalMaterialIndexToLocalMaterialIndex;
 
     public Technology(String id, ImmutableList<PlaneSchema> planeSchemas) {
         this.id = id;
@@ -30,23 +30,23 @@ public final class Technology {
             }
         }
 
-        // count number of layers across all planes
-        int globalLayerCount = 0;
+        // count number of materials across all planes
+        int globalMaterialCount = 0;
         for (PlaneSchema planeSchema : planeSchemas) {
-            globalLayerCount += planeSchema.getLayerNames().size();
+            globalMaterialCount += planeSchema.getMaterialNames().size();
         }
-        this.globalLayerCount = globalLayerCount;
+        this.globalMaterialCount = globalMaterialCount;
 
-        // assign plane indices; initialize mappings using global layer indices as keys
-        int planeIndex = 0, globalLayerIndex = 0;
-        this.globalLayerIndexToPlaneIndex = new int[globalLayerCount];
-        this.globalLayerIndexToLocalLayerIndex = new int[globalLayerCount];
+        // assign plane indices; initialize mappings using global material indices as keys
+        int planeIndex = 0, globalMaterialIndex = 0;
+        this.globalMaterialIndexToPlaneIndex = new int[globalMaterialCount];
+        this.globalMaterialIndexToLocalMaterialIndex = new int[globalMaterialCount];
         for (PlaneSchema planeSchema : planeSchemas) {
             planeSchema.setIndex(planeIndex);
-            for (int i = 0; i < planeSchema.getLayerNames().size(); i++) {
-                globalLayerIndexToPlaneIndex[globalLayerIndex] = planeIndex;
-                globalLayerIndexToLocalLayerIndex[globalLayerIndex] = i;
-                globalLayerIndex++;
+            for (int i = 0; i < planeSchema.getMaterialNames().size(); i++) {
+                globalMaterialIndexToPlaneIndex[globalMaterialIndex] = planeIndex;
+                globalMaterialIndexToLocalMaterialIndex[globalMaterialIndex] = i;
+                globalMaterialIndex++;
             }
             planeIndex++;
         }
@@ -73,34 +73,34 @@ public final class Technology {
 
 //endregion
 
-//region global layer indices
+//region global material indices
 
-    public int getGlobalLayerCount() {
-        return globalLayerCount;
+    public int getGlobalMaterialCount() {
+        return globalMaterialCount;
     }
 
-    public boolean isGlobalLayerIndexValid(int globalLayerIndex) {
-        return (globalLayerIndex >= 0 && globalLayerIndex < getGlobalLayerCount());
+    public boolean isGlobalMaterialIndexValid(int globalMaterialIndex) {
+        return (globalMaterialIndex >= 0 && globalMaterialIndex < getGlobalMaterialCount());
     }
 
-    public void validateGlobalLayerIndex(int globalLayerIndex) {
-        if (!isGlobalLayerIndexValid(globalLayerIndex)) {
-            throw new IllegalArgumentException("invalid global layer index: " + globalLayerIndex);
+    public void validateGlobalMaterialIndex(int globalMaterialIndex) {
+        if (!isGlobalMaterialIndexValid(globalMaterialIndex)) {
+            throw new IllegalArgumentException("invalid global material index: " + globalMaterialIndex);
         }
     }
 
-    public int getPlaneIndexForGlobalLayerIndex(int globalLayerIndex) {
-        validateGlobalLayerIndex(globalLayerIndex);
-        return globalLayerIndexToPlaneIndex[globalLayerIndex];
+    public int getPlaneIndexForGlobalMaterialIndex(int globalMaterialIndex) {
+        validateGlobalMaterialIndex(globalMaterialIndex);
+        return globalMaterialIndexToPlaneIndex[globalMaterialIndex];
     }
 
-    public PlaneSchema getPlaneSchemaForGlobalLayerIndex(int globalLayerIndex) {
-        return getPlaneSchemas().get(getPlaneIndexForGlobalLayerIndex(globalLayerIndex));
+    public PlaneSchema getPlaneSchemaForGlobalMaterialIndex(int globalMaterialIndex) {
+        return getPlaneSchemas().get(getPlaneIndexForGlobalMaterialIndex(globalMaterialIndex));
     }
 
-    public int getLocalLayerIndexForGlobalLayerIndex(int globalLayerIndex) {
-        validateGlobalLayerIndex(globalLayerIndex);
-        return globalLayerIndexToLocalLayerIndex[globalLayerIndex];
+    public int getLocalMaterialIndexForGlobalMaterialIndex(int globalMaterialIndex) {
+        validateGlobalMaterialIndex(globalMaterialIndex);
+        return globalMaterialIndexToLocalMaterialIndex[globalMaterialIndex];
     }
 
 //endregion

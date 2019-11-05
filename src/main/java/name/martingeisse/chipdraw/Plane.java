@@ -8,21 +8,21 @@ import java.util.Arrays;
 /**
  * TODO rename "cells" to "pixels"? The former already has a meaning in chip design.
  *
- * TODO the remaining code uses the term "layers" but this code says "values"
+ * TODO consider using value types LocalMaterialIndex and GlobalMaterialIndex to avoid confusion (passing one as the other)
  */
 public final class Plane implements Serializable {
 
     public static final int EMPTY_CELL = 255;
-    public static final int MAX_CELL_VALUE = 250;
+    public static final int MAX_LOCAL_MATERIAL_INDEX = 250;
 
     private transient PlaneSchema planeSchema;
     private final int width, height;
     private final byte[] cells;
 
     private Plane(PlaneSchema planeSchema, int width, int height, byte[] dataSource) {
-        if (planeSchema.getLayerNames().size() > MAX_CELL_VALUE) {
-            // so we can use bytes to store cell values and also reserver a special byte value for EMPTY_CELL
-            throw new IllegalArgumentException("more than 250 layers in a single plane currently not supported");
+        if (planeSchema.getMaterialNames().size() > MAX_LOCAL_MATERIAL_INDEX) {
+            // so we can use bytes to store local material indices and also reserve a special byte value for EMPTY_CELL
+            throw new IllegalArgumentException("more than 250 materials in a single plane currently not supported");
         }
         this.planeSchema = planeSchema;
         this.width = width;
@@ -82,35 +82,35 @@ public final class Plane implements Serializable {
         return isValidPosition(x, y) ? getCell(x, y) : EMPTY_CELL;
     }
 
-    public boolean isValidCellValue(int value) {
-        return (value >= 0 && value <= MAX_CELL_VALUE) || value == EMPTY_CELL;
+    public boolean isValidLocalMaterialIndex(int value) {
+        return (value >= 0 && value <= MAX_LOCAL_MATERIAL_INDEX) || value == EMPTY_CELL;
     }
 
-    private byte validateCellValue(int value) {
-        if (!isValidCellValue(value)) {
-            throw new IllegalArgumentException("invalid cell value: " + value);
+    private byte validateLocalMaterialIndex(int localMaterialIndex) {
+        if (!isValidLocalMaterialIndex(localMaterialIndex)) {
+            throw new IllegalArgumentException("invalid local material index: " + localMaterialIndex);
         }
-        return (byte)value;
+        return (byte)localMaterialIndex;
     }
 
-    public void setCell(int x, int y, int value) {
-        cells[getIndex(x, y)] = validateCellValue(value);
+    public void setCell(int x, int y, int localMaterialIndex) {
+        cells[getIndex(x, y)] = validateLocalMaterialIndex(localMaterialIndex);
     }
 
-    public void setCellAutoclip(int x, int y, int value) {
+    public void setCellAutoclip(int x, int y, int localMaterialIndex) {
         if (isValidPosition(x, y)) {
-            setCell(x, y, value);
+            setCell(x, y, localMaterialIndex);
         }
     }
 
-    public void drawRectangle(int x, int y, int width, int height, int value) {
+    public void drawRectangle(int x, int y, int width, int height, int localMaterialIndex) {
         validateRectangleSize(width, height);
         validatePosition(x, y);
         validatePosition(x + width - 1, y + height - 1);
-        drawRectangleInternal(x, y, width, height, value);
+        drawRectangleInternal(x, y, width, height, localMaterialIndex);
     }
 
-    public void drawRectangleAutoclip(int x, int y, int width, int height, int value) {
+    public void drawRectangleAutoclip(int x, int y, int width, int height, int localMaterialIndex) {
         validateRectangleSize(width, height);
         if (x < 0) {
             width += x;
@@ -126,7 +126,7 @@ public final class Plane implements Serializable {
         if (height > this.height - y) {
             height = this.height - y;
         }
-        drawRectangleInternal(x, y, width, height, value);
+        drawRectangleInternal(x, y, width, height, localMaterialIndex);
     }
 
     private void validateRectangleSize(int width, int height) {
@@ -135,11 +135,11 @@ public final class Plane implements Serializable {
         }
     }
 
-    private void drawRectangleInternal(int x, int y, int width, int height, int value) {
-        validateCellValue(value);
+    private void drawRectangleInternal(int x, int y, int width, int height, int localMaterialIndex) {
+        validateLocalMaterialIndex(localMaterialIndex);
         for (int i = 0; i < width; i++) {
             for (int j = 0; j < height; j++) {
-                setCell(x + i, y + j, value);
+                setCell(x + i, y + j, localMaterialIndex);
             }
         }
     }
@@ -147,23 +147,23 @@ public final class Plane implements Serializable {
     /**
      * Note: to check uniformity without an expected value, get the value from (x, y) and pass that as expected value.
      */
-    public boolean isReactangleUniform(int x, int y, int width, int height, int expectedValue) {
+    public boolean isReactangleUniform(int x, int y, int width, int height, int expectedLocalMaterialIndex) {
         validateRectangleSize(width, height);
         validatePosition(x, y);
         validatePosition(x + width - 1, y + height - 1);
-        return isReactangleUniformInternal(x, y, width, height, expectedValue);
+        return isReactangleUniformInternal(x, y, width, height, expectedLocalMaterialIndex);
     }
 
-    public boolean isReactangleUniformAutoclip(int x, int y, int width, int height, int expectedValue) {
+    public boolean isReactangleUniformAutoclip(int x, int y, int width, int height, int expectedLocalMaterialIndex) {
         validateRectangleSize(width, height);
 
         // handle non-clip case
         if (isValidPosition(x, y) && isValidPosition(x + width - 1, y + height - 1)) {
-            return isReactangleUniformInternal(x, y, width, height, expectedValue);
+            return isReactangleUniformInternal(x, y, width, height, expectedLocalMaterialIndex);
         }
 
         // clipped case: at least one pixel is implicitly empty, so if we are looking for nonempty pixels, it can't be uniform
-        if (expectedValue != EMPTY_CELL) {
+        if (expectedLocalMaterialIndex != EMPTY_CELL) {
             return false;
         }
 
@@ -182,13 +182,13 @@ public final class Plane implements Serializable {
         if (height > this.height - y) {
             height = this.height - y;
         }
-        return isReactangleUniformInternal(x, y, width, height, expectedValue);
+        return isReactangleUniformInternal(x, y, width, height, expectedLocalMaterialIndex);
     }
 
-    private boolean isReactangleUniformInternal(int x, int y, int width, int height, int expectedValue) {
+    private boolean isReactangleUniformInternal(int x, int y, int width, int height, int expectedLocalMaterialIndex) {
         for (int i = 0; i < width; i++) {
             for (int j = 0; j < height; j++) {
-                if (getCell(x + i, y + j) != expectedValue) {
+                if (getCell(x + i, y + j) != expectedLocalMaterialIndex) {
                     return false;
                 }
             }
