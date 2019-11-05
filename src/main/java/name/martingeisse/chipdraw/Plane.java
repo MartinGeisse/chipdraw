@@ -3,34 +3,49 @@ package name.martingeisse.chipdraw;
 import name.martingeisse.chipdraw.technology.PlaneSchema;
 
 import java.io.Serializable;
+import java.util.Arrays;
 
 /**
  * TODO rename "cells" to "pixels"? The former already has a meaning in chip design.
  */
 public final class Plane implements Serializable {
 
+    public static final int EMPTY_CELL = 255;
+    public static final int MAX_CELL_VALUE = 250;
+
     private transient PlaneSchema planeSchema;
     private final int width, height;
-    private final boolean[] cells;
+    private final byte[] cells;
 
-    public Plane(PlaneSchema planeSchema, int width, int height) {
+    private Plane(PlaneSchema planeSchema, int width, int height, byte[] dataSource) {
+        if (planeSchema.getLayerNames().size() > MAX_CELL_VALUE) {
+            // so we can use bytes to store cell values and also reserver a special byte value for EMPTY_CELL
+            throw new IllegalArgumentException("more than 250 layers in a single plane currently not supported");
+        }
         this.planeSchema = planeSchema;
         this.width = width;
         this.height = height;
-        this.cells = new boolean[width * height];
+        this.cells = new byte[width * height];
+        if (dataSource == null) {
+            Arrays.fill(cells, (byte)EMPTY_CELL);
+        } else {
+            System.arraycopy(dataSource, 0, cells, 0, cells.length);
+        }
+    }
+
+    public Plane(PlaneSchema planeSchema, int width, int height) {
+        this(planeSchema, width, height, null);
+    }
+
+    public Plane(Plane original) {
+        this(original.getSchema(), original.getWidth(), original.getHeight(), original.cells);
     }
 
     void initializeAfterDeserialization(PlaneSchema planeSchema) {
 		this.planeSchema = planeSchema;
     }
 
-    public Plane createCopy() {
-        Plane copy = new Plane(planeSchema, width, height);
-        System.arraycopy(cells, 0, copy.cells, 0, cells.length);
-        return copy;
-    }
-
-    public PlaneSchema getLayerSchema() {
+    public PlaneSchema getSchema() {
         return planeSchema;
     }
 
@@ -57,32 +72,43 @@ public final class Plane implements Serializable {
         return y * width + x;
     }
 
-    public boolean getCell(int x, int y) {
-        return cells[getIndex(x, y)];
+    public int getCell(int x, int y) {
+        return cells[getIndex(x, y)] & 0xff;
     }
 
-    public boolean getCellAutoclip(int x, int y) {
-        return isValidPosition(x, y) && getCell(x, y);
+    public int getCellAutoclip(int x, int y) {
+        return isValidPosition(x, y) ? getCell(x, y) : EMPTY_CELL;
     }
 
-    public void setCell(int x, int y, boolean value) {
-        cells[getIndex(x, y)] = value;
+    public boolean isValidCellValue(int value) {
+        return (value >= 0 && value <= MAX_CELL_VALUE) || value == EMPTY_CELL;
     }
 
-    public void setCellAutoclip(int x, int y, boolean value) {
+    private byte validateCellValue(int value) {
+        if (!isValidCellValue(value)) {
+            throw new IllegalArgumentException("invalid cell value: " + value);
+        }
+        return (byte)value;
+    }
+
+    public void setCell(int x, int y, int value) {
+        cells[getIndex(x, y)] = validateCellValue(value);
+    }
+
+    public void setCellAutoclip(int x, int y, int value) {
         if (isValidPosition(x, y)) {
             setCell(x, y, value);
         }
     }
 
-    public void drawRectangle(int x, int y, int width, int height, boolean value) {
+    public void drawRectangle(int x, int y, int width, int height, int value) {
         validateRectangleSize(width, height);
         validatePosition(x, y);
         validatePosition(x + width - 1, y + height - 1);
         drawRectangleInternal(x, y, width, height, value);
     }
 
-    public void drawRectangleAutoclip(int x, int y, int width, int height, boolean value) {
+    public void drawRectangleAutoclip(int x, int y, int width, int height, int value) {
         validateRectangleSize(width, height);
         if (x < 0) {
             width += x;
@@ -107,7 +133,8 @@ public final class Plane implements Serializable {
         }
     }
 
-    private void drawRectangleInternal(int x, int y, int width, int height, boolean value) {
+    private void drawRectangleInternal(int x, int y, int width, int height, int value) {
+        validateCellValue(value);
         for (int i = 0; i < width; i++) {
             for (int j = 0; j < height; j++) {
                 setCell(x + i, y + j, value);
@@ -118,14 +145,14 @@ public final class Plane implements Serializable {
     /**
      * Note: to check uniformity without an expected value, get the value from (x, y) and pass that as expected value.
      */
-    public boolean isReactangleUniform(int x, int y, int width, int height, boolean expectedValue) {
+    public boolean isReactangleUniform(int x, int y, int width, int height, int expectedValue) {
         validateRectangleSize(width, height);
         validatePosition(x, y);
         validatePosition(x + width - 1, y + height - 1);
         return isReactangleUniformInternal(x, y, width, height, expectedValue);
     }
 
-    public boolean isReactangleUniformAutoclip(int x, int y, int width, int height, boolean expectedValue) {
+    public boolean isReactangleUniformAutoclip(int x, int y, int width, int height, int expectedValue) {
         validateRectangleSize(width, height);
 
         // handle non-clip case
@@ -133,8 +160,8 @@ public final class Plane implements Serializable {
             return isReactangleUniformInternal(x, y, width, height, expectedValue);
         }
 
-        // clipped case: at least one pixel is implicitly empty, so we can't be uniformly filled
-        if (expectedValue) {
+        // clipped case: at least one pixel is implicitly empty, so if we are looking for nonempty pixels, it can't be uniform
+        if (expectedValue != EMPTY_CELL) {
             return false;
         }
 
@@ -153,10 +180,10 @@ public final class Plane implements Serializable {
         if (height > this.height - y) {
             height = this.height - y;
         }
-        return isReactangleUniformInternal(x, y, width, height, false);
+        return isReactangleUniformInternal(x, y, width, height, expectedValue);
     }
 
-    private boolean isReactangleUniformInternal(int x, int y, int width, int height, boolean expectedValue) {
+    private boolean isReactangleUniformInternal(int x, int y, int width, int height, int expectedValue) {
         for (int i = 0; i < width; i++) {
             for (int j = 0; j < height; j++) {
                 if (getCell(x + i, y + j) != expectedValue) {
