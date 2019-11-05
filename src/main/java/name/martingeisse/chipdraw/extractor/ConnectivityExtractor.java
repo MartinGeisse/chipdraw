@@ -72,11 +72,9 @@ public abstract class ConnectivityExtractor extends AbstractPerPlaneExtractor {
 
 		@Override
 		protected boolean handleFirst(int x, int y, int localMaterialIndex) {
-			boolean result = super.handleFirst(x, y, localMaterialIndex);
-			if (result) {
-				System.out.println("found patch at " + x + ", " + y + ", local material index: " + localMaterialIndex);
-			}
-			return result;
+			super.handleFirst(x, y, localMaterialIndex);
+			System.out.println("found patch at " + x + ", " + y + ", local material index: " + localMaterialIndex);
+			return true;
 		}
 
 	}
