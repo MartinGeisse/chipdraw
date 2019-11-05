@@ -15,8 +15,6 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.awt.geom.Rectangle2D;
-import java.awt.image.BufferedImage;
 
 public class MainWindow extends JFrame {
 
@@ -31,7 +29,7 @@ public class MainWindow extends JFrame {
     private final JButton drcButton;
 
     private Design design;
-    private LayerUiState layerUiState;
+    private MaterialUiState materialUiState;
     private boolean drawing;
     private boolean erasing;
     private int cellSize;
@@ -42,7 +40,7 @@ public class MainWindow extends JFrame {
         this.workbench = _workbench;
         this.drcAgent = new DrcAgent();
         this.design = _design;
-        this.layerUiState = new LayerUiState(design.getTechnology());
+        this.materialUiState = new MaterialUiState(design.getTechnology());
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         setSize(800, 600);
         setResizable(true);
@@ -52,7 +50,7 @@ public class MainWindow extends JFrame {
         sideBar.setPreferredSize(new Dimension(150, 0));
         add(sideBar, BorderLayout.LINE_START);
         {
-            JTable table = new JTable(layerUiState.getSidebarTableModel()) {
+            JTable table = new JTable(materialUiState.getSidebarTableModel()) {
                 @Override
                 protected void configureEnclosingScrollPane() {
                 }
@@ -76,10 +74,10 @@ public class MainWindow extends JFrame {
                         return;
                     }
                     if (columnIndex == 0) {
-                        layerUiState.setEditingGlobalMaterialIndex(rowIndex);
+                        materialUiState.setEditingGlobalMaterialIndex(rowIndex);
                         table.repaint();
                     } else if (columnIndex == 1) {
-                        layerUiState.toggleMaterialVisible(rowIndex);
+                        materialUiState.toggleMaterialVisible(rowIndex);
                         table.repaint();
                     }
                 }
@@ -90,7 +88,7 @@ public class MainWindow extends JFrame {
             JScrollPane scrollPane = new JScrollPane(table);
             sideBar.add(scrollPane, BorderLayout.PAGE_START);
 
-            layerUiState.getSidebarTableModel().addTableModelListener(event -> {
+            materialUiState.getSidebarTableModel().addTableModelListener(event -> {
                 MainWindow.this.repaint();
             });
         }
@@ -127,7 +125,7 @@ public class MainWindow extends JFrame {
             private final Paint metalPaint = Color.LIGHT_GRAY;
 
             private int getPixel(int planeIndex, int x, int y) {
-                if (layerUiState.isPlaneVisible(planeIndex)) {
+                if (materialUiState.isPlaneVisible(planeIndex)) {
                     return design.getPlanes().get(planeIndex).getCell(x, y);
                 } else {
                     return Plane.EMPTY_CELL;
@@ -181,7 +179,7 @@ public class MainWindow extends JFrame {
                 if (drawing || erasing) {
                     int x = e.getX() / cellSize;
                     int y = e.getY() / cellSize;
-                    int globalMaterialIndex = layerUiState.getEditingGlobalMaterialIndex();
+                    int globalMaterialIndex = materialUiState.getEditingGlobalMaterialIndex();
                     int localMaterialIndex = design.getTechnology().getLocalMaterialIndexForGlobalMaterialIndex(globalMaterialIndex);
                     int planeIndex = design.getTechnology().getPlaneIndexForGlobalMaterialIndex(globalMaterialIndex);
                     Plane plane = design.getPlanes().get(planeIndex);
@@ -218,14 +216,14 @@ public class MainWindow extends JFrame {
                     case '9': {
                         int globalMaterialIndex = event.getKeyChar() - '1';
                         if (design.getTechnology().isGlobalMaterialIndexValid(globalMaterialIndex)) {
-                            layerUiState.setEditingGlobalMaterialIndex(globalMaterialIndex);
+                            materialUiState.setEditingGlobalMaterialIndex(globalMaterialIndex);
                         }
                         break;
                     }
 
                     case '0':
                         if (design.getTechnology().isGlobalMaterialIndexValid(9)) {
-                            layerUiState.setEditingGlobalMaterialIndex(9);
+                            materialUiState.setEditingGlobalMaterialIndex(9);
                         }
                         break;
 
@@ -291,7 +289,7 @@ public class MainWindow extends JFrame {
     }
 
     private void resetUi() {
-        layerUiState.setEditingGlobalMaterialIndex(0);
+        materialUiState.setEditingGlobalMaterialIndex(0);
         drawing = false;
         erasing = false;
         cellSize = 16;
@@ -321,7 +319,7 @@ public class MainWindow extends JFrame {
             return;
         }
         this.design = design;
-        this.layerUiState = new LayerUiState(design.getTechnology());
+        this.materialUiState = new MaterialUiState(design.getTechnology());
         consumeDrcResult(null);
         drcAgent.setDesign(design);
         resetUi();

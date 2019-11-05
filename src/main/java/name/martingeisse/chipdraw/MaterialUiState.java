@@ -10,14 +10,14 @@ import java.util.Arrays;
 /**
  *
  */
-public final class LayerUiState {
+public final class MaterialUiState {
 
 	private final Technology technology;
 	private final SidebarTableModel sidebarTableModel = new SidebarTableModel();
 	private final boolean[] planesVisible;
 	private int editingGlobalMaterialIndex = 0;
 
-	public LayerUiState(Technology technology) {
+	public MaterialUiState(Technology technology) {
 		this.technology = technology;
 		this.planesVisible = new boolean[technology.getPlaneCount()];
 		Arrays.fill(planesVisible, true);
@@ -48,7 +48,7 @@ public final class LayerUiState {
 
 //endregion
 
-//region layer-oriented accessors
+//region material-oriented accessors
 
 	public boolean isMaterialVisible(int globalMaterialIndex) {
 		return isPlaneVisible(technology.getPlaneIndexForGlobalMaterialIndex(globalMaterialIndex));
