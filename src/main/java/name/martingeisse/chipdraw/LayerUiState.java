@@ -60,18 +60,18 @@ public final class LayerUiState {
 //endregion
 
 	public boolean getLayerVisible(int layer) {
-		technology.validateLayerIndex(layer);
+		technology.validateGlobalLayerIndex(layer);
 		return visible[layer];
 	}
 
 	public void setLayerVisible(int layer, boolean value) {
-		technology.validateLayerIndex(layer);
+		technology.validateGlobalLayerIndex(layer);
 		visible[layer] = value;
 		sidebarTableModel.fireTableCellUpdated(layer, 1);
 	}
 
 	public void toggleVisible(int layer) {
-		technology.validateLayerIndex(layer);
+		technology.validateGlobalLayerIndex(layer);
 		visible[layer] = !visible[layer];
 		sidebarTableModel.fireTableCellUpdated(layer, 1);
 	}
@@ -83,7 +83,7 @@ public final class LayerUiState {
 
 	// TODO rename to setEditingLayer
 	public void setEditing(int editing) {
-		technology.validateLayerIndex(editing);
+		technology.validateGlobalLayerIndex(editing);
 		int old = this.editing;
 		this.editing = editing;
 		sidebarTableModel.fireTableCellUpdated(old, 0);

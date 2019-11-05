@@ -105,16 +105,4 @@ public final class Technology {
 
 //endregion
 
-    // TODO remove
-    public boolean isLayerIndexValid(int layerIndex) {
-        return (layerIndex >= 0 && layerIndex < planeSchemas.size());
-    }
-
-    // TODO remove
-    public void validateLayerIndex(int layerIndex) {
-        if (!isLayerIndexValid(layerIndex)) {
-            throw new IllegalArgumentException("invalid layer index: " + layerIndex);
-        }
-    }
-
 }
