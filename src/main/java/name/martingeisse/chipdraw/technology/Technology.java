@@ -20,6 +20,9 @@ public final class Technology {
     private final int[] globalMaterialIndexToLocalMaterialIndex;
 
     public Technology(String id, ImmutableList<PlaneSchema> planeSchemas) {
+        if (planeSchemas.isEmpty()) {
+            throw new IllegalArgumentException("technology must have at least one plane");
+        }
         this.id = id;
         this.planeSchemas = planeSchemas;
 
@@ -65,6 +68,12 @@ public final class Technology {
 
     public boolean isPlaneIndexValid(int planeIndex) {
         return (planeIndex >= 0 && planeIndex < planeSchemas.size());
+    }
+
+    public void validatePlaneIndex(int planeIndex) {
+        if (!isPlaneIndexValid(planeIndex)) {
+            throw new IllegalArgumentException("invalid plane index: " + planeIndex);
+        }
     }
 
     public ImmutableList<PlaneSchema> getPlaneSchemas() {

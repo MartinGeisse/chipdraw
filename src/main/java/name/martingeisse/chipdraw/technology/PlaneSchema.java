@@ -19,6 +19,9 @@ public final class PlaneSchema {
      * Constructor for a multi-material plane.
      */
     public PlaneSchema(String name, ImmutableList<String> materialNames) {
+        if (materialNames.isEmpty()) {
+            throw new IllegalArgumentException("plane must have at least one material");
+        }
         this.name = name;
         this.materialNames = materialNames;
     }

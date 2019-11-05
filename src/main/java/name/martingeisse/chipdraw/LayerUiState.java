@@ -14,13 +14,13 @@ public final class LayerUiState {
 
 	private final Technology technology;
 	private final SidebarTableModel sidebarTableModel = new SidebarTableModel();
-	private final boolean[] visible;
-	private int editing = 0;
+	private final boolean[] planesVisible;
+	private int editingGlobalMaterialIndex = 0;
 
 	public LayerUiState(Technology technology) {
 		this.technology = technology;
-		this.visible = new boolean[technology.getPlaneSchemas().size()];
-		Arrays.fill(visible, true);
+		this.planesVisible = new boolean[technology.getPlaneCount()];
+		Arrays.fill(planesVisible, true);
 	}
 
 	public TableModel getSidebarTableModel() {
@@ -30,71 +30,57 @@ public final class LayerUiState {
 //region plane-oriented accessors
 
 	public boolean isPlaneVisible(int planeIndex) {
-		return false; // TODO
+		technology.validatePlaneIndex(planeIndex);
+		return planesVisible[planeIndex];
 	}
 
-	public void setPlaneVisible(int planeIndex) {
-		// TODO
+	public void setPlaneVisible(int planeIndex, boolean visible) {
+		technology.validatePlaneIndex(planeIndex);
+		planesVisible[planeIndex] = visible;
+		sidebarTableModel.fireTableCellUpdated(row, 1);
 	}
 
 	public void togglePlaneVisible(int planeIndex) {
-		// TODO
+		technology.validatePlaneIndex(planeIndex);
+		planesVisible[planeIndex] = !planesVisible[planeIndex];
+		sidebarTableModel.fireTableCellUpdated(row, 1);
 	}
 
 //endregion
 
 //region layer-oriented accessors
 
-	public boolean isLayerVisible(int globalLayerIndex) {
-		return isPlaneVisible(technology.getPlaneIndexForGlobalLayerIndex(globalLayerIndex));
+	public boolean isMaterialVisible(int globalMaterialIndex) {
+		return isPlaneVisible(technology.getPlaneIndexForGlobalMaterialIndex(globalMaterialIndex));
 	}
 
-	public void setLayerVisible(int globalLayerIndex) {
-		setPlaneVisible(technology.getPlaneIndexForGlobalLayerIndex(globalLayerIndex));
+	public void setMaterialVisible(int globalMaterialIndex, boolean visible) {
+		setPlaneVisible(technology.getPlaneIndexForGlobalMaterialIndex(globalMaterialIndex), visible);
 	}
 
-	public void toggleLayerVisible(int globalLayerIndex) {
-		togglePlaneVisible(technology.getPlaneIndexForGlobalLayerIndex(globalLayerIndex));
+	public void toggleMaterialVisible(int globalMaterialIndex) {
+		togglePlaneVisible(technology.getPlaneIndexForGlobalMaterialIndex(globalMaterialIndex));
 	}
 
 //endregion
 
-	public boolean getLayerVisible(int layer) {
-		technology.validateGlobalLayerIndex(layer);
-		return visible[layer];
+	public int getEditingGlobalMaterialIndex() {
+		return editingGlobalMaterialIndex;
 	}
 
-	public void setLayerVisible(int layer, boolean value) {
-		technology.validateGlobalLayerIndex(layer);
-		visible[layer] = value;
-		sidebarTableModel.fireTableCellUpdated(layer, 1);
-	}
-
-	public void toggleVisible(int layer) {
-		technology.validateGlobalLayerIndex(layer);
-		visible[layer] = !visible[layer];
-		sidebarTableModel.fireTableCellUpdated(layer, 1);
-	}
-
-	// TODO rename to getEditingLayer
-	public int getEditing() {
-		return editing;
-	}
-
-	// TODO rename to setEditingLayer
-	public void setEditing(int editing) {
-		technology.validateGlobalLayerIndex(editing);
-		int old = this.editing;
-		this.editing = editing;
+	public void setEditingGlobalMaterialIndex(int editingGlobalMaterialIndex) {
+		technology.validateGlobalMaterialIndex(editingGlobalMaterialIndex);
+		int old = this.editingGlobalMaterialIndex;
+		this.editingGlobalMaterialIndex = editingGlobalMaterialIndex;
 		sidebarTableModel.fireTableCellUpdated(old, 0);
-		sidebarTableModel.fireTableCellUpdated(editing, 0);
+		sidebarTableModel.fireTableCellUpdated(editingGlobalMaterialIndex, 0);
 	}
 
 	private class SidebarTableModel extends AbstractTableModel {
 
 		@Override
 		public int getRowCount() {
-			return technology.getGlobalLayerCount();
+			return technology.getGlobalMaterialCount();
 		}
 
 		@Override
@@ -131,15 +117,15 @@ public final class LayerUiState {
 			switch (columnIndex) {
 
 				case 0:
-					return rowIndex == editing; // TODO
+					return rowIndex == editingGlobalMaterialIndex;
 
 				case 1:
-					return isLayerVisible(rowIndex);
+					return isMaterialVisible(rowIndex);
 
 				case 2: {
-					PlaneSchema planeSchema = technology.getPlaneSchemaForGlobalLayerIndex(rowIndex);
-					int localIndex = technology.getLocalLayerIndexForGlobalLayerIndex(rowIndex);
-					return planeSchema.getLayerNames().get(localIndex);
+					PlaneSchema planeSchema = technology.getPlaneSchemaForGlobalMaterialIndex(rowIndex);
+					int localIndex = technology.getLocalMaterialIndexForGlobalMaterialIndex(rowIndex);
+					return planeSchema.getMaterialNames().get(localIndex);
 				}
 
 				default:
