@@ -27,6 +27,8 @@ public final class LayerUiState {
 		return sidebarTableModel;
 	}
 
+//region plane-oriented accessors
+
 	public boolean isPlaneVisible(int planeIndex) {
 		return false; // TODO
 	}
@@ -38,6 +40,10 @@ public final class LayerUiState {
 	public void togglePlaneVisible(int planeIndex) {
 		// TODO
 	}
+
+//endregion
+
+//region layer-oriented accessors
 
 	public boolean isLayerVisible(int globalLayerIndex) {
 		return isPlaneVisible(technology.getPlaneIndexForGlobalLayerIndex(globalLayerIndex));
@@ -51,12 +57,14 @@ public final class LayerUiState {
 		togglePlaneVisible(technology.getPlaneIndexForGlobalLayerIndex(globalLayerIndex));
 	}
 
-	public boolean getVisible(int layer) {
+//endregion
+
+	public boolean getLayerVisible(int layer) {
 		technology.validateLayerIndex(layer);
 		return visible[layer];
 	}
 
-	public void setVisible(int layer, boolean value) {
+	public void setLayerVisible(int layer, boolean value) {
 		technology.validateLayerIndex(layer);
 		visible[layer] = value;
 		sidebarTableModel.fireTableCellUpdated(layer, 1);

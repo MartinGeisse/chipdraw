@@ -71,14 +71,14 @@ public class MainWindow extends JFrame {
                     }
                     int rowIndex = table.rowAtPoint(e.getPoint());
                     int columnIndex = table.columnAtPoint(e.getPoint());
-                    if (!design.getTechnology().isLayerIndexValid(rowIndex)) {
+                    if (!design.getTechnology().isGlobalLayerIndexValid(rowIndex)) {
                         return;
                     }
                     if (columnIndex == 0) {
-                        layerUiState.setEditing(rowIndex);
+                        layerUiState.setEditing(rowIndex); // TODO
                         table.repaint();
                     } else if (columnIndex == 1) {
-                        layerUiState.toggleVisible(rowIndex);
+                        layerUiState.toggleVisible(rowIndex); // TODO
                         table.repaint();
                     }
                 }
@@ -116,6 +116,7 @@ public class MainWindow extends JFrame {
             });
         }
 
+        // TODO
         Paint layer0Paint;
         {
             BufferedImage image = new BufferedImage(3, 3, BufferedImage.TYPE_INT_RGB);
@@ -130,19 +131,26 @@ public class MainWindow extends JFrame {
             protected void paintComponent(Graphics _g) {
                 Graphics2D g = (Graphics2D) _g;
 
+                // get width / height
                 int panelWidth = mainPanel.getWidth();
                 int panelHeight = mainPanel.getHeight();
                 int designDisplayWidth = design.getWidth() * cellSize;
                 int designDisplayHeight = design.getHeight() * cellSize;
+
+                // draw background
                 if (designDisplayWidth < panelWidth || designDisplayHeight < panelHeight) {
                     g.setColor(Color.LIGHT_GRAY);
                     g.fillRect(0, 0, panelWidth, panelHeight);
                 }
-
                 g.setColor(Color.BLACK);
                 g.fillRect(0, 0, designDisplayWidth, designDisplayHeight);
+
+                // draw pixels
                 for (int x = 0; x < MainWindow.this.design.getWidth(); x++) {
                     for (int y = 0; y < MainWindow.this.design.getHeight(); y++) {
+
+                        // TODO
+
                         boolean l0 = MainWindow.this.design.getLayers().get(0).getCell(x, y) && layerUiState.getVisible(0);
                         boolean l1 = MainWindow.this.design.getLayers().get(1).getCell(x, y) && layerUiState.getVisible(1);
                         boolean l2 = MainWindow.this.design.getLayers().get(2).getCell(x, y) && layerUiState.getVisible(2);
@@ -156,6 +164,7 @@ public class MainWindow extends JFrame {
                         }
                     }
                 }
+
             }
         };
         MouseAdapter mouseAdapter = new MouseAdapter() {
@@ -177,12 +186,15 @@ public class MainWindow extends JFrame {
                 if (drawing || erasing) {
                     int x = e.getX() / cellSize;
                     int y = e.getY() / cellSize;
+
+                    // TODO
                     if (MainWindow.this.design.getLayers().get(layerUiState.getEditing()).isValidPosition(x, y)) {
                         MainWindow.this.design.getLayers().get(layerUiState.getEditing()).setCell(x, y, drawing);
                         consumeDrcResult(null);
                         drcAgent.trigger();
                         mainPanel.repaint();
                     }
+
                 }
             }
 
@@ -209,15 +221,15 @@ public class MainWindow extends JFrame {
                     case '8':
                     case '9': {
                         int layer = event.getKeyChar() - '1';
-                        if (design.getTechnology().isLayerIndexValid(layer)) {
-                            layerUiState.setEditing(layer);
+                        if (design.getTechnology().isGlobalLayerIndexValid(layer)) {
+                            layerUiState.setEditing(layer); // TODO
                         }
                         break;
                     }
 
                     case '0':
-                        if (design.getTechnology().isLayerIndexValid(9)) {
-                            layerUiState.setEditing(9);
+                        if (design.getTechnology().isGlobalLayerIndexValid(9)) {
+                            layerUiState.setEditing(9); // TODO
                         }
                         break;
 
@@ -275,7 +287,7 @@ public class MainWindow extends JFrame {
     }
 
     private void resetUi() {
-        layerUiState.setEditing(0);
+        layerUiState.setEditing(0); // TODO
         drawing = false;
         erasing = false;
         cellSize = 16;
