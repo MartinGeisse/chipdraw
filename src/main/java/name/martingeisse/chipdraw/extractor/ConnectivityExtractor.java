@@ -8,14 +8,18 @@ import name.martingeisse.chipdraw.Plane;
  */
 public abstract class ConnectivityExtractor extends AbstractPerPlaneExtractor {
 
+	private int localMaterialIndex = -1;
+
 	@Override
 	protected void handlePlane(Plane plane) {
 		Plane copy = new Plane(plane);
 		for (int y = 0; y < copy.getHeight(); y++) {
 			for (int x = 0; x < copy.getWidth(); x++) {
-				int localMaterialIndex = copy.getCell(x, y);
-				if (localMaterialIndex != Plane.EMPTY_CELL && handleFirst(x, y, localMaterialIndex)) {
+				localMaterialIndex = copy.getCell(x, y);
+				if (localMaterialIndex != Plane.EMPTY_CELL) {
+					beginPatch(localMaterialIndex);
 					clear(copy, x, y);
+					finishPatch();
 				}
 			}
 		}
@@ -23,7 +27,8 @@ public abstract class ConnectivityExtractor extends AbstractPerPlaneExtractor {
 
 	private void clear(Plane copy, int x, int y) {
 		int localMaterialIndex = copy.getCellAutoclip(x, y);
-		if (localMaterialIndex != Plane.EMPTY_CELL && handleNext(x, y, localMaterialIndex)) {
+		if (localMaterialIndex != Plane.EMPTY_CELL && localMaterialIndex == this.localMaterialIndex) {
+			handlePixel(x, y);
 			copy.setCell(x, y, Plane.EMPTY_CELL);
 			clear(copy, x - 1, y);
 			clear(copy, x + 1, y);
@@ -32,28 +37,16 @@ public abstract class ConnectivityExtractor extends AbstractPerPlaneExtractor {
 		}
 	}
 
-	protected abstract boolean handleFirst(int x, int y, int localMaterialIndex);
-
-	protected abstract boolean handleNext(int x, int y, int localMaterialIndex);
-
-	public static class Uniform extends ConnectivityExtractor {
-
-		private int localMaterialIndex = -1;
-
-		@Override
-		protected boolean handleFirst(int x, int y, int localMaterialIndex) {
-			this.localMaterialIndex = localMaterialIndex;
-			return true;
-		}
-
-		@Override
-		protected boolean handleNext(int x, int y, int localMaterialIndex) {
-			return localMaterialIndex == this.localMaterialIndex;
-		}
-
+	protected void beginPatch(int localMaterialIndex) {
 	}
 
-	public static class Test extends Uniform {
+	protected void handlePixel(int x, int y) {
+	}
+
+	protected void finishPatch() {
+	}
+
+	public static class Test extends ConnectivityExtractor {
 
 		@Override
 		protected void beginDesign(Design design) {
@@ -71,10 +64,8 @@ public abstract class ConnectivityExtractor extends AbstractPerPlaneExtractor {
 		}
 
 		@Override
-		protected boolean handleFirst(int x, int y, int localMaterialIndex) {
-			super.handleFirst(x, y, localMaterialIndex);
-			System.out.println("found patch at " + x + ", " + y + ", local material index: " + localMaterialIndex);
-			return true;
+		protected void beginPatch(int localMaterialIndex) {
+			System.out.println("found patch with local material index: " + localMaterialIndex);
 		}
 
 	}
