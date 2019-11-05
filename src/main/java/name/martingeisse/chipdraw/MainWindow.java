@@ -5,6 +5,7 @@ import name.martingeisse.chipdraw.drc.DrcAgent;
 import name.martingeisse.chipdraw.drc.Violation;
 import name.martingeisse.chipdraw.icons.Icons;
 import name.martingeisse.chipdraw.technology.NoSuchTechnologyException;
+import name.martingeisse.chipdraw.ui.DesignPixelPanel;
 import name.martingeisse.chipdraw.ui.MenuBarBuilder;
 import name.martingeisse.chipdraw.ui.SingleIconBooleanCellRenderer;
 
@@ -126,45 +127,20 @@ public class MainWindow extends JFrame {
             layer0Paint = new TexturePaint(image, new Rectangle2D.Float(0, 0, 3, 3));
         }
 
-        mainPanel = new JPanel() {
+        mainPanel = new DesignPixelPanel(this) {
             @Override
-            protected void paintComponent(Graphics _g) {
-                Graphics2D g = (Graphics2D) _g;
+            protected void drawPixel(int cellX, int cellY, int screenX, int screenY, int screenSize) {
+                boolean l0 = MainWindow.this.design.getPlanes().get(0).getCell(x, y) && layerUiState.getVisible(0);
+                boolean l1 = MainWindow.this.design.getPlanes().get(1).getCell(x, y) && layerUiState.getVisible(1);
+                boolean l2 = MainWindow.this.design.getPlanes().get(2).getCell(x, y) && layerUiState.getVisible(2);
 
-                // get width / height
-                int panelWidth = mainPanel.getWidth();
-                int panelHeight = mainPanel.getHeight();
-                int designDisplayWidth = design.getWidth() * cellSize;
-                int designDisplayHeight = design.getHeight() * cellSize;
-
-                // draw background
-                if (designDisplayWidth < panelWidth || designDisplayHeight < panelHeight) {
-                    g.setColor(Color.LIGHT_GRAY);
-                    g.fillRect(0, 0, panelWidth, panelHeight);
+                if (l1 || l2) {
+                    g.setColor(new Color(0, l1 ? 255 : 0, l2 ? 255 : 0));
+                    g.fillRect(x * cellSize, y * cellSize, cellSize, cellSize);
+                } else if (l0) {
+                    g.setPaint(layer0Paint);
+                    g.fillRect(x * cellSize, y * cellSize, cellSize, cellSize);
                 }
-                g.setColor(Color.BLACK);
-                g.fillRect(0, 0, designDisplayWidth, designDisplayHeight);
-
-                // draw pixels
-                for (int x = 0; x < MainWindow.this.design.getWidth(); x++) {
-                    for (int y = 0; y < MainWindow.this.design.getHeight(); y++) {
-
-                        // TODO
-
-                        boolean l0 = MainWindow.this.design.getPlanes().get(0).getCell(x, y) && layerUiState.getVisible(0);
-                        boolean l1 = MainWindow.this.design.getPlanes().get(1).getCell(x, y) && layerUiState.getVisible(1);
-                        boolean l2 = MainWindow.this.design.getPlanes().get(2).getCell(x, y) && layerUiState.getVisible(2);
-
-                        if (l1 || l2) {
-                            g.setColor(new Color(0, l1 ? 255 : 0, l2 ? 255 : 0));
-                            g.fillRect(x * cellSize, y * cellSize, cellSize, cellSize);
-                        } else if (l0) {
-                            g.setPaint(layer0Paint);
-                            g.fillRect(x * cellSize, y * cellSize, cellSize, cellSize);
-                        }
-                    }
-                }
-
             }
         };
         MouseAdapter mouseAdapter = new MouseAdapter() {
@@ -285,6 +261,14 @@ public class MainWindow extends JFrame {
         resetUi();
         drcAgent.setDesign(design);
         loadAndSaveDialogs = new LoadAndSaveDialogs(workbench.getTechnologyRepository());
+    }
+
+    public Design getCurrentDesign() {
+        return design;
+    }
+
+    public int getCurrentCellSize() {
+        return cellSize;
     }
 
     private void resetUi() {
