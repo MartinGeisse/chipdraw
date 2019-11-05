@@ -7,6 +7,8 @@ import java.util.Arrays;
 
 /**
  * TODO rename "cells" to "pixels"? The former already has a meaning in chip design.
+ *
+ * TODO the remaining code uses the term "layers" but this code says "values"
  */
 public final class Plane implements Serializable {
 
