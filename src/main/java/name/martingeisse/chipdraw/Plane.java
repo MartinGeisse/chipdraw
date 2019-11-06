@@ -196,4 +196,24 @@ public final class Plane implements Serializable {
         return true;
     }
 
+    public boolean isEmpty() {
+        for (byte cellValue : cells) {
+            int localMaterialIndex = cellValue & 0xff;
+            if (localMaterialIndex != EMPTY_CELL) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    public boolean hasMaterial(int expectedLocalMaterialIndex) {
+        for (byte cellValue : cells) {
+            int localMaterialIndex = cellValue & 0xff;
+            if (localMaterialIndex == expectedLocalMaterialIndex) {
+                return true;
+            }
+        }
+        return false;
+    }
+
 }
