@@ -3,14 +3,17 @@ package name.martingeisse.chipdraw;
 import com.google.common.collect.ImmutableList;
 import name.martingeisse.chipdraw.drc.DrcAgent;
 import name.martingeisse.chipdraw.drc.Violation;
+import name.martingeisse.chipdraw.global_tools.Autocropper;
 import name.martingeisse.chipdraw.global_tools.ConnectivityExtractor;
 import name.martingeisse.chipdraw.global_tools.CornerStitchingExtrator;
+import name.martingeisse.chipdraw.global_tools.Enlarger;
 import name.martingeisse.chipdraw.icons.Icons;
 import name.martingeisse.chipdraw.global_tools.magic.MagicExportDialog;
 import name.martingeisse.chipdraw.technology.NoSuchTechnologyException;
 import name.martingeisse.chipdraw.ui.DesignPixelPanel;
 import name.martingeisse.chipdraw.ui.MenuBarBuilder;
 import name.martingeisse.chipdraw.ui.SingleIconBooleanCellRenderer;
+import name.martingeisse.chipdraw.util.UserVisibleMessageException;
 
 import javax.swing.*;
 import java.awt.*;
@@ -287,6 +290,14 @@ public class MainWindow extends JFrame {
             builder.add("Corner Stitching Extractor", () -> new CornerStitchingExtrator.Test().extract(design));
             builder.add("Connectivity Extractor", () -> new ConnectivityExtractor.Test().extract(design));
             builder.add("Magic Export", () -> MagicExportDialog.showExportDialog(this, design));
+            builder.add("Enlarge", () -> setDesign(new Enlarger(design).enlarge()));
+            builder.add("Autocrop", () -> {
+                try {
+                    setDesign(new Autocropper(design).autocrop());
+                } catch (UserVisibleMessageException e) {
+                    JOptionPane.showMessageDialog(this, e.getMessage());
+                }
+            });
             builder.addMenu("Help");
             builder.addExternalLink("Contents", "https://github.com/MartinGeisse/chipdraw/blob/master/doc/index.md"); // TODO link to commit for this version
             builder.add("About", () -> JOptionPane.showMessageDialog(MainWindow.this, About.ABOUT_TEXT));
@@ -333,10 +344,16 @@ public class MainWindow extends JFrame {
             JOptionPane.showMessageDialog(this, exception.getMessage());
             return;
         }
-        if (design == null) {
-            return;
+        if (design != null) {
+            setDesign(design);
         }
-        this.design = design;
+    }
+
+    private void setDesign(Design newDesign) {
+        if (newDesign == null) {
+            throw new IllegalArgumentException("newDesign cannot be null");
+        }
+        this.design = newDesign;
         this.materialUiState = new MaterialUiState(design.getTechnology());
         consumeDrcResult(null);
         drcAgent.setDesign(design);
