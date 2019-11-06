@@ -3,6 +3,7 @@ package name.martingeisse.chipdraw.magic;
 import name.martingeisse.chipdraw.Design;
 import name.martingeisse.chipdraw.Plane;
 import name.martingeisse.chipdraw.extractor.CornerStitchingExtrator;
+import name.martingeisse.chipdraw.technology.Technologies;
 
 import javax.swing.*;
 import java.awt.*;
@@ -12,15 +13,23 @@ import java.util.Date;
 
 public class MagicExporter {
 
-    private final Design design;
+    private final Design originalDesign;
     private final File file;
+    private Design effectiveDesign;
 
     public MagicExporter(Design design, File file) {
-        this.design = design;
+        this.originalDesign = design;
         this.file = file;
     }
 
     public void export() throws IOException {
+        if (originalDesign.getTechnology() == Technologies.CONCEPT) {
+            effectiveDesign = new ConceptToLibresiliconConverter(originalDesign).convert();
+        } else if (originalDesign.getTechnology() == Technologies.LIBRESILICON_MAGIC_SCMOS) {
+            effectiveDesign = originalDesign;
+        } else {
+            throw new IllegalArgumentException("input design for conversion must use 'concept' or 'libresilicon-magic-scmos' technology");
+        }
         try (FileOutputStream fileOutputStream = new FileOutputStream(file)) {
             try (OutputStreamWriter outputStreamWriter = new OutputStreamWriter(fileOutputStream, StandardCharsets.ISO_8859_1)) {
                 PrintWriter out = new PrintWriter(outputStreamWriter);
@@ -37,9 +46,9 @@ public class MagicExporter {
 
         // wells
         printSectionHeadline(out, "pwell");
-        printRectangles(out, design.getPlanes().get(0), 1);
+        printRectangles(out, effectiveDesign.getPlanes().get(0), 1);
         printSectionHeadline(out, "nwell");
-        printRectangles(out, design.getPlanes().get(0), 0);
+        printRectangles(out, effectiveDesign.getPlanes().get(0), 0);
 
         // TODO
 
@@ -59,7 +68,7 @@ public class MagicExporter {
                     out.println("rect " + x + " " + y + " " + (x + width) + " " + (y + height));
                 }
             }
-        }.extract(design);
+        }.extract(effectiveDesign);
     }
 
 }
