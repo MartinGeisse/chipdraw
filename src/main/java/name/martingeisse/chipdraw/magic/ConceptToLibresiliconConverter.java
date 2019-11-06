@@ -32,6 +32,23 @@ public final class ConceptToLibresiliconConverter {
                 // wells can be copied directly
                 converted.getPlanes().get(0).setCell(x, y, originalWell);
 
+                // active has lots of different upwards contact types in Magic, all of which are represented by
+                // downwards contacts in metal1 in our "concept" tech
+                if (originalMetal1 == 0) {
+                    // concept metal1 has a downwards contact
+                    if (originalPoly != Plane.EMPTY_CELL) {
+                        // TODO converted.getPlanes().get(1).setCell(x, y, 1); // via12
+                    }
+
+                    // TODO
+                    if (originalDiff != Plane.EMPTY_CELL && originalPoly != Plane.EMPTY_CELL) {
+                        throw new IncompatibilityException(x, y, "contact is ambiguous since both diff and poly are filled");
+                    }
+                } else {
+                    // no downwards contact
+                }
+
+
                 // TODO active
                 // converted.getPlanes().get(1).setCell(x, y, );
 
