@@ -28,8 +28,9 @@ public final class Technologies {
         PlaneSchema well = new PlaneSchema("well", ImmutableList.of("nwell", "pwell"));
         PlaneSchema diff = new PlaneSchema("diff", ImmutableList.of("ndiff", "pdiff"));
         PlaneSchema poly = new PlaneSchema("poly");
-        PlaneSchema metal1 = new PlaneSchema("metal1", ImmutableList.of("metal1", "contact"));
-        ImmutableList<PlaneSchema> planeSchemas = ImmutableList.of(well, diff, poly, metal1);
+        PlaneSchema metal1 = new PlaneSchema("metal1", ImmutableList.of("contact", "metal1"));
+        PlaneSchema metal2 = new PlaneSchema("metal2", ImmutableList.of("via12", "metal2"));
+        ImmutableList<PlaneSchema> planeSchemas = ImmutableList.of(well, diff, poly, metal1, metal2);
         return new Technology("concept", planeSchemas);
     }
 
@@ -41,8 +42,7 @@ public final class Technologies {
                 "ntransistor", "ptransistor",
                 "polycontact",
                 "ndcontact", "pdcontact",
-                "nsubstratencontact", "psubstratepcontact",
-                "nsubstratendiff", "psubstratepdiff"
+                "nsubstratencontact", "psubstratepcontact"
         ));
         PlaneSchema metal1 = new PlaneSchema("metal1", ImmutableList.of("metal1", "m2contact"));
         PlaneSchema metal2 = new PlaneSchema("metal2", ImmutableList.of("metal2", "pad"));
