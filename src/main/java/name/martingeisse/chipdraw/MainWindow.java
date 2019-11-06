@@ -30,9 +30,9 @@ public class MainWindow extends JFrame {
     private final DrcAgent drcAgent;
     private final LoadAndSaveDialogs loadAndSaveDialogs;
     private final JButton drcButton;
+    private final MaterialUiState materialUiState;
 
     private Design design;
-    private MaterialUiState materialUiState;
     private boolean drawing;
     private boolean erasing;
     private int cellSize;
@@ -354,7 +354,7 @@ public class MainWindow extends JFrame {
             throw new IllegalArgumentException("newDesign cannot be null");
         }
         this.design = newDesign;
-        this.materialUiState = new MaterialUiState(design.getTechnology());
+        materialUiState.setTechnology(design.getTechnology());
         consumeDrcResult(null);
         drcAgent.setDesign(design);
         resetUi();

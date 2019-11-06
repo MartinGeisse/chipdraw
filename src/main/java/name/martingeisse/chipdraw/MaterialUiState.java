@@ -12,15 +12,22 @@ import java.util.Arrays;
  */
 public final class MaterialUiState {
 
-	private final Technology technology;
 	private final SidebarTableModel sidebarTableModel = new SidebarTableModel();
-	private final boolean[] planesVisible;
-	private int editingGlobalMaterialIndex = 0;
+	private Technology technology;
+	private boolean[] planesVisible;
+	private int editingGlobalMaterialIndex;
 
 	public MaterialUiState(Technology technology) {
+		setTechnology(technology);
+	}
+
+	public void setTechnology(Technology technology) {
 		this.technology = technology;
 		this.planesVisible = new boolean[technology.getPlaneCount()];
 		Arrays.fill(planesVisible, true);
+		editingGlobalMaterialIndex = 0;
+		sidebarTableModel.fireTableDataChanged();
+
 	}
 
 	public TableModel getSidebarTableModel() {
