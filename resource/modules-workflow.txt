@@ -1,0 +1,18 @@
+
+Intended workflow for re-usable modules:
+- a module instances refers to a module which is an external design
+- the module defines its size, layers, ports (layer / position), symbolically to show them
+- in the editor, a module instance is a blackbox represented by its external interface. Formally, it cannot be
+    viewed, edited or DRC-checked. In practice, viewing in an external read-only window is provided as well as
+    "speculative" DRC, see below
+- to actually build a design, all module instances must be materialized. This can be done one-by-one, but the design
+    isn't ready until all module instances are gone. Materializing copies the module's pixels into the parent design.
+    From then, they can be viewed, edited and DRC-checked like all pixels of the parent design.
+- Materializing is "permanent" in the sense that the materialized pixels cannot be distinguished from other pixels
+    afterwards, and all info about the module/instance are gone. It is still possible and preferable that the editor
+    providesthe normal "undo" operation even for materialization. Materializing should be done in a copy of the original
+    concept design to allow "going back", and in addition, all changes should be stored in a VCS as usual.
+- For the "concept" stage where module instances still exist, the normal DRC ignores their pixels. A DRC may warn
+    about overlapping instances, but only on a blackbox level. The editor may provide a "speculative" DRC that makes
+    a copy of the design, materializes all instances and performs a DRC on the result.
+
