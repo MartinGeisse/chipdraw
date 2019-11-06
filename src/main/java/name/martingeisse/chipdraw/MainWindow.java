@@ -84,11 +84,11 @@ public class MainWindow extends JFrame {
                     if (!design.getTechnology().isGlobalMaterialIndexValid(rowIndex)) {
                         return;
                     }
-                    if (columnIndex == 0) {
-                        materialUiState.setEditingGlobalMaterialIndex(rowIndex);
-                        table.repaint();
-                    } else if (columnIndex == 1) {
+                    if (columnIndex == 1) {
                         materialUiState.toggleMaterialVisible(rowIndex);
+                        table.repaint();
+                    } else {
+                        materialUiState.setEditingGlobalMaterialIndex(rowIndex);
                         table.repaint();
                     }
                 }
@@ -223,7 +223,7 @@ public class MainWindow extends JFrame {
                     Plane plane = design.getPlanes().get(planeIndex);
                     if (plane.isValidPosition(x, y)) {
                         int offset = (cursorSize - 1) / 2;
-                        plane.drawRectangle(x - offset, y - offset, cursorSize, cursorSize, drawing ? localMaterialIndex : Plane.EMPTY_CELL);
+                        plane.drawRectangleAutoclip(x - offset, y - offset, cursorSize, cursorSize, drawing ? localMaterialIndex : Plane.EMPTY_CELL);
                         consumeDrcResult(null);
                         drcAgent.trigger();
                         mainPanel.repaint();
