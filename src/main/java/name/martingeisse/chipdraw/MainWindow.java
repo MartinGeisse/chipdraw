@@ -37,6 +37,7 @@ public class MainWindow extends JFrame {
     private boolean erasing;
     private int cellSize;
     private ImmutableList<Violation> drcViolations;
+    private int cursorSize = 1;
 
     public MainWindow(Workbench _workbench, Design _design) {
         super("Chipdraw");
@@ -101,6 +102,20 @@ public class MainWindow extends JFrame {
             materialUiState.getSidebarTableModel().addTableModelListener(event -> {
                 MainWindow.this.repaint();
             });
+        }
+        {
+            JPanel cursorSizeButtonPanel = new JPanel();
+            cursorSizeButtonPanel.setLayout(new BoxLayout(cursorSizeButtonPanel, BoxLayout.X_AXIS));
+            JButton button1x1 = new JButton(Icons.get("cursor_1x1.png"));
+            button1x1.addActionListener(event -> cursorSize = 1);
+            cursorSizeButtonPanel.add(button1x1);
+            JButton button2x2 = new JButton(Icons.get("cursor_2x2.png"));
+            button2x2.addActionListener(event -> cursorSize = 2);
+            cursorSizeButtonPanel.add(button2x2);
+            JButton button3x3 = new JButton(Icons.get("cursor_3x3.png"));
+            button3x3.addActionListener(event -> cursorSize = 3);
+            cursorSizeButtonPanel.add(button3x3);
+            sideBar.add(cursorSizeButtonPanel);
         }
         sideBar.add(Box.createGlue());
         {
@@ -207,7 +222,8 @@ public class MainWindow extends JFrame {
                     int planeIndex = design.getTechnology().getPlaneIndexForGlobalMaterialIndex(globalMaterialIndex);
                     Plane plane = design.getPlanes().get(planeIndex);
                     if (plane.isValidPosition(x, y)) {
-                        plane.setCell(x, y, drawing ? localMaterialIndex : Plane.EMPTY_CELL);
+                        int offset = (cursorSize - 1) / 2;
+                        plane.drawRectangle(x - offset, y - offset, cursorSize, cursorSize, drawing ? localMaterialIndex : Plane.EMPTY_CELL);
                         consumeDrcResult(null);
                         drcAgent.trigger();
                         mainPanel.repaint();
