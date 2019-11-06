@@ -130,6 +130,7 @@ public class MainWindow extends JFrame {
             private final Paint pdiffPaint = createCrossHatching(0xff0000);
             private final Paint polyPaint = new Color(0, 128, 0);
             private final Paint metalPaint = Color.LIGHT_GRAY;
+            private final Paint contactPaint = Color.GRAY;
 
             private int getPixel(int planeIndex, int x, int y) {
                 if (materialUiState.isPlaneVisible(planeIndex)) {
@@ -146,12 +147,11 @@ public class MainWindow extends JFrame {
                 int wellPlane = getPixel(0, cellX, cellY);
                 int diffPlane = getPixel(1, cellX, cellY);
                 int polyPlane = getPixel(2, cellX, cellY);
-                // TODO: 3 = contact
-                int metalPlane = getPixel(4, cellX, cellY);
+                int metalPlane = getPixel(3, cellX, cellY);
 
                 // select paint
                 if (metalPlane != Plane.EMPTY_CELL) {
-                    g.setPaint(metalPaint);
+                    g.setPaint(metalPlane == 0 ? metalPaint : contactPaint);
                 } else if (polyPlane != Plane.EMPTY_CELL) {
                     g.setPaint(polyPaint);
                 } else if (diffPlane != Plane.EMPTY_CELL) {
