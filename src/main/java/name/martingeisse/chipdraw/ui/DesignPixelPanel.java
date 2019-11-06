@@ -46,26 +46,36 @@ public abstract class DesignPixelPanel extends JPanel {
 			}
 		}
 
+		// draw grid
+		g.setColor(Color.DARK_GRAY);
+		for (int x = 1; x < design.getWidth(); x++) {
+			g.drawLine(x * cellSize, 0, x * cellSize, design.getHeight() * cellSize);
+		}
+		for (int y = 1; y < design.getHeight(); y++) {
+			g.drawLine(0, y * cellSize, design.getWidth() * cellSize, y * cellSize);
+		}
+
 	}
 
 	protected abstract void drawPixel(Graphics2D g, int cellX, int cellY, int screenX, int screenY, int screenSize);
 
 	protected static Paint createHatching(int color) {
-		BufferedImage image = new BufferedImage(3, 3, BufferedImage.TYPE_INT_RGB);
-		image.setRGB(0, 0, color);
-		image.setRGB(1, 1, color);
-		image.setRGB(2, 2, color);
-		return new TexturePaint(image, new Rectangle2D.Float(0, 0, 3, 3));
+		int size = 5;
+		BufferedImage image = new BufferedImage(size, size, BufferedImage.TYPE_INT_RGB);
+		for (int i = 0; i < size; i++) {
+			image.setRGB(i, i, color);
+		}
+		return new TexturePaint(image, new Rectangle2D.Float(0, 0, size, size));
 	}
 
 	protected static Paint createCrossHatching(int color) {
-		BufferedImage image = new BufferedImage(3, 3, BufferedImage.TYPE_INT_RGB);
-		image.setRGB(0, 0, color);
-		image.setRGB(2, 0, color);
-		image.setRGB(1, 1, color);
-		image.setRGB(0, 2, color);
-		image.setRGB(2, 2, color);
-		return new TexturePaint(image, new Rectangle2D.Float(0, 0, 3, 3));
+		int size = 5;
+		BufferedImage image = new BufferedImage(size, size, BufferedImage.TYPE_INT_RGB);
+		for (int i = 0; i < size; i++) {
+			image.setRGB(i, i, color);
+			image.setRGB(size - 1 - i, i, color);
+		}
+		return new TexturePaint(image, new Rectangle2D.Float(0, 0, size, size));
 	}
 
 }

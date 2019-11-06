@@ -126,13 +126,14 @@ public class MainWindow extends JFrame {
 
             private final Paint nwellPaint = createHatching(0x0000ff);
             private final Paint pwellPaint = createHatching(0xff0000);
-            private final Paint ndiffPaint = createCrossHatching(0x0000ff);
-            private final Paint pdiffPaint = createCrossHatching(0xff0000);
+            private final Paint ndiffPaint = new Color(0x0000ff);
+            private final Paint pdiffPaint = new Color(0xff0000);
             private final Paint polyPaint = new Color(0, 128, 0);
             private final Paint contactPaint = Color.GRAY;
             private final Paint metal1Paint = Color.LIGHT_GRAY;
             private final Paint via12Paint = new Color(0x008080);
             private final Paint metal2Paint = new Color(0x00c0c0);
+            private final Paint padPaint = new Color(0xff00ff);
 
             private int getPixel(int planeIndex, int x, int y) {
                 if (materialUiState.isPlaneVisible(planeIndex)) {
@@ -155,7 +156,7 @@ public class MainWindow extends JFrame {
 
                 // select paint
                 if (padPlane != Plane.EMPTY_CELL) {
-                    g.setPaint(Color.PINK);
+                    g.setPaint(padPaint);
                 } else if (metal2Plane != Plane.EMPTY_CELL) {
                     g.setPaint(metal2Plane == 0 ? via12Paint : metal2Paint);
                 } else if (metal1Plane != Plane.EMPTY_CELL) {
@@ -277,7 +278,7 @@ public class MainWindow extends JFrame {
         {
             MenuBarBuilder builder = new MenuBarBuilder();
             builder.addMenu("File");
-            builder.add("New", () -> new MainWindow(workbench, new Design(design.getTechnology(), 20, 10)).setVisible(true));
+            builder.add("New", () -> new MainWindow(workbench, new Design(design.getTechnology(), 200, 200)).setVisible(true));
             builder.add("Load", this::showLoadDialog);
             builder.add("Save", this::showSaveDialog);
             builder.addSeparator();

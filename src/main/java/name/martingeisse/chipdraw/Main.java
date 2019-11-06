@@ -10,7 +10,7 @@ public class Main {
         technologyRepository.add(Technologies.CONCEPT);
         technologyRepository.add(Technologies.LIBRESILICON_MAGIC_SCMOS);
         Workbench workbench = new Workbench(technologyRepository);
-        Design design = new Design(Technologies.CONCEPT, 20, 10);
+        Design design = new Design(Technologies.CONCEPT, 200, 200);
         new MainWindow(workbench, design).setVisible(true);
     }
 
