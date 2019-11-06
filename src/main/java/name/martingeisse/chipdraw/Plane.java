@@ -1,6 +1,7 @@
 package name.martingeisse.chipdraw;
 
 import name.martingeisse.chipdraw.technology.PlaneSchema;
+import name.martingeisse.chipdraw.util.RectangularSize;
 
 import java.io.Serializable;
 import java.util.Arrays;
@@ -10,7 +11,7 @@ import java.util.Arrays;
  *
  * TODO consider using value types LocalMaterialIndex and GlobalMaterialIndex to avoid confusion (passing one as the other)
  */
-public final class Plane implements Serializable {
+public final class Plane implements Serializable, RectangularSize {
 
     public static final int EMPTY_CELL = 255;
     public static final int MAX_LOCAL_MATERIAL_INDEX = 250;
@@ -214,6 +215,19 @@ public final class Plane implements Serializable {
             }
         }
         return false;
+    }
+
+    public void copyFrom(Plane source, int sourceX, int sourceY, int destinationX, int destinationY, int rectangleWidth, int rectangleHeight) {
+        if (source.getSchema() != getSchema()) {
+            throw new IllegalArgumentException("cannot copy from plane with different schema");
+        }
+        source.validateSubRectangle(sourceX, sourceY, rectangleWidth, rectangleHeight);
+        validateSubRectangle(destinationX, destinationY, rectangleWidth, rectangleHeight);
+        for (int dx = 0; dx < rectangleWidth; dx++) {
+            for (int dy = 0; dy < rectangleHeight; dy++) {
+                setCell(destinationX + dx, destinationY + dy, source.getCell(sourceX + dx, sourceY + dy));
+            }
+        }
     }
 
 }

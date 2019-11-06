@@ -5,6 +5,7 @@ import name.martingeisse.chipdraw.technology.PlaneSchema;
 import name.martingeisse.chipdraw.technology.NoSuchTechnologyException;
 import name.martingeisse.chipdraw.technology.Technology;
 import name.martingeisse.chipdraw.technology.TechnologyRepository;
+import name.martingeisse.chipdraw.util.RectangularSize;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -13,7 +14,7 @@ import java.util.List;
 /**
  *
  */
-public final class Design implements Serializable {
+public final class Design implements Serializable, RectangularSize {
 
     private final String technologyId;
     private transient Technology technology;
@@ -58,6 +59,17 @@ public final class Design implements Serializable {
 
     public ImmutableList<Plane> getPlanes() {
         return planes;
+    }
+
+    public void copyFrom(Design source, int sourceX, int sourceY, int destinationX, int destinationY, int rectangleWidth, int rectangleHeight) {
+        if (source.getTechnology() != getTechnology()) {
+            throw new IllegalArgumentException("cannot copy from design with different technology");
+        }
+        source.validateSubRectangle(sourceX, sourceY, rectangleWidth, rectangleHeight);
+        validateSubRectangle(destinationX, destinationY, rectangleWidth, rectangleHeight);
+        for (int i = 0; i < planes.size(); i++) {
+            planes.get(i).copyFrom(source.getPlanes().get(i), sourceX, sourceY, destinationX, destinationY, rectangleWidth, rectangleHeight);
+        }
     }
 
 }
