@@ -56,7 +56,7 @@ public class MainWindow extends JFrame {
         });
 
         sideBar = new JPanel();
-        sideBar.setLayout(new BorderLayout());
+        sideBar.setLayout(new BoxLayout(sideBar, BoxLayout.Y_AXIS));
         sideBar.setPreferredSize(new Dimension(150, 0));
         add(sideBar, BorderLayout.LINE_START);
         {
@@ -96,16 +96,17 @@ public class MainWindow extends JFrame {
             table.setFillsViewportHeight(true);
             table.setFocusable(false);
             JScrollPane scrollPane = new JScrollPane(table);
-            sideBar.add(scrollPane, BorderLayout.PAGE_START);
+            sideBar.add(scrollPane);
 
             materialUiState.getSidebarTableModel().addTableModelListener(event -> {
                 MainWindow.this.repaint();
             });
         }
+        sideBar.add(Box.createGlue());
         {
             drcButton = new JButton("DRC");
             drcButton.setFocusable(false);
-            sideBar.add(drcButton, BorderLayout.PAGE_END);
+            sideBar.add(drcButton);
             consumeDrcResult(null);
             drcAgent.addResultListener(this::consumeDrcResult);
             drcButton.addActionListener(event -> {
@@ -123,6 +124,9 @@ public class MainWindow extends JFrame {
                 }
                 JOptionPane.showMessageDialog(MainWindow.this, builder.toString());
             });
+            drcButton.setMaximumSize(new Dimension(Integer.MAX_VALUE, drcButton.getPreferredSize().height));
+            drcButton.setAlignmentX(0.5f);
+
         }
 
         mainPanel = new DesignPixelPanel(this) {
