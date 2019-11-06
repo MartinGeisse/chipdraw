@@ -1,4 +1,4 @@
-package name.martingeisse.chipdraw.magic;
+package name.martingeisse.chipdraw.global_tools.magic;
 
 import name.martingeisse.chipdraw.Design;
 import name.martingeisse.chipdraw.Plane;

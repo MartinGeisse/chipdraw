@@ -1,8 +1,8 @@
-package name.martingeisse.chipdraw.magic;
+package name.martingeisse.chipdraw.global_tools.magic;
 
 import name.martingeisse.chipdraw.Design;
 import name.martingeisse.chipdraw.Plane;
-import name.martingeisse.chipdraw.extractor.CornerStitchingExtrator;
+import name.martingeisse.chipdraw.global_tools.CornerStitchingExtrator;
 import name.martingeisse.chipdraw.technology.Technologies;
 
 import java.io.*;
