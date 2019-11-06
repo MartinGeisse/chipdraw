@@ -31,7 +31,7 @@ public class MagicExporter {
         this.file = file;
     }
 
-    public void export() throws IOException {
+    public void export() throws IOException, ConceptToLibresiliconConverter.IncompatibilityException {
         if (originalDesign.getTechnology() == Technologies.CONCEPT) {
             design = new ConceptToLibresiliconConverter(originalDesign).convert();
         } else if (originalDesign.getTechnology() == Technologies.LIBRESILICON_MAGIC_SCMOS) {

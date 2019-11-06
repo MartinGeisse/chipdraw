@@ -30,7 +30,8 @@ public final class Technologies {
         PlaneSchema poly = new PlaneSchema("poly");
         PlaneSchema metal1 = new PlaneSchema("metal1", ImmutableList.of("contact", "metal1"));
         PlaneSchema metal2 = new PlaneSchema("metal2", ImmutableList.of("via12", "metal2"));
-        ImmutableList<PlaneSchema> planeSchemas = ImmutableList.of(well, diff, poly, metal1, metal2);
+        PlaneSchema pad = new PlaneSchema("pad");
+        ImmutableList<PlaneSchema> planeSchemas = ImmutableList.of(well, diff, poly, metal1, metal2, pad);
         return new Technology("concept", planeSchemas);
     }
 

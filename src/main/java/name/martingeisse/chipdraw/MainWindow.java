@@ -151,9 +151,12 @@ public class MainWindow extends JFrame {
                 int polyPlane = getPixel(2, cellX, cellY);
                 int metal1Plane = getPixel(3, cellX, cellY);
                 int metal2Plane = getPixel(4, cellX, cellY);
+                int padPlane = getPixel(5, cellX, cellY);
 
                 // select paint
-                if (metal2Plane != Plane.EMPTY_CELL) {
+                if (padPlane != Plane.EMPTY_CELL) {
+                    g.setPaint(Color.PINK);
+                } else if (metal2Plane != Plane.EMPTY_CELL) {
                     g.setPaint(metal2Plane == 0 ? via12Paint : metal2Paint);
                 } else if (metal1Plane != Plane.EMPTY_CELL) {
                     g.setPaint(metal1Plane == 0 ? contactPaint : metal1Paint);

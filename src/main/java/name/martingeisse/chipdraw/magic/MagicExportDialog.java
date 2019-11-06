@@ -24,6 +24,8 @@ public final class MagicExportDialog {
         }
         try {
             new MagicExporter(design, new File(path)).export();
+        } catch (ConceptToLibresiliconConverter.IncompatibilityException e) {
+            JOptionPane.showMessageDialog(parent, "Design is incompatible with LibreSilicon Magic SCMOS schema: " + e);
         } catch (IOException e) {
             JOptionPane.showMessageDialog(parent, "Error while exporting: " + e);
         }
