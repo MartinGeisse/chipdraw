@@ -3,7 +3,7 @@ package name.martingeisse.chipdraw;
 import com.google.common.collect.ImmutableList;
 import name.martingeisse.chipdraw.design.Design;
 import name.martingeisse.chipdraw.design.DesignOperation;
-import name.martingeisse.chipdraw.design.UndoEntry;
+import name.martingeisse.chipdraw.design.Undoer;
 import name.martingeisse.chipdraw.drc.DrcAgent;
 import name.martingeisse.chipdraw.drc.Violation;
 import name.martingeisse.chipdraw.technology.Technologies;
@@ -23,7 +23,7 @@ public class Editor {
     private final DrcAgent drcAgent;
 
     private Design design;
-    private LinkedList<UndoEntry> undoStack = new LinkedList<>();
+    private LinkedList<Undoer> undoStack = new LinkedList<>();
     private ImmutableList<Violation> drcViolations;
 
     public Editor(Ui ui) {
@@ -76,10 +76,10 @@ public class Editor {
         if (result == null) {
             throw new RuntimeException("operation returned null");
         }
-        if (result.undoEntry == null) {
+        if (result.undoer == null) {
             undoStack.clear();
         } else {
-            undoStack.add(result.undoEntry);
+            undoStack.add(result.undoer);
         }
         afterOperationOrUndo(result.newDesign);
     }
@@ -88,7 +88,7 @@ public class Editor {
         if (undoStack.isEmpty()) {
             return;
         }
-        UndoEntry entry = undoStack.removeLast();
+        Undoer entry = undoStack.removeLast();
         afterOperationOrUndo(entry.perform(design));
     }
 

@@ -1,10 +1,10 @@
 package name.martingeisse.chipdraw.design;
 
-public final class RestoringUndoEntry implements UndoEntry {
+public final class RestoringUndoer implements Undoer {
 
     private final Design oldDesign;
 
-    public RestoringUndoEntry(Design oldDesign) {
+    public RestoringUndoer(Design oldDesign) {
         this.oldDesign = oldDesign;
     }
 

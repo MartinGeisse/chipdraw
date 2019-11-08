@@ -3,7 +3,7 @@ package name.martingeisse.chipdraw.design;
 /**
  * Implementations must be immutable.
  */
-public interface UndoEntry {
+public interface Undoer {
 
     /**
      * This method assumes that the argument design is in the same state as just after the original operation has been

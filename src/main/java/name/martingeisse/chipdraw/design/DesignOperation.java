@@ -10,7 +10,7 @@ public interface DesignOperation {
     /**
      * Performs this operation on the specified design.
      *
-     * If this operation is undo-able, then the result returned by this method contains an {@link UndoEntry} that can
+     * If this operation is undo-able, then the result returned by this method contains an {@link Undoer} that can
      * be used later to undo the operation. This entry stores enough information to change the new state of the design
      * back to the old state. The undo entry should not keep a reference to the design -- a reference will be passed to
      * the undo entry, which should be used instead.
@@ -29,22 +29,22 @@ public interface DesignOperation {
      */
     class Result {
 
-        public final UndoEntry undoEntry;
+        public final Undoer undoer;
         public final Design newDesign;
 
         /**
          * Result for an operation that modifies the original design in-place and cannot be undone.
          */
         public Result() {
-            this.undoEntry = null;
+            this.undoer = null;
             this.newDesign = null;
         }
 
         /**
          * Result for an operation that modifies the original design in-place that can be undone.
          */
-        public Result(UndoEntry undoEntry) {
-            this.undoEntry = undoEntry;
+        public Result(Undoer undoer) {
+            this.undoer = undoer;
             this.newDesign = null;
         }
 
@@ -53,7 +53,7 @@ public interface DesignOperation {
          * the old design.
          */
         public Result(Design oldDesign, Design newDesign) {
-            this.undoEntry = new RestoringUndoEntry(oldDesign);
+            this.undoer = new RestoringUndoer(oldDesign);
             this.newDesign = newDesign;
         }
 
