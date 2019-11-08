@@ -171,15 +171,15 @@ public class MainWindow extends JFrame implements Editor.Ui {
             }
 
             @Override
-            protected void drawPixel(Graphics2D g, int cellX, int cellY, int screenX, int screenY, int screenSize) {
+            protected void drawPixel(Graphics2D g, int pixelX, int pixelY, int screenX, int screenY, int screenSize) {
 
                 // read pixel per plane
-                int wellPlane = getPixel(0, cellX, cellY);
-                int diffPlane = getPixel(1, cellX, cellY);
-                int polyPlane = getPixel(2, cellX, cellY);
-                int metal1Plane = getPixel(3, cellX, cellY);
-                int metal2Plane = getPixel(4, cellX, cellY);
-                int padPlane = getPixel(5, cellX, cellY);
+                int wellPlane = getPixel(0, pixelX, pixelY);
+                int diffPlane = getPixel(1, pixelX, pixelY);
+                int polyPlane = getPixel(2, pixelX, pixelY);
+                int metal1Plane = getPixel(3, pixelX, pixelY);
+                int metal2Plane = getPixel(4, pixelX, pixelY);
+                int padPlane = getPixel(5, pixelX, pixelY);
 
                 // select paint
                 if (padPlane != Plane.EMPTY_PIXEL) {
@@ -333,7 +333,7 @@ public class MainWindow extends JFrame implements Editor.Ui {
         return editor.getDesign();
     }
 
-    public int getCurrentCellSize() {
+    public int getCurrentPixelSize() {
         return pixelSize;
     }
 
