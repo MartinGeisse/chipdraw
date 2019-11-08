@@ -55,6 +55,9 @@ public class Editor {
 
         /**
          * Called when the {@link Design} object has been replaced by another one.
+         *
+         * NOTE clarify the relation between the Design object and logcially editing the same/a different design,
+         * but only do this after moving logic to this editor class.
          */
         void onDesignReplaced();
 
