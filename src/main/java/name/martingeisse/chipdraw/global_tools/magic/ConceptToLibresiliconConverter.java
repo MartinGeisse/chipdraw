@@ -88,8 +88,6 @@ public final class ConceptToLibresiliconConverter {
 
                 }
 
-                // TODO export: wo metal1 ist ist auch poly -- das ist doch nicht richtig!
-
                 // LibreSilicon metal1 plane contains metal1/2 vias as "m2contact", which are in the metal2 plane in the "concept" tech
                 if (originalMetal1 == Plane.EMPTY_CELL) {
                     if (originalMetal2 == Technologies.Concept.MATERIAL_LOCAL_METAL2_VIA12) {

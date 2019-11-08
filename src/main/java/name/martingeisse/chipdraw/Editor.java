@@ -16,11 +16,6 @@ import java.util.LinkedList;
  * the following features:
  * - undo support
  * - DRC
- * <p>
- * Note that changes to the design must be performed by passing a {@link DesignOperation} to this editor, NOT by
- * performing the operation directly on the design or even calling setters on the design. If that were done, these
- * changes would corrupt the undo stack, and the UI and other listeners would not be informed properly.
- * TODO some code currently does this
  */
 public class Editor {
 
