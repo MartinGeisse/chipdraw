@@ -37,7 +37,6 @@ public class MainWindow extends JFrame implements Editor.Ui {
     private final MaterialUiState materialUiState;
     private final Editor editor;
 
-    private Design design;
     private boolean drawing;
     private boolean erasing;
     private int cellSize;
@@ -46,7 +45,6 @@ public class MainWindow extends JFrame implements Editor.Ui {
     public MainWindow(Workbench _workbench, Design _design) {
         super("Chipdraw");
         this.workbench = _workbench;
-        this.design = _design;
         this.materialUiState = new MaterialUiState(_design.getTechnology());
         this.editor = new Editor(this);
 
@@ -373,7 +371,6 @@ public class MainWindow extends JFrame implements Editor.Ui {
 
     @Override
     public void onRestart() {
-        this.design = editor.getDesign();
         materialUiState.setTechnology(editor.getDesign().getTechnology());
         materialUiState.setEditingGlobalMaterialIndex(0);
         drawing = false;
@@ -384,7 +381,6 @@ public class MainWindow extends JFrame implements Editor.Ui {
 
     @Override
     public void onDesignObjectReplaced() {
-        this.design = editor.getDesign();
         materialUiState.setTechnology(editor.getDesign().getTechnology());
         updateMainPanelSize();
     }
