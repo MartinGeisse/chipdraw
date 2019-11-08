@@ -45,12 +45,22 @@ public class Editor {
         return design;
     }
 
+    public void restart(Design design) {
+        if (design == null) {
+            throw new IllegalArgumentException("design cannot be null");
+        }
+        this.design = design;
+        ui.onRestart();
+        consumeDrcResult(null);
+        drcAgent.setDesign(design);
+    }
+
     public void setDesign(Design design) {
         if (design == null) {
             throw new IllegalArgumentException("design cannot be null");
         }
         this.design = design;
-        ui.onDesignReplaced();
+        ui.onDesignObjectReplaced();
         consumeDrcResult(null);
         drcAgent.setDesign(design);
     }
@@ -78,12 +88,21 @@ public class Editor {
     public interface Ui {
 
         /**
-         * Called when the {@link Design} object has been replaced by another one.
-         * <p>
-         * NOTE clarify the relation between the Design object and logcially editing the same/a different design,
-         * but only do this after moving logic to this editor class.
+         * Called when the user logically starts editing a different design. This should expect the {@link Design}
+         * object of the editor to be replaced, and also reset the UI state, e.g. zoom level, toolbars, and so on.
          */
-        void onDesignReplaced();
+        void onRestart();
+
+        /**
+         * Called when the {@link Design} object has been replaced by another one, but the user is logically still
+         * editing the "same" design. That is, the UI state (e.g. zoom level) should be kept intact, and the editor
+         * also keeps editor state such as the undo stack intact. This case happens when an operation has radical
+         * effects such as changing the size or technology of the design.
+         *
+         * (Note: It is unclear whether we will keep this kind of change in the future, or rather make the
+         * {@link Design} class handle even radical changes internally).
+         */
+        void onDesignObjectReplaced();
 
         /**
          * Called when the contents of the design have changed.

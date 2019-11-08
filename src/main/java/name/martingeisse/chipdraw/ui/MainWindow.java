@@ -331,7 +331,7 @@ public class MainWindow extends JFrame implements Editor.Ui {
         }
 
         loadAndSaveDialogs = new LoadAndSaveDialogs(workbench.getTechnologyRepository());
-        editor.setDesign(_design);
+        editor.restart(_design);
     }
 
     public Design getCurrentDesign() {
@@ -362,18 +362,25 @@ public class MainWindow extends JFrame implements Editor.Ui {
             return;
         }
         if (design != null) {
-            editor.setDesign(design);
+            editor.restart(design);
         }
     }
 
     @Override
-    public void onDesignReplaced() {
+    public void onRestart() {
         this.design = editor.getDesign();
         materialUiState.setTechnology(design.getTechnology());
         materialUiState.setEditingGlobalMaterialIndex(0);
         drawing = false;
         erasing = false;
         cellSize = 16;
+        updateMainPanelSize();
+    }
+
+    @Override
+    public void onDesignObjectReplaced() {
+        this.design = editor.getDesign();
+        materialUiState.setTechnology(design.getTechnology());
         updateMainPanelSize();
     }
 
