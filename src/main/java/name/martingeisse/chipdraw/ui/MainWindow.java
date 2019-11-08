@@ -46,7 +46,7 @@ public class MainWindow extends JFrame implements Editor.Ui {
         super("Chipdraw");
         this.workbench = _workbench;
         this.design = _design;
-        this.materialUiState = new MaterialUiState(design.getTechnology());
+        this.materialUiState = new MaterialUiState(_design.getTechnology());
         this.editor = new Editor(this);
 
         setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
@@ -85,7 +85,7 @@ public class MainWindow extends JFrame implements Editor.Ui {
                     }
                     int rowIndex = table.rowAtPoint(e.getPoint());
                     int columnIndex = table.columnAtPoint(e.getPoint());
-                    if (!design.getTechnology().isGlobalMaterialIndexValid(rowIndex)) {
+                    if (!editor.getDesign().getTechnology().isGlobalMaterialIndexValid(rowIndex)) {
                         return;
                     }
                     if (columnIndex == 1) {
@@ -165,7 +165,7 @@ public class MainWindow extends JFrame implements Editor.Ui {
 
             private int getPixel(int planeIndex, int x, int y) {
                 if (materialUiState.isPlaneVisible(planeIndex)) {
-                    return design.getPlanes().get(planeIndex).getCell(x, y);
+                    return editor.getDesign().getPlanes().get(planeIndex).getCell(x, y);
                 } else {
                     return Plane.EMPTY_CELL;
                 }
@@ -260,14 +260,14 @@ public class MainWindow extends JFrame implements Editor.Ui {
                     case '8':
                     case '9': {
                         int globalMaterialIndex = event.getKeyChar() - '1';
-                        if (design.getTechnology().isGlobalMaterialIndexValid(globalMaterialIndex)) {
+                        if (editor.getDesign().getTechnology().isGlobalMaterialIndexValid(globalMaterialIndex)) {
                             materialUiState.setEditingGlobalMaterialIndex(globalMaterialIndex);
                         }
                         break;
                     }
 
                     case '0':
-                        if (design.getTechnology().isGlobalMaterialIndexValid(9)) {
+                        if (editor.getDesign().getTechnology().isGlobalMaterialIndexValid(9)) {
                             materialUiState.setEditingGlobalMaterialIndex(9);
                         }
                         break;
@@ -307,15 +307,15 @@ public class MainWindow extends JFrame implements Editor.Ui {
         {
             MenuBarBuilder builder = new MenuBarBuilder();
             builder.addMenu("File");
-            builder.add("New", () -> new MainWindow(workbench, new Design(design.getTechnology(), 200, 200)).setVisible(true));
+            builder.add("New", () -> new MainWindow(workbench, new Design(editor.getDesign().getTechnology(), 200, 200)).setVisible(true));
             builder.add("Load", this::showLoadDialog);
             builder.add("Save", this::showSaveDialog);
             builder.addSeparator();
             builder.add("Quit", () -> System.exit(0));
             builder.addMenu("Test");
-            builder.add("Corner Stitching Extractor", () -> new CornerStitchingExtrator.Test().extract(design));
-            builder.add("Connectivity Extractor", () -> new ConnectivityExtractor.Test().extract(design));
-            builder.add("Magic Export", () -> MagicExportDialog.showExportDialog(this, design));
+            builder.add("Corner Stitching Extractor", () -> new CornerStitchingExtrator.Test().extract(editor.getDesign()));
+            builder.add("Connectivity Extractor", () -> new ConnectivityExtractor.Test().extract(editor.getDesign()));
+            builder.add("Magic Export", () -> MagicExportDialog.showExportDialog(this, editor.getDesign()));
             builder.add("Enlarge", () -> editor.setDesign(new Enlarger(design).enlarge()));
             builder.add("Autocrop", () -> {
                 try {
@@ -335,7 +335,7 @@ public class MainWindow extends JFrame implements Editor.Ui {
     }
 
     public Design getCurrentDesign() {
-        return design;
+        return editor.getDesign();
     }
 
     public int getCurrentCellSize() {
@@ -343,14 +343,14 @@ public class MainWindow extends JFrame implements Editor.Ui {
     }
 
     private void updateMainPanelSize() {
-        Dimension size = new Dimension(design.getWidth() * cellSize, design.getHeight() * cellSize);
+        Dimension size = new Dimension(editor.getDesign().getWidth() * cellSize, editor.getDesign().getHeight() * cellSize);
         mainPanel.setPreferredSize(size);
         mainPanel.setSize(size);
         mainPanel.repaint();
     }
 
     private void showSaveDialog() {
-        loadAndSaveDialogs.showSaveDialog(this, design);
+        loadAndSaveDialogs.showSaveDialog(this, editor.getDesign());
     }
 
     private void showLoadDialog() {
@@ -369,7 +369,7 @@ public class MainWindow extends JFrame implements Editor.Ui {
     @Override
     public void onRestart() {
         this.design = editor.getDesign();
-        materialUiState.setTechnology(design.getTechnology());
+        materialUiState.setTechnology(editor.getDesign().getTechnology());
         materialUiState.setEditingGlobalMaterialIndex(0);
         drawing = false;
         erasing = false;
@@ -380,7 +380,7 @@ public class MainWindow extends JFrame implements Editor.Ui {
     @Override
     public void onDesignObjectReplaced() {
         this.design = editor.getDesign();
-        materialUiState.setTechnology(design.getTechnology());
+        materialUiState.setTechnology(editor.getDesign().getTechnology());
         updateMainPanelSize();
     }
 
