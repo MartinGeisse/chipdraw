@@ -13,7 +13,7 @@ import java.util.Arrays;
  */
 public final class Plane implements Serializable, RectangularSize {
 
-    public static final int EMPTY_CELL = 255;
+    public static final int EMPTY_PIXEL = 255;
     public static final int MAX_LOCAL_MATERIAL_INDEX = 250;
 
     private transient PlaneSchema planeSchema;
@@ -30,7 +30,7 @@ public final class Plane implements Serializable, RectangularSize {
         this.height = height;
         this.cells = new byte[width * height];
         if (dataSource == null) {
-            Arrays.fill(cells, (byte)EMPTY_CELL);
+            Arrays.fill(cells, (byte) EMPTY_PIXEL);
         } else {
             System.arraycopy(dataSource, 0, cells, 0, cells.length);
         }
@@ -80,11 +80,11 @@ public final class Plane implements Serializable, RectangularSize {
     }
 
     public int getCellAutoclip(int x, int y) {
-        return isValidPosition(x, y) ? getCell(x, y) : EMPTY_CELL;
+        return isValidPosition(x, y) ? getCell(x, y) : EMPTY_PIXEL;
     }
 
     public boolean isValidLocalMaterialIndex(int value) {
-        return (value >= 0 && value <= MAX_LOCAL_MATERIAL_INDEX) || value == EMPTY_CELL;
+        return (value >= 0 && value <= MAX_LOCAL_MATERIAL_INDEX) || value == EMPTY_PIXEL;
     }
 
     private byte validateLocalMaterialIndex(int localMaterialIndex) {
@@ -164,7 +164,7 @@ public final class Plane implements Serializable, RectangularSize {
         }
 
         // clipped case: at least one pixel is implicitly empty, so if we are looking for nonempty pixels, it can't be uniform
-        if (expectedLocalMaterialIndex != EMPTY_CELL) {
+        if (expectedLocalMaterialIndex != EMPTY_PIXEL) {
             return false;
         }
 
@@ -200,7 +200,7 @@ public final class Plane implements Serializable, RectangularSize {
     public boolean isEmpty() {
         for (byte cellValue : cells) {
             int localMaterialIndex = cellValue & 0xff;
-            if (localMaterialIndex != EMPTY_CELL) {
+            if (localMaterialIndex != EMPTY_PIXEL) {
                 return false;
             }
         }

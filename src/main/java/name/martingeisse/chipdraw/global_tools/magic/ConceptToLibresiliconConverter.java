@@ -51,14 +51,14 @@ public final class ConceptToLibresiliconConverter {
                 if (originalMetal1 == Technologies.Concept.MATERIAL_LOCAL_METAL1_CONTACT) {
                     // concept metal1 has a downwards contact
 
-                    if (originalPoly != Plane.EMPTY_CELL) {
+                    if (originalPoly != Plane.EMPTY_PIXEL) {
                         convertedActivePlane.setCell(x, y, Technologies.LibreSiliconMagicScmos.MATERIAL_LOCAL_ACTIVE_POLYCONTACT);
-                    } else if (originalDiff != Plane.EMPTY_CELL) {
+                    } else if (originalDiff != Plane.EMPTY_PIXEL) {
                         convertedActivePlane.setCell(x, y,
                             originalDiff == Technologies.Concept.MATERIAL_LOCAL_DIFF_NDIFF ?
                                 Technologies.LibreSiliconMagicScmos.MATERIAL_LOCAL_ACTIVE_NDCONTACT :
                                     Technologies.LibreSiliconMagicScmos.MATERIAL_LOCAL_ACTIVE_PDCONTACT);
-                    } else if (originalWell != Plane.EMPTY_CELL) {
+                    } else if (originalWell != Plane.EMPTY_PIXEL) {
                         convertedActivePlane.setCell(x, y,
                             originalWell == Technologies.Concept.MATERIAL_LOCAL_WELL_NWELL ?
                                 Technologies.LibreSiliconMagicScmos.MATERIAL_LOCAL_ACTIVE_NSUBSTRATENCONTACT :
@@ -70,8 +70,8 @@ public final class ConceptToLibresiliconConverter {
                 } else {
                     // no downwards contact
 
-                    if (originalPoly != Plane.EMPTY_CELL) {
-                        if (originalDiff != Plane.EMPTY_CELL) {
+                    if (originalPoly != Plane.EMPTY_PIXEL) {
+                        if (originalDiff != Plane.EMPTY_PIXEL) {
                             convertedActivePlane.setCell(x, y,
                                     originalDiff == Technologies.Concept.MATERIAL_LOCAL_DIFF_NDIFF ?
                                             Technologies.LibreSiliconMagicScmos.MATERIAL_LOCAL_ACTIVE_NTRANSISTOR :
@@ -79,7 +79,7 @@ public final class ConceptToLibresiliconConverter {
                         } else {
                             convertedActivePlane.setCell(x, y, Technologies.LibreSiliconMagicScmos.MATERIAL_LOCAL_ACTIVE_POLYSILICON);
                         }
-                    } else if (originalDiff != Plane.EMPTY_CELL) {
+                    } else if (originalDiff != Plane.EMPTY_PIXEL) {
                         convertedActivePlane.setCell(x, y,
                                 originalDiff == Technologies.Concept.MATERIAL_LOCAL_DIFF_NDIFF ?
                                         Technologies.LibreSiliconMagicScmos.MATERIAL_LOCAL_ACTIVE_NDIFFUSION :
@@ -89,7 +89,7 @@ public final class ConceptToLibresiliconConverter {
                 }
 
                 // LibreSilicon metal1 plane contains metal1/2 vias as "m2contact", which are in the metal2 plane in the "concept" tech
-                if (originalMetal1 == Plane.EMPTY_CELL) {
+                if (originalMetal1 == Plane.EMPTY_PIXEL) {
                     if (originalMetal2 == Technologies.Concept.MATERIAL_LOCAL_METAL2_VIA12) {
                         throw new IncompatibilityException(x, y, "via12 without metal1");
                     } // else: empty
@@ -102,7 +102,7 @@ public final class ConceptToLibresiliconConverter {
                 }
 
                 // LibreSilicon metal2 plane contains pads as "pad", which are in the "pad" plane in the "concept" tech
-                if (originalMetal2 == Plane.EMPTY_CELL) {
+                if (originalMetal2 == Plane.EMPTY_PIXEL) {
                     if (originalPad == Technologies.Concept.MATERIAL_LOCAL_PAD_PAD) {
                         throw new IncompatibilityException(x, y, "pad without metal2");
                     } // else: empty

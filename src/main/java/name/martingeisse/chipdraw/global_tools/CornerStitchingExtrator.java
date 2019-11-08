@@ -16,7 +16,7 @@ public abstract class CornerStitchingExtrator extends AbstractPerPlaneExtractor 
 		for (int y = 0; y < copy.getHeight(); y++) {
 			for (int x = 0; x < copy.getWidth(); x++) {
 				localMaterialIndex = copy.getCell(x, y);
-				if (localMaterialIndex != Plane.EMPTY_CELL) {
+				if (localMaterialIndex != Plane.EMPTY_PIXEL) {
 					extractRectangle(copy, x, y);
 				}
 			}
@@ -53,7 +53,7 @@ public abstract class CornerStitchingExtrator extends AbstractPerPlaneExtractor 
 		}
 
 		finishRectangle(localMaterialIndex, topLeftX, topLeftY, rectangleWidth, rectangleHeight);
-		copy.drawRectangle(topLeftX, topLeftY, rectangleWidth, rectangleHeight, Plane.EMPTY_CELL);
+		copy.drawRectangle(topLeftX, topLeftY, rectangleWidth, rectangleHeight, Plane.EMPTY_PIXEL);
 	}
 
 	protected void beginRectangle(int localMaterialIndex) {

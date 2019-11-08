@@ -166,7 +166,7 @@ public class MainWindow extends JFrame implements Editor.Ui {
                 if (materialUiState.isPlaneVisible(planeIndex)) {
                     return editor.getDesign().getPlanes().get(planeIndex).getCell(x, y);
                 } else {
-                    return Plane.EMPTY_CELL;
+                    return Plane.EMPTY_PIXEL;
                 }
             }
 
@@ -182,17 +182,17 @@ public class MainWindow extends JFrame implements Editor.Ui {
                 int padPlane = getPixel(5, cellX, cellY);
 
                 // select paint
-                if (padPlane != Plane.EMPTY_CELL) {
+                if (padPlane != Plane.EMPTY_PIXEL) {
                     g.setPaint(padPaint);
-                } else if (metal2Plane != Plane.EMPTY_CELL) {
+                } else if (metal2Plane != Plane.EMPTY_PIXEL) {
                     g.setPaint(metal2Plane == 0 ? via12Paint : metal2Paint);
-                } else if (metal1Plane != Plane.EMPTY_CELL) {
+                } else if (metal1Plane != Plane.EMPTY_PIXEL) {
                     g.setPaint(metal1Plane == 0 ? contactPaint : metal1Paint);
-                } else if (polyPlane != Plane.EMPTY_CELL) {
+                } else if (polyPlane != Plane.EMPTY_PIXEL) {
                     g.setPaint(polyPaint);
-                } else if (diffPlane != Plane.EMPTY_CELL) {
+                } else if (diffPlane != Plane.EMPTY_PIXEL) {
                     g.setPaint(diffPlane == 0 ? ndiffPaint : pdiffPaint);
-                } else if (wellPlane != Plane.EMPTY_CELL) {
+                } else if (wellPlane != Plane.EMPTY_PIXEL) {
                     g.setPaint(wellPlane == 0 ? nwellPaint : pwellPaint);
                 } else {
                     return;
@@ -229,7 +229,7 @@ public class MainWindow extends JFrame implements Editor.Ui {
                         Plane plane = design.getPlanes().get(planeIndex);
                         if (plane.isValidPosition(x, y)) {
                             int offset = (cursorSize - 1) / 2;
-                            plane.drawRectangleAutoclip(x - offset, y - offset, cursorSize, cursorSize, drawing ? localMaterialIndex : Plane.EMPTY_CELL);
+                            plane.drawRectangleAutoclip(x - offset, y - offset, cursorSize, cursorSize, drawing ? localMaterialIndex : Plane.EMPTY_PIXEL);
                         }
                         return new DesignOperation.Result();
                     });
