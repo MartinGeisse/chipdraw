@@ -68,7 +68,7 @@ public class MagicExporter {
                                 out.println("rect " + x + " " + flippedY1 + " " + (x + width) + " " + flippedY2);
                             }
                         }
-                    }.extract(design);
+                    }.extract(plane);
                 }
             }
         }

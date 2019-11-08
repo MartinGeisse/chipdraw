@@ -16,6 +16,13 @@ public abstract class AbstractPerPlaneExtractor {
         finishDesign(design);
     }
 
+    public final void extract(Plane plane) {
+        if (beginPlane(plane)) {
+            handlePlane(plane);
+            finishPlane(plane);
+        }
+    }
+
     protected void beginDesign(Design design) {
     }
 
