@@ -73,11 +73,20 @@ public class Editor {
         if (operation == null) {
             throw new IllegalArgumentException("operation cannot be null");
         }
-        UndoEntry undoEntry = operation.perform(design);
-        // TODO undo stack
-        ui.onDesignModified();
-        consumeDrcResult(null);
-        drcAgent.trigger();
+        DesignOperation.Result result = operation.perform(design);
+        if (result == null) {
+            throw new RuntimeException("operation returned null");
+        }
+        if (result.undoEntry != null) {
+            // TODO undo stack
+        }
+        if (result.newDesign != null) {
+            setDesign(result.newDesign);
+        } else {
+            ui.onDesignModified();
+            consumeDrcResult(null);
+            drcAgent.trigger();
+        }
     }
 
     private void consumeDrcResult(ImmutableList<Violation> violations) {

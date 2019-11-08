@@ -5,6 +5,7 @@ import name.martingeisse.chipdraw.About;
 import name.martingeisse.chipdraw.Editor;
 import name.martingeisse.chipdraw.Workbench;
 import name.martingeisse.chipdraw.design.Design;
+import name.martingeisse.chipdraw.design.DesignOperation;
 import name.martingeisse.chipdraw.design.Plane;
 import name.martingeisse.chipdraw.drc.Violation;
 import name.martingeisse.chipdraw.global_tools.Autocropper;
@@ -232,7 +233,7 @@ public class MainWindow extends JFrame implements Editor.Ui {
                             int offset = (cursorSize - 1) / 2;
                             plane.drawRectangleAutoclip(x - offset, y - offset, cursorSize, cursorSize, drawing ? localMaterialIndex : Plane.EMPTY_CELL);
                         }
-                        return null;
+                        return new DesignOperation.Result();
                     });
                 }
             }
@@ -316,7 +317,7 @@ public class MainWindow extends JFrame implements Editor.Ui {
             builder.add("Corner Stitching Extractor", () -> new CornerStitchingExtrator.Test().extract(editor.getDesign()));
             builder.add("Connectivity Extractor", () -> new ConnectivityExtractor.Test().extract(editor.getDesign()));
             builder.add("Magic Export", () -> MagicExportDialog.showExportDialog(this, editor.getDesign()));
-            builder.add("Enlarge", () -> editor.setDesign(new Enlarger(design).enlarge()));
+            builder.add("Enlarge", () -> editor.performOperation(design -> new DesignOperation.Result(design, new Enlarger(design).enlarge())));
             builder.add("Autocrop", () -> {
                 try {
                     editor.setDesign(new Autocropper(design).autocrop());
