@@ -2,6 +2,7 @@ package name.martingeisse.chipdraw.ui;
 
 import com.google.common.collect.ImmutableList;
 import name.martingeisse.chipdraw.About;
+import name.martingeisse.chipdraw.Editor;
 import name.martingeisse.chipdraw.Workbench;
 import name.martingeisse.chipdraw.design.Design;
 import name.martingeisse.chipdraw.design.Plane;
@@ -23,7 +24,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 
-public class MainWindow extends JFrame {
+public class MainWindow extends JFrame implements Editor.Ui {
 
     public static final int MIN_CELL_SIZE = 2;
     public static final int MAX_CELL_SIZE = 32;
@@ -35,6 +36,7 @@ public class MainWindow extends JFrame {
     private final LoadAndSaveDialogs loadAndSaveDialogs;
     private final JButton drcButton;
     private final MaterialUiState materialUiState;
+    private final Editor editor;
 
     private Design design;
     private boolean drawing;
@@ -49,6 +51,8 @@ public class MainWindow extends JFrame {
         this.drcAgent = new DrcAgent();
         this.design = _design;
         this.materialUiState = new MaterialUiState(design.getTechnology());
+        this.editor = new Editor(this, _design);
+
         setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
         setSize(800, 600);
         setResizable(true);
@@ -314,10 +318,10 @@ public class MainWindow extends JFrame {
             builder.add("Corner Stitching Extractor", () -> new CornerStitchingExtrator.Test().extract(design));
             builder.add("Connectivity Extractor", () -> new ConnectivityExtractor.Test().extract(design));
             builder.add("Magic Export", () -> MagicExportDialog.showExportDialog(this, design));
-            builder.add("Enlarge", () -> setDesign(new Enlarger(design).enlarge()));
+            builder.add("Enlarge", () -> editor.setDesign(new Enlarger(design).enlarge()));
             builder.add("Autocrop", () -> {
                 try {
-                    setDesign(new Autocropper(design).autocrop());
+                    editor.setDesign(new Autocropper(design).autocrop());
                 } catch (UserVisibleMessageException e) {
                     JOptionPane.showMessageDialog(this, e.getMessage());
                 }
@@ -369,19 +373,23 @@ public class MainWindow extends JFrame {
             return;
         }
         if (design != null) {
-            setDesign(design);
+            editor.setDesign(design);
         }
     }
 
-    private void setDesign(Design newDesign) {
-        if (newDesign == null) {
-            throw new IllegalArgumentException("newDesign cannot be null");
-        }
-        this.design = newDesign;
+    @Override
+    public void onDesignReplaced() {
         materialUiState.setTechnology(design.getTechnology());
         consumeDrcResult(null);
         drcAgent.setDesign(design);
         resetUi();
+    }
+
+    @Override
+    public void onDesignModified() {
+        consumeDrcResult(null);
+        drcAgent.trigger();
+        mainPanel.repaint();
     }
 
     private void consumeDrcResult(ImmutableList<Violation> violations) {
