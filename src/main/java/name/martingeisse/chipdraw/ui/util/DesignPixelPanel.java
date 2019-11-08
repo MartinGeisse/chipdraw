@@ -25,11 +25,11 @@ public abstract class DesignPixelPanel extends JPanel {
 		Design design = mainWindow.getCurrentDesign();
 
 		// get width / height / cell size
-		int cellSize = mainWindow.getCurrentCellSize();
+		int pixelSize = mainWindow.getCurrentCellSize();
 		int panelWidth = getWidth();
 		int panelHeight = getHeight();
-		int designDisplayWidth = design.getWidth() * cellSize;
-		int designDisplayHeight = design.getHeight() * cellSize;
+		int designDisplayWidth = design.getWidth() * pixelSize;
+		int designDisplayHeight = design.getHeight() * pixelSize;
 
 		// draw background
 		if (designDisplayWidth < panelWidth || designDisplayHeight < panelHeight) {
@@ -42,22 +42,22 @@ public abstract class DesignPixelPanel extends JPanel {
 		// draw pixels
 		for (int x = 0; x < design.getWidth(); x++) {
 			for (int y = 0; y < design.getHeight(); y++) {
-				drawPixel(g, x, y, x * cellSize, y * cellSize, cellSize);
+				drawPixel(g, x, y, x * pixelSize, y * pixelSize, pixelSize);
 			}
 		}
 
 		// draw grid
 		g.setColor(Color.DARK_GRAY);
 		for (int x = 1; x < design.getWidth(); x++) {
-			g.drawLine(x * cellSize, 0, x * cellSize, design.getHeight() * cellSize);
+			g.drawLine(x * pixelSize, 0, x * pixelSize, design.getHeight() * pixelSize);
 		}
 		for (int y = 1; y < design.getHeight(); y++) {
-			g.drawLine(0, y * cellSize, design.getWidth() * cellSize, y * cellSize);
+			g.drawLine(0, y * pixelSize, design.getWidth() * pixelSize, y * pixelSize);
 		}
 
 	}
 
-	protected abstract void drawPixel(Graphics2D g, int cellX, int cellY, int screenX, int screenY, int screenSize);
+	protected abstract void drawPixel(Graphics2D g, int pixelX, int pixelY, int screenX, int screenY, int screenSize);
 
 	protected static Paint createHatching(int color) {
 		int size = 5;

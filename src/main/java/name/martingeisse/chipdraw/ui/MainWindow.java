@@ -26,8 +26,8 @@ import java.awt.event.*;
 
 public class MainWindow extends JFrame implements Editor.Ui {
 
-    public static final int MIN_CELL_SIZE = 2;
-    public static final int MAX_CELL_SIZE = 32;
+    public static final int MIN_PIXEL_SIZE = 2;
+    public static final int MAX_PIXEL_SIZE = 32;
 
     private final Workbench workbench;
     private final JPanel sideBar;
@@ -39,7 +39,7 @@ public class MainWindow extends JFrame implements Editor.Ui {
 
     private boolean drawing;
     private boolean erasing;
-    private int cellSize;
+    private int pixelSize;
     private int cursorSize = 1;
 
     public MainWindow(Workbench _workbench, Design _design) {
@@ -221,8 +221,8 @@ public class MainWindow extends JFrame implements Editor.Ui {
             public void mouseMoved(MouseEvent e) {
                 if (drawing || erasing) {
                     performOperation(design -> {
-                        int x = e.getX() / cellSize;
-                        int y = e.getY() / cellSize;
+                        int x = e.getX() / pixelSize;
+                        int y = e.getY() / pixelSize;
                         int globalMaterialIndex = materialUiState.getEditingGlobalMaterialIndex();
                         int localMaterialIndex = design.getTechnology().getLocalMaterialIndexForGlobalMaterialIndex(globalMaterialIndex);
                         int planeIndex = design.getTechnology().getPlaneIndexForGlobalMaterialIndex(globalMaterialIndex);
@@ -272,15 +272,15 @@ public class MainWindow extends JFrame implements Editor.Ui {
                         break;
 
                     case '+':
-                        if (cellSize < MAX_CELL_SIZE) {
-                            cellSize *= 2;
+                        if (pixelSize < MAX_PIXEL_SIZE) {
+                            pixelSize *= 2;
                             updateMainPanelSize();
                         }
                         break;
 
                     case '-':
-                        if (cellSize > MIN_CELL_SIZE) {
-                            cellSize /= 2;
+                        if (pixelSize > MIN_PIXEL_SIZE) {
+                            pixelSize /= 2;
                             updateMainPanelSize();
                         }
                         break;
@@ -334,11 +334,11 @@ public class MainWindow extends JFrame implements Editor.Ui {
     }
 
     public int getCurrentCellSize() {
-        return cellSize;
+        return pixelSize;
     }
 
     private void updateMainPanelSize() {
-        Dimension size = new Dimension(editor.getDesign().getWidth() * cellSize, editor.getDesign().getHeight() * cellSize);
+        Dimension size = new Dimension(editor.getDesign().getWidth() * pixelSize, editor.getDesign().getHeight() * pixelSize);
         mainPanel.setPreferredSize(size);
         mainPanel.setSize(size);
         mainPanel.repaint();
@@ -375,7 +375,7 @@ public class MainWindow extends JFrame implements Editor.Ui {
         materialUiState.setEditingGlobalMaterialIndex(0);
         drawing = false;
         erasing = false;
-        cellSize = 16;
+        pixelSize = 16;
         updateMainPanelSize();
     }
 
