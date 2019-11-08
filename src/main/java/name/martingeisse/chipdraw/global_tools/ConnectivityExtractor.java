@@ -15,7 +15,7 @@ public abstract class ConnectivityExtractor extends AbstractPerPlaneExtractor {
 		Plane copy = new Plane(plane);
 		for (int y = 0; y < copy.getHeight(); y++) {
 			for (int x = 0; x < copy.getWidth(); x++) {
-				localMaterialIndex = copy.getCell(x, y);
+				localMaterialIndex = copy.getPixel(x, y);
 				if (localMaterialIndex != Plane.EMPTY_PIXEL) {
 					beginPatch(localMaterialIndex);
 					clear(copy, x, y);
@@ -26,10 +26,10 @@ public abstract class ConnectivityExtractor extends AbstractPerPlaneExtractor {
 	}
 
 	private void clear(Plane copy, int x, int y) {
-		int localMaterialIndex = copy.getCellAutoclip(x, y);
+		int localMaterialIndex = copy.getPixelAutoclip(x, y);
 		if (localMaterialIndex != Plane.EMPTY_PIXEL && localMaterialIndex == this.localMaterialIndex) {
 			handlePixel(x, y);
-			copy.setCell(x, y, Plane.EMPTY_PIXEL);
+			copy.setPixel(x, y, Plane.EMPTY_PIXEL);
 			clear(copy, x - 1, y);
 			clear(copy, x + 1, y);
 			clear(copy, x, y - 1);

@@ -18,7 +18,7 @@ public final class Drc {
     }
 
     private static void check(DrcContext context, Plane plane, int x, int y) {
-        if (plane.getCell(x, y) != Plane.EMPTY_PIXEL) {
+        if (plane.getPixel(x, y) != Plane.EMPTY_PIXEL) {
             context.report(x, y, "plane 0 must keep a padding of at least 1 cell from the design boundary");
         }
     }

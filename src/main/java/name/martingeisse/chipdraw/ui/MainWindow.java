@@ -164,7 +164,7 @@ public class MainWindow extends JFrame implements Editor.Ui {
 
             private int getPixel(int planeIndex, int x, int y) {
                 if (materialUiState.isPlaneVisible(planeIndex)) {
-                    return editor.getDesign().getPlanes().get(planeIndex).getCell(x, y);
+                    return editor.getDesign().getPlanes().get(planeIndex).getPixel(x, y);
                 } else {
                     return Plane.EMPTY_PIXEL;
                 }

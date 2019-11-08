@@ -18,21 +18,21 @@ public final class Plane implements Serializable, RectangularSize {
 
     private transient PlaneSchema planeSchema;
     private final int width, height;
-    private final byte[] cells;
+    private final byte[] pixels;
 
     private Plane(PlaneSchema planeSchema, int width, int height, byte[] dataSource) {
         if (planeSchema.getMaterialNames().size() > MAX_LOCAL_MATERIAL_INDEX) {
-            // so we can use bytes to store local material indices and also reserve a special byte value for EMPTY_CELL
+            // so we can use bytes to store local material indices and also reserve a special byte value for EMPTY_PIXEL
             throw new IllegalArgumentException("more than 250 materials in a single plane currently not supported");
         }
         this.planeSchema = planeSchema;
         this.width = width;
         this.height = height;
-        this.cells = new byte[width * height];
+        this.pixels = new byte[width * height];
         if (dataSource == null) {
-            Arrays.fill(cells, (byte) EMPTY_PIXEL);
+            Arrays.fill(pixels, (byte) EMPTY_PIXEL);
         } else {
-            System.arraycopy(dataSource, 0, cells, 0, cells.length);
+            System.arraycopy(dataSource, 0, pixels, 0, pixels.length);
         }
     }
 
@@ -41,7 +41,7 @@ public final class Plane implements Serializable, RectangularSize {
     }
 
     public Plane(Plane original) {
-        this(original.getSchema(), original.getWidth(), original.getHeight(), original.cells);
+        this(original.getSchema(), original.getWidth(), original.getHeight(), original.pixels);
     }
 
     void initializeAfterDeserialization(PlaneSchema planeSchema) {
@@ -75,12 +75,12 @@ public final class Plane implements Serializable, RectangularSize {
         return y * width + x;
     }
 
-    public int getCell(int x, int y) {
-        return cells[getIndex(x, y)] & 0xff;
+    public int getPixel(int x, int y) {
+        return pixels[getIndex(x, y)] & 0xff;
     }
 
-    public int getCellAutoclip(int x, int y) {
-        return isValidPosition(x, y) ? getCell(x, y) : EMPTY_PIXEL;
+    public int getPixelAutoclip(int x, int y) {
+        return isValidPosition(x, y) ? getPixel(x, y) : EMPTY_PIXEL;
     }
 
     public boolean isValidLocalMaterialIndex(int value) {
@@ -94,13 +94,13 @@ public final class Plane implements Serializable, RectangularSize {
         return (byte)localMaterialIndex;
     }
 
-    public void setCell(int x, int y, int localMaterialIndex) {
-        cells[getIndex(x, y)] = validateLocalMaterialIndex(localMaterialIndex);
+    public void setPixel(int x, int y, int localMaterialIndex) {
+        pixels[getIndex(x, y)] = validateLocalMaterialIndex(localMaterialIndex);
     }
 
-    public void setCellAutoclip(int x, int y, int localMaterialIndex) {
+    public void setPixelAutoclip(int x, int y, int localMaterialIndex) {
         if (isValidPosition(x, y)) {
-            setCell(x, y, localMaterialIndex);
+            setPixel(x, y, localMaterialIndex);
         }
     }
 
@@ -140,7 +140,7 @@ public final class Plane implements Serializable, RectangularSize {
         validateLocalMaterialIndex(localMaterialIndex);
         for (int i = 0; i < width; i++) {
             for (int j = 0; j < height; j++) {
-                setCell(x + i, y + j, localMaterialIndex);
+                setPixel(x + i, y + j, localMaterialIndex);
             }
         }
     }
@@ -189,7 +189,7 @@ public final class Plane implements Serializable, RectangularSize {
     private boolean isReactangleUniformInternal(int x, int y, int width, int height, int expectedLocalMaterialIndex) {
         for (int i = 0; i < width; i++) {
             for (int j = 0; j < height; j++) {
-                if (getCell(x + i, y + j) != expectedLocalMaterialIndex) {
+                if (getPixel(x + i, y + j) != expectedLocalMaterialIndex) {
                     return false;
                 }
             }
@@ -198,8 +198,8 @@ public final class Plane implements Serializable, RectangularSize {
     }
 
     public boolean isEmpty() {
-        for (byte cellValue : cells) {
-            int localMaterialIndex = cellValue & 0xff;
+        for (byte pixelValue : pixels) {
+            int localMaterialIndex = pixelValue & 0xff;
             if (localMaterialIndex != EMPTY_PIXEL) {
                 return false;
             }
@@ -208,8 +208,8 @@ public final class Plane implements Serializable, RectangularSize {
     }
 
     public boolean hasMaterial(int expectedLocalMaterialIndex) {
-        for (byte cellValue : cells) {
-            int localMaterialIndex = cellValue & 0xff;
+        for (byte pixelValue : pixels) {
+            int localMaterialIndex = pixelValue & 0xff;
             if (localMaterialIndex == expectedLocalMaterialIndex) {
                 return true;
             }
@@ -225,7 +225,7 @@ public final class Plane implements Serializable, RectangularSize {
         validateSubRectangle(destinationX, destinationY, rectangleWidth, rectangleHeight);
         for (int dx = 0; dx < rectangleWidth; dx++) {
             for (int dy = 0; dy < rectangleHeight; dy++) {
-                setCell(destinationX + dx, destinationY + dy, source.getCell(sourceX + dx, sourceY + dy));
+                setPixel(destinationX + dx, destinationY + dy, source.getPixel(sourceX + dx, sourceY + dy));
             }
         }
     }

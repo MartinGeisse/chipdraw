@@ -36,15 +36,15 @@ public final class ConceptToLibresiliconConverter {
             for (int y = 0; y < original.getHeight(); y++) {
 
                 // read original pixels
-                int originalWell = originalWellPlane.getCell(x, y);
-                int originalDiff = originalDiffPlane.getCell(x, y);
-                int originalPoly = originalPolyPlane.getCell(x, y);
-                int originalMetal1 = originalMetal1Plane.getCell(x, y);
-                int originalMetal2 = originalMetal2Plane.getCell(x, y);
-                int originalPad = originalPadPlane.getCell(x, y);
+                int originalWell = originalWellPlane.getPixel(x, y);
+                int originalDiff = originalDiffPlane.getPixel(x, y);
+                int originalPoly = originalPolyPlane.getPixel(x, y);
+                int originalMetal1 = originalMetal1Plane.getPixel(x, y);
+                int originalMetal2 = originalMetal2Plane.getPixel(x, y);
+                int originalPad = originalPadPlane.getPixel(x, y);
 
                 // wells can be copied directly
-                convertedWellPlane.setCell(x, y, originalWell);
+                convertedWellPlane.setPixel(x, y, originalWell);
 
                 // active has lots of different upwards contact types in Magic, all of which are represented by
                 // downwards contacts in metal1 in our "concept" tech
@@ -52,14 +52,14 @@ public final class ConceptToLibresiliconConverter {
                     // concept metal1 has a downwards contact
 
                     if (originalPoly != Plane.EMPTY_PIXEL) {
-                        convertedActivePlane.setCell(x, y, Technologies.LibreSiliconMagicScmos.MATERIAL_LOCAL_ACTIVE_POLYCONTACT);
+                        convertedActivePlane.setPixel(x, y, Technologies.LibreSiliconMagicScmos.MATERIAL_LOCAL_ACTIVE_POLYCONTACT);
                     } else if (originalDiff != Plane.EMPTY_PIXEL) {
-                        convertedActivePlane.setCell(x, y,
+                        convertedActivePlane.setPixel(x, y,
                             originalDiff == Technologies.Concept.MATERIAL_LOCAL_DIFF_NDIFF ?
                                 Technologies.LibreSiliconMagicScmos.MATERIAL_LOCAL_ACTIVE_NDCONTACT :
                                     Technologies.LibreSiliconMagicScmos.MATERIAL_LOCAL_ACTIVE_PDCONTACT);
                     } else if (originalWell != Plane.EMPTY_PIXEL) {
-                        convertedActivePlane.setCell(x, y,
+                        convertedActivePlane.setPixel(x, y,
                             originalWell == Technologies.Concept.MATERIAL_LOCAL_WELL_NWELL ?
                                 Technologies.LibreSiliconMagicScmos.MATERIAL_LOCAL_ACTIVE_NSUBSTRATENCONTACT :
                                     Technologies.LibreSiliconMagicScmos.MATERIAL_LOCAL_ACTIVE_PSUBSTRATEPCONTACT);
@@ -72,15 +72,15 @@ public final class ConceptToLibresiliconConverter {
 
                     if (originalPoly != Plane.EMPTY_PIXEL) {
                         if (originalDiff != Plane.EMPTY_PIXEL) {
-                            convertedActivePlane.setCell(x, y,
+                            convertedActivePlane.setPixel(x, y,
                                     originalDiff == Technologies.Concept.MATERIAL_LOCAL_DIFF_NDIFF ?
                                             Technologies.LibreSiliconMagicScmos.MATERIAL_LOCAL_ACTIVE_NTRANSISTOR :
                                             Technologies.LibreSiliconMagicScmos.MATERIAL_LOCAL_ACTIVE_PTRANSISTOR);
                         } else {
-                            convertedActivePlane.setCell(x, y, Technologies.LibreSiliconMagicScmos.MATERIAL_LOCAL_ACTIVE_POLYSILICON);
+                            convertedActivePlane.setPixel(x, y, Technologies.LibreSiliconMagicScmos.MATERIAL_LOCAL_ACTIVE_POLYSILICON);
                         }
                     } else if (originalDiff != Plane.EMPTY_PIXEL) {
-                        convertedActivePlane.setCell(x, y,
+                        convertedActivePlane.setPixel(x, y,
                                 originalDiff == Technologies.Concept.MATERIAL_LOCAL_DIFF_NDIFF ?
                                         Technologies.LibreSiliconMagicScmos.MATERIAL_LOCAL_ACTIVE_NDIFFUSION :
                                         Technologies.LibreSiliconMagicScmos.MATERIAL_LOCAL_ACTIVE_PDIFFUSION);
@@ -95,9 +95,9 @@ public final class ConceptToLibresiliconConverter {
                     } // else: empty
                 } else {
                     if (originalMetal2 == Technologies.Concept.MATERIAL_LOCAL_METAL2_VIA12) {
-                        convertedMetal1Plane.setCell(x, y, Technologies.LibreSiliconMagicScmos.MATERIAL_LOCAL_METAL1_M2CONTACT);
+                        convertedMetal1Plane.setPixel(x, y, Technologies.LibreSiliconMagicScmos.MATERIAL_LOCAL_METAL1_M2CONTACT);
                     } else {
-                        convertedMetal1Plane.setCell(x, y, Technologies.LibreSiliconMagicScmos.MATERIAL_LOCAL_METAL1_METAL1);
+                        convertedMetal1Plane.setPixel(x, y, Technologies.LibreSiliconMagicScmos.MATERIAL_LOCAL_METAL1_METAL1);
                     }
                 }
 
@@ -108,9 +108,9 @@ public final class ConceptToLibresiliconConverter {
                     } // else: empty
                 } else {
                     if (originalPad == Technologies.Concept.MATERIAL_LOCAL_PAD_PAD) {
-                        convertedMetal2Plane.setCell(x, y, Technologies.LibreSiliconMagicScmos.MATERIAL_LOCAL_METAL2_PAD);
+                        convertedMetal2Plane.setPixel(x, y, Technologies.LibreSiliconMagicScmos.MATERIAL_LOCAL_METAL2_PAD);
                     } else {
-                        convertedMetal2Plane.setCell(x, y, Technologies.LibreSiliconMagicScmos.MATERIAL_LOCAL_METAL2_METAL2);
+                        convertedMetal2Plane.setPixel(x, y, Technologies.LibreSiliconMagicScmos.MATERIAL_LOCAL_METAL2_METAL2);
                     }
                 }
 
