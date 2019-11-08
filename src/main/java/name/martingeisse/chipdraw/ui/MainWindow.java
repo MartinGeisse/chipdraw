@@ -111,12 +111,15 @@ public class MainWindow extends JFrame implements Editor.Ui {
             JPanel cursorSizeButtonPanel = new JPanel();
             cursorSizeButtonPanel.setLayout(new BoxLayout(cursorSizeButtonPanel, BoxLayout.X_AXIS));
             JButton button1x1 = new JButton(Icons.get("cursor_1x1.png"));
+            button1x1.setFocusable(false);
             button1x1.addActionListener(event -> cursorSize = 1);
             cursorSizeButtonPanel.add(button1x1);
             JButton button2x2 = new JButton(Icons.get("cursor_2x2.png"));
+            button2x2.setFocusable(false);
             button2x2.addActionListener(event -> cursorSize = 2);
             cursorSizeButtonPanel.add(button2x2);
             JButton button3x3 = new JButton(Icons.get("cursor_3x3.png"));
+            button3x3.setFocusable(false);
             button3x3.addActionListener(event -> cursorSize = 3);
             cursorSizeButtonPanel.add(button3x3);
             sideBar.add(cursorSizeButtonPanel);
@@ -339,14 +342,6 @@ public class MainWindow extends JFrame implements Editor.Ui {
         return cellSize;
     }
 
-    private void resetUi() {
-        materialUiState.setEditingGlobalMaterialIndex(0);
-        drawing = false;
-        erasing = false;
-        cellSize = 16;
-        updateMainPanelSize();
-    }
-
     private void updateMainPanelSize() {
         Dimension size = new Dimension(design.getWidth() * cellSize, design.getHeight() * cellSize);
         mainPanel.setPreferredSize(size);
@@ -373,8 +368,13 @@ public class MainWindow extends JFrame implements Editor.Ui {
 
     @Override
     public void onDesignReplaced() {
+        this.design = editor.getDesign();
         materialUiState.setTechnology(design.getTechnology());
-        resetUi();
+        materialUiState.setEditingGlobalMaterialIndex(0);
+        drawing = false;
+        erasing = false;
+        cellSize = 16;
+        updateMainPanelSize();
     }
 
     @Override
