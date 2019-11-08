@@ -7,8 +7,6 @@ import java.io.Serializable;
 import java.util.Arrays;
 
 /**
- * TODO rename "cells" to "pixels"? The former already has a meaning in chip design.
- *
  * TODO consider using value types LocalMaterialIndex and GlobalMaterialIndex to avoid confusion (passing one as the other)
  */
 public final class Plane implements Serializable, RectangularSize {

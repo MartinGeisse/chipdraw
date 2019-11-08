@@ -24,7 +24,7 @@ public abstract class DesignPixelPanel extends JPanel {
 		Graphics2D g = (Graphics2D) _g;
 		Design design = mainWindow.getCurrentDesign();
 
-		// get width / height / cell size
+		// get width / height / pixel size
 		int pixelSize = mainWindow.getCurrentPixelSize();
 		int panelWidth = getWidth();
 		int panelHeight = getHeight();
