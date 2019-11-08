@@ -222,7 +222,7 @@ public class MainWindow extends JFrame implements Editor.Ui {
             @Override
             public void mouseMoved(MouseEvent e) {
                 if (drawing || erasing) {
-                    editor.performOperation(design -> {
+                    performOperation(design -> {
                         int x = e.getX() / cellSize;
                         int y = e.getY() / cellSize;
                         int globalMaterialIndex = materialUiState.getEditingGlobalMaterialIndex();
@@ -319,14 +319,8 @@ public class MainWindow extends JFrame implements Editor.Ui {
             builder.add("Corner Stitching Extractor", () -> new CornerStitchingExtrator.Test().extract(editor.getDesign()));
             builder.add("Connectivity Extractor", () -> new ConnectivityExtractor.Test().extract(editor.getDesign()));
             builder.add("Magic Export", () -> MagicExportDialog.showExportDialog(this, editor.getDesign()));
-            builder.add("Enlarge", () -> editor.performOperation(design -> new DesignOperation.Result(design, new Enlarger(design).enlarge())));
-            builder.add("Autocrop", () -> {
-                try {
-                    editor.setDesign(new Autocropper(design).autocrop());
-                } catch (UserVisibleMessageException e) {
-                    JOptionPane.showMessageDialog(this, e.getMessage());
-                }
-            });
+            builder.add("Enlarge", () -> performOperation(design -> new DesignOperation.Result(design, new Enlarger(design).enlarge())));
+            builder.add("Autocrop", () -> performOperation(design -> new DesignOperation.Result(design, new Autocropper(design).autocrop())));
             builder.addMenu("Help");
             builder.addExternalLink("Contents", "https://github.com/MartinGeisse/chipdraw/blob/master/doc/index.md"); // TODO link to commit for this version
             builder.add("About", () -> JOptionPane.showMessageDialog(MainWindow.this, About.ABOUT_TEXT));
@@ -366,6 +360,14 @@ public class MainWindow extends JFrame implements Editor.Ui {
         }
         if (design != null) {
             editor.restart(design);
+        }
+    }
+
+    public void performOperation(DesignOperation operation) {
+        try {
+            editor.performOperation(operation);
+        } catch (UserVisibleMessageException e) {
+            JOptionPane.showMessageDialog(this, e.getMessage());
         }
     }
 

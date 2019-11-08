@@ -1,5 +1,7 @@
 package name.martingeisse.chipdraw.design;
 
+import name.martingeisse.chipdraw.util.UserVisibleMessageException;
+
 /**
  * Implementations must be immutable.
  */
@@ -20,7 +22,7 @@ public interface DesignOperation {
      * this case, the old design instance should not be modified, and an undo entry will be built automatically that
      * simply restores the old design.
      */
-    Result perform(Design design);
+    Result perform(Design design) throws UserVisibleMessageException;
 
     /**
      * Represents the result of an operation.

@@ -7,6 +7,7 @@ import name.martingeisse.chipdraw.design.UndoEntry;
 import name.martingeisse.chipdraw.drc.DrcAgent;
 import name.martingeisse.chipdraw.drc.Violation;
 import name.martingeisse.chipdraw.technology.Technologies;
+import name.martingeisse.chipdraw.util.UserVisibleMessageException;
 
 import java.util.LinkedList;
 
@@ -72,7 +73,7 @@ public class Editor {
         return drcViolations;
     }
 
-    public void performOperation(DesignOperation operation) {
+    public void performOperation(DesignOperation operation) throws UserVisibleMessageException {
         if (operation == null) {
             throw new IllegalArgumentException("operation cannot be null");
         }
