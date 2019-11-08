@@ -23,7 +23,7 @@ public class Editor {
     private final DrcAgent drcAgent;
 
     private Design design;
-    private LinkedList<Undoer> undoStack = new LinkedList<>();
+    private LinkedList<UndoEntry> undoStack = new LinkedList<>();
     private ImmutableList<Violation> drcViolations;
 
     public Editor(Ui ui) {
@@ -79,7 +79,7 @@ public class Editor {
         if (result.undoer == null) {
             undoStack.clear();
         } else {
-            undoStack.add(result.undoer);
+            undoStack.add(new UndoEntry(operation, result.undoer));
         }
         afterOperationOrUndo(result.newDesign);
     }
@@ -88,8 +88,8 @@ public class Editor {
         if (undoStack.isEmpty()) {
             return;
         }
-        Undoer entry = undoStack.removeLast();
-        afterOperationOrUndo(entry.perform(design));
+        UndoEntry entry = undoStack.removeLast();
+        afterOperationOrUndo(entry.undoer.perform(design));
     }
 
     private void afterOperationOrUndo(Design newDesign) {
@@ -136,6 +136,18 @@ public class Editor {
          * the errors.
          */
         void consumeDrcResult(ImmutableList<Violation> violations);
+
+    }
+
+    private static final class UndoEntry {
+
+        private final DesignOperation originalOperation;
+        private final Undoer undoer;
+
+        private UndoEntry(DesignOperation originalOperation, Undoer undoer) {
+            this.originalOperation = originalOperation;
+            this.undoer = undoer;
+        }
 
     }
 
