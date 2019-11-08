@@ -1,6 +1,10 @@
-package name.martingeisse.chipdraw;
+package name.martingeisse.chipdraw.ui;
 
 import com.google.common.collect.ImmutableList;
+import name.martingeisse.chipdraw.About;
+import name.martingeisse.chipdraw.Workbench;
+import name.martingeisse.chipdraw.design.Design;
+import name.martingeisse.chipdraw.design.Plane;
 import name.martingeisse.chipdraw.drc.DrcAgent;
 import name.martingeisse.chipdraw.drc.Violation;
 import name.martingeisse.chipdraw.global_tools.Autocropper;
@@ -10,9 +14,9 @@ import name.martingeisse.chipdraw.global_tools.Enlarger;
 import name.martingeisse.chipdraw.icons.Icons;
 import name.martingeisse.chipdraw.global_tools.magic.MagicExportDialog;
 import name.martingeisse.chipdraw.technology.NoSuchTechnologyException;
-import name.martingeisse.chipdraw.ui.DesignPixelPanel;
-import name.martingeisse.chipdraw.ui.MenuBarBuilder;
-import name.martingeisse.chipdraw.ui.SingleIconBooleanCellRenderer;
+import name.martingeisse.chipdraw.ui.util.DesignPixelPanel;
+import name.martingeisse.chipdraw.ui.util.MenuBarBuilder;
+import name.martingeisse.chipdraw.ui.util.SingleIconBooleanCellRenderer;
 import name.martingeisse.chipdraw.util.UserVisibleMessageException;
 
 import javax.swing.*;

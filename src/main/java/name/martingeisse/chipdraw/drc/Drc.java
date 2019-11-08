@@ -1,6 +1,6 @@
 package name.martingeisse.chipdraw.drc;
 
-import name.martingeisse.chipdraw.Plane;
+import name.martingeisse.chipdraw.design.Plane;
 
 public final class Drc {
 

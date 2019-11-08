@@ -1,7 +1,7 @@
 package name.martingeisse.chipdraw.global_tools;
 
-import name.martingeisse.chipdraw.Design;
-import name.martingeisse.chipdraw.Plane;
+import name.martingeisse.chipdraw.design.Design;
+import name.martingeisse.chipdraw.design.Plane;
 
 public abstract class AbstractPerPlaneExtractor {
 

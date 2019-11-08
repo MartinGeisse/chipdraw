@@ -1,7 +1,9 @@
 package name.martingeisse.chipdraw;
 
+import name.martingeisse.chipdraw.design.Design;
 import name.martingeisse.chipdraw.technology.SimpleTechnologyRepository;
 import name.martingeisse.chipdraw.technology.Technologies;
+import name.martingeisse.chipdraw.ui.MainWindow;
 
 public class Main {
 

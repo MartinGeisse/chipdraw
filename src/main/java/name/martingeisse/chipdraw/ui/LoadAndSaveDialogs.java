@@ -1,5 +1,7 @@
-package name.martingeisse.chipdraw;
+package name.martingeisse.chipdraw.ui;
 
+import name.martingeisse.chipdraw.design.Design;
+import name.martingeisse.chipdraw.design.DesignPersistence;
 import name.martingeisse.chipdraw.technology.NoSuchTechnologyException;
 import name.martingeisse.chipdraw.technology.TechnologyRepository;
 

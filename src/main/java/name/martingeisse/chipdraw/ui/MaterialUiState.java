@@ -1,4 +1,4 @@
-package name.martingeisse.chipdraw;
+package name.martingeisse.chipdraw.ui;
 
 import name.martingeisse.chipdraw.technology.PlaneSchema;
 import name.martingeisse.chipdraw.technology.Technology;

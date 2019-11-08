@@ -1,7 +1,7 @@
 package name.martingeisse.chipdraw.drc;
 
 import com.google.common.collect.ImmutableList;
-import name.martingeisse.chipdraw.Design;
+import name.martingeisse.chipdraw.design.Design;
 
 import java.util.ArrayList;
 import java.util.List;

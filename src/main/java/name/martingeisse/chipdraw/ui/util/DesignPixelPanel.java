@@ -1,7 +1,7 @@
-package name.martingeisse.chipdraw.ui;
+package name.martingeisse.chipdraw.ui.util;
 
-import name.martingeisse.chipdraw.Design;
-import name.martingeisse.chipdraw.MainWindow;
+import name.martingeisse.chipdraw.design.Design;
+import name.martingeisse.chipdraw.ui.MainWindow;
 
 import javax.swing.*;
 import java.awt.*;

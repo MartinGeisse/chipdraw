@@ -1,6 +1,6 @@
 package name.martingeisse.chipdraw.global_tools;
 
-import name.martingeisse.chipdraw.Design;
+import name.martingeisse.chipdraw.design.Design;
 
 /**
  * Adds an N-pixel boundary on all sides of a design. The result is returned as a new design object.

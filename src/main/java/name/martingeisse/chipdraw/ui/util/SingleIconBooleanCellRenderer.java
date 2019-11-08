@@ -1,4 +1,4 @@
-package name.martingeisse.chipdraw.ui;
+package name.martingeisse.chipdraw.ui.util;
 
 import javax.swing.*;
 import javax.swing.table.TableCellRenderer;

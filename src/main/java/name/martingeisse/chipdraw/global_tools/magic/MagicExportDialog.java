@@ -1,6 +1,6 @@
 package name.martingeisse.chipdraw.global_tools.magic;
 
-import name.martingeisse.chipdraw.Design;
+import name.martingeisse.chipdraw.design.Design;
 
 import javax.swing.*;
 import javax.swing.filechooser.FileNameExtensionFilter;

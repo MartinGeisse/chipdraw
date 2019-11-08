@@ -1,4 +1,4 @@
-package name.martingeisse.chipdraw;
+package name.martingeisse.chipdraw.design;
 
 import com.google.common.collect.ImmutableList;
 import name.martingeisse.chipdraw.technology.PlaneSchema;
