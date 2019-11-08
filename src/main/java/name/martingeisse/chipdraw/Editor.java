@@ -8,6 +8,8 @@ import name.martingeisse.chipdraw.drc.DrcAgent;
 import name.martingeisse.chipdraw.drc.Violation;
 import name.martingeisse.chipdraw.technology.Technologies;
 
+import java.util.LinkedList;
+
 /**
  * Represents the state of the design editor in an abstract, UI-independent way. This class keeps the design as well as
  * the following features:
@@ -25,6 +27,7 @@ public class Editor {
     private final DrcAgent drcAgent;
 
     private Design design;
+    private LinkedList<UndoEntry> undoStack = new LinkedList<>();
     private ImmutableList<Violation> drcViolations;
 
     public Editor(Ui ui) {
@@ -77,11 +80,25 @@ public class Editor {
         if (result == null) {
             throw new RuntimeException("operation returned null");
         }
-        if (result.undoEntry != null) {
-            // TODO undo stack
+        if (result.undoEntry == null) {
+            undoStack.clear();
+        } else {
+            undoStack.add(result.undoEntry);
         }
-        if (result.newDesign != null) {
-            setDesign(result.newDesign);
+        afterOperationOrUndo(result.newDesign);
+    }
+
+    public void undo() {
+        if (undoStack.isEmpty()) {
+            return;
+        }
+        UndoEntry entry = undoStack.removeLast();
+        afterOperationOrUndo(entry.perform(design));
+    }
+
+    private void afterOperationOrUndo(Design newDesign) {
+        if (newDesign != null) {
+            setDesign(newDesign);
         } else {
             ui.onDesignModified();
             consumeDrcResult(null);
