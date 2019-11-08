@@ -1,5 +1,7 @@
 package name.martingeisse.chipdraw.ui.util;
 
+import name.martingeisse.chipdraw.util.UserVisibleMessageException;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionListener;
@@ -18,8 +20,14 @@ public final class MenuBarBuilder {
 		menuBar.add(menu);
 	}
 
-	public void add(String name, Runnable runnable) {
-		add(name, event -> runnable.run());
+	public void add(String name, UiRunnable runnable) {
+		add(name, event -> {
+			try {
+				runnable.run();
+			} catch (UserVisibleMessageException e) {
+				JOptionPane.showMessageDialog(menuBar, e.getMessage());
+			}
+		});
 	}
 
 	public void add(String name, ActionListener actionListener) {

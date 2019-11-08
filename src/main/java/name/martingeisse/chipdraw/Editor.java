@@ -24,6 +24,7 @@ public class Editor {
 
     private Design design;
     private LinkedList<UndoEntry> undoStack = new LinkedList<>();
+    private LinkedList<DesignOperation> redoStack = new LinkedList<>();
     private ImmutableList<Violation> drcViolations;
 
     public Editor(Ui ui) {
@@ -72,6 +73,11 @@ public class Editor {
         if (operation == null) {
             throw new IllegalArgumentException("operation cannot be null");
         }
+        redoStack.clear();
+        performOrRedoOperation(operation);
+    }
+
+    private void performOrRedoOperation(DesignOperation operation) throws UserVisibleMessageException {
         DesignOperation.Result result = operation.perform(design);
         if (result == null) {
             throw new RuntimeException("operation returned null");
@@ -84,12 +90,19 @@ public class Editor {
         afterOperationOrUndo(result.newDesign);
     }
 
-    public void undo() {
-        if (undoStack.isEmpty()) {
-            return;
+    public void undo() throws UserVisibleMessageException {
+        if (!undoStack.isEmpty()) {
+            UndoEntry entry = undoStack.removeLast();
+            Design newDesign = entry.undoer.perform(design);
+            redoStack.add(entry.originalOperation);
+            afterOperationOrUndo(newDesign);
         }
-        UndoEntry entry = undoStack.removeLast();
-        afterOperationOrUndo(entry.undoer.perform(design));
+    }
+
+    public void redo() throws UserVisibleMessageException {
+        if (!redoStack.isEmpty()) {
+            performOrRedoOperation(redoStack.removeLast());
+        }
     }
 
     private void afterOperationOrUndo(Design newDesign) {

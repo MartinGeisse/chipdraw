@@ -1,5 +1,7 @@
 package name.martingeisse.chipdraw.design;
 
+import name.martingeisse.chipdraw.util.UserVisibleMessageException;
+
 /**
  * Implementations must be immutable.
  */
@@ -10,6 +12,6 @@ public interface Undoer {
      * performed. Either removes the effects of the original operation from that design, or returns an (old) design
      * that is to be used instead.
      */
-    Design perform(Design design);
+    Design perform(Design design) throws UserVisibleMessageException;
 
 }
