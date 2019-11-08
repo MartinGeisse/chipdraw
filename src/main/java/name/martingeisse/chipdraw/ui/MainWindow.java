@@ -6,14 +6,13 @@ import name.martingeisse.chipdraw.Editor;
 import name.martingeisse.chipdraw.Workbench;
 import name.martingeisse.chipdraw.design.Design;
 import name.martingeisse.chipdraw.design.Plane;
-import name.martingeisse.chipdraw.drc.DrcAgent;
 import name.martingeisse.chipdraw.drc.Violation;
 import name.martingeisse.chipdraw.global_tools.Autocropper;
 import name.martingeisse.chipdraw.global_tools.ConnectivityExtractor;
 import name.martingeisse.chipdraw.global_tools.CornerStitchingExtrator;
 import name.martingeisse.chipdraw.global_tools.Enlarger;
-import name.martingeisse.chipdraw.icons.Icons;
 import name.martingeisse.chipdraw.global_tools.magic.MagicExportDialog;
+import name.martingeisse.chipdraw.icons.Icons;
 import name.martingeisse.chipdraw.technology.NoSuchTechnologyException;
 import name.martingeisse.chipdraw.ui.util.DesignPixelPanel;
 import name.martingeisse.chipdraw.ui.util.MenuBarBuilder;
@@ -32,7 +31,6 @@ public class MainWindow extends JFrame implements Editor.Ui {
     private final Workbench workbench;
     private final JPanel sideBar;
     private final JPanel mainPanel;
-    private final DrcAgent drcAgent;
     private final LoadAndSaveDialogs loadAndSaveDialogs;
     private final JButton drcButton;
     private final MaterialUiState materialUiState;
@@ -42,16 +40,14 @@ public class MainWindow extends JFrame implements Editor.Ui {
     private boolean drawing;
     private boolean erasing;
     private int cellSize;
-    private ImmutableList<Violation> drcViolations;
     private int cursorSize = 1;
 
     public MainWindow(Workbench _workbench, Design _design) {
         super("Chipdraw");
         this.workbench = _workbench;
-        this.drcAgent = new DrcAgent();
         this.design = _design;
         this.materialUiState = new MaterialUiState(design.getTechnology());
-        this.editor = new Editor(this, _design);
+        this.editor = new Editor(this);
 
         setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
         setSize(800, 600);
@@ -60,7 +56,7 @@ public class MainWindow extends JFrame implements Editor.Ui {
         addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosed(WindowEvent e) {
-                drcAgent.dispose();
+                editor.dispose();
             }
         });
 
@@ -131,9 +127,8 @@ public class MainWindow extends JFrame implements Editor.Ui {
             drcButton.setFocusable(false);
             sideBar.add(drcButton);
             consumeDrcResult(null);
-            drcAgent.addResultListener(this::consumeDrcResult);
             drcButton.addActionListener(event -> {
-                ImmutableList<Violation> violationsToShow = drcViolations;
+                ImmutableList<Violation> violationsToShow = editor.getDrcViolations();
                 if (violationsToShow.isEmpty()) {
                     JOptionPane.showMessageDialog(MainWindow.this, "DRC OK");
                     return;
@@ -223,19 +218,19 @@ public class MainWindow extends JFrame implements Editor.Ui {
             @Override
             public void mouseMoved(MouseEvent e) {
                 if (drawing || erasing) {
-                    int x = e.getX() / cellSize;
-                    int y = e.getY() / cellSize;
-                    int globalMaterialIndex = materialUiState.getEditingGlobalMaterialIndex();
-                    int localMaterialIndex = design.getTechnology().getLocalMaterialIndexForGlobalMaterialIndex(globalMaterialIndex);
-                    int planeIndex = design.getTechnology().getPlaneIndexForGlobalMaterialIndex(globalMaterialIndex);
-                    Plane plane = design.getPlanes().get(planeIndex);
-                    if (plane.isValidPosition(x, y)) {
-                        int offset = (cursorSize - 1) / 2;
-                        plane.drawRectangleAutoclip(x - offset, y - offset, cursorSize, cursorSize, drawing ? localMaterialIndex : Plane.EMPTY_CELL);
-                        consumeDrcResult(null);
-                        drcAgent.trigger();
-                        mainPanel.repaint();
-                    }
+                    editor.performOperation(design -> {
+                        int x = e.getX() / cellSize;
+                        int y = e.getY() / cellSize;
+                        int globalMaterialIndex = materialUiState.getEditingGlobalMaterialIndex();
+                        int localMaterialIndex = design.getTechnology().getLocalMaterialIndexForGlobalMaterialIndex(globalMaterialIndex);
+                        int planeIndex = design.getTechnology().getPlaneIndexForGlobalMaterialIndex(globalMaterialIndex);
+                        Plane plane = design.getPlanes().get(planeIndex);
+                        if (plane.isValidPosition(x, y)) {
+                            int offset = (cursorSize - 1) / 2;
+                            plane.drawRectangleAutoclip(x - offset, y - offset, cursorSize, cursorSize, drawing ? localMaterialIndex : Plane.EMPTY_CELL);
+                        }
+                        return null;
+                    });
                 }
             }
 
@@ -332,9 +327,8 @@ public class MainWindow extends JFrame implements Editor.Ui {
             setJMenuBar(builder.build());
         }
 
-        resetUi();
-        drcAgent.setDesign(design);
         loadAndSaveDialogs = new LoadAndSaveDialogs(workbench.getTechnologyRepository());
+        editor.setDesign(_design);
     }
 
     public Design getCurrentDesign() {
@@ -380,20 +374,16 @@ public class MainWindow extends JFrame implements Editor.Ui {
     @Override
     public void onDesignReplaced() {
         materialUiState.setTechnology(design.getTechnology());
-        consumeDrcResult(null);
-        drcAgent.setDesign(design);
         resetUi();
     }
 
     @Override
     public void onDesignModified() {
-        consumeDrcResult(null);
-        drcAgent.trigger();
         mainPanel.repaint();
     }
 
-    private void consumeDrcResult(ImmutableList<Violation> violations) {
-        this.drcViolations = violations;
+    @Override
+    public void consumeDrcResult(ImmutableList<Violation> violations) {
         if (violations == null) {
             drcButton.setForeground(new Color(128, 128, 0));
         } else if (violations.isEmpty()) {
