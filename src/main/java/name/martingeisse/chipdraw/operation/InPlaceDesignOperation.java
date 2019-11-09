@@ -10,11 +10,14 @@ import name.martingeisse.chipdraw.util.UserVisibleMessageException;
  * <p>
  * Some operations are intended to merge with previously performed operations, so they collapse to a single
  * entry on the undo/redo stack. For example, drawing pixels should treat one "stroke" (drawing multiple pixels without
- * releasing the mouse button) as a single undoable operation. This class supports merging by implementing
- * {@link #doMerge(Design, DesignOperation)} and setting the "merging" flag. The method provides the necessary
- * functionality, while the flag allows to control from the outside whether merging should be attempted. In the
- * pixel-drawing example, the "merging" flag is set from the outside to prevent merging of the first pixel of a
- * new "stroke" into the previous "stroke".
+ * releasing the mouse button) as a single undoable operation. Three steps are necessary to implement merging:
+ * - implement {@link #doMerge(Design, DesignOperation)} (read the method contract carefully!)
+ * - have {@link #doPerform(Design)} TODO
+ * - set the "merging" flag
+ *
+ * The "merging" flag allows to control from the outside whether merging should be attempted. In the pixel-drawing
+ * example, the "merging" flag is set from the outside to prevent merging of the first pixel of a new "stroke" into
+ * the previous "stroke".
  */
 public abstract class InPlaceDesignOperation extends DesignOperation {
 
