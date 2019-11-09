@@ -238,25 +238,58 @@ public final class Plane implements Serializable, RectangularSize {
     }
 
     public byte[] copyToArray(int x, int y, int width, int height) {
-        byte[] destination = new byte[width * height];
-        copyToArray(x, y, width, height, destination);
-        return destination;
+        return copytoArrayInternal(x, y, width, height, null);
     }
 
     public void copyToArray(int x, int y, int width, int height, byte[] destination) {
-        validateRectangle(x, y, width, height);
-        if (destination.length != width * height) {
-            throw new IllegalArgumentException("array has wrong size (" + destination.length + "), expected " + (width * height));
+        copytoArrayInternal(x, y, width, height, destination);
+    }
+
+    private byte[] copytoArrayInternal(int x, int y, int width, int height, byte[] destination) {
+        validateRectangleSize(width, height);
+        if (x < 0) {
+            width += x;
+            x = 0;
+        }
+        if (y < 0) {
+            height += y;
+            y = 0;
+        }
+        if (width > this.width - x) {
+            width = this.width - x;
+        }
+        if (height > this.height - y) {
+            height = this.height - y;
+        }
+        if (destination == null) {
+            destination = new byte[width * height];
+        } else if (destination.length < width * height) {
+            throw new IllegalArgumentException("array of size " + destination.length + " is too small, expected " + (width * height));
         }
         for (int dy = 0; dy < height; dy++) {
             System.arraycopy(pixels, (y + dy) * this.width + x, destination, dy * width, width);
         }
+        return destination;
     }
 
     public void copyFormArray(int x, int y, int width, int height, byte[] source) {
-        validateRectangle(x, y, width, height);
-        if (source.length != width * height) {
-            throw new IllegalArgumentException("array has wrong size (" + source.length + "), expected " + (width * height));
+        validateRectangleSize(width, height);
+        if (x < 0) {
+            width += x;
+            x = 0;
+        }
+        if (y < 0) {
+            height += y;
+            y = 0;
+        }
+        if (width > this.width - x) {
+            width = this.width - x;
+        }
+        if (height > this.height - y) {
+            height = this.height - y;
+        }
+        if (source.length < width * height) {
+            throw new IllegalArgumentException("array of size " + source.length + " is too small, expected " + (width * height));
         }
         for (int dy = 0; dy < height; dy++) {
             System.arraycopy(source, dy * width, pixels, (y + dy) * this.width + x, width);

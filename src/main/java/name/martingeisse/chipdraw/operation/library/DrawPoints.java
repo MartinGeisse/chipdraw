@@ -12,7 +12,7 @@ public final class DrawPoints extends InPlaceDesignOperation {
     private final int width;
     private final int height;
     private final int globalMaterialIndex;
-    private final byte[] backup;
+    private byte[] backup;
 
     public DrawPoints(int x, int y, int width, int height, int globalMaterialIndex) {
         this.x = x;
@@ -20,7 +20,6 @@ public final class DrawPoints extends InPlaceDesignOperation {
         this.width = width;
         this.height = height;
         this.globalMaterialIndex = globalMaterialIndex;
-        this.backup = new byte[width * height];
     }
 
     public int getX() {
@@ -48,8 +47,8 @@ public final class DrawPoints extends InPlaceDesignOperation {
         int planeIndex = design.getTechnology().getPlaneIndexForGlobalMaterialIndex(globalMaterialIndex);
         int localMaterialIndex = design.getTechnology().getLocalMaterialIndexForGlobalMaterialIndex(globalMaterialIndex);
         Plane plane = design.getPlanes().get(planeIndex);
-        plane.copyToArray(x, y, width, height, backup); // TODO autoclip
-        plane.drawRectangle(x, y, width, height, localMaterialIndex); // TODO autoclip
+        backup = plane.copyToArray(x, y, width, height);
+        plane.drawRectangleAutoclip(x, y, width, height, localMaterialIndex);
     }
 
     @Override
