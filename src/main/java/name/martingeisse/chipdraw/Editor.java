@@ -3,13 +3,11 @@ package name.martingeisse.chipdraw;
 import com.google.common.collect.ImmutableList;
 import name.martingeisse.chipdraw.design.Design;
 import name.martingeisse.chipdraw.design.DesignOperation;
-import name.martingeisse.chipdraw.design.Undoer;
+import name.martingeisse.chipdraw.design.UndoRedoOperationExecutor;
 import name.martingeisse.chipdraw.drc.DrcAgent;
 import name.martingeisse.chipdraw.drc.Violation;
 import name.martingeisse.chipdraw.technology.Technologies;
 import name.martingeisse.chipdraw.util.UserVisibleMessageException;
-
-import java.util.LinkedList;
 
 /**
  * Represents the state of the design editor in an abstract, UI-independent way. This class keeps the design as well as
@@ -22,9 +20,7 @@ public class Editor {
     private final Ui ui;
     private final DrcAgent drcAgent;
 
-    private Design design;
-    private LinkedList<UndoEntry> undoStack = new LinkedList<>();
-    private LinkedList<DesignOperation> redoStack = new LinkedList<>();
+    private UndoRedoOperationExecutor operationExecutor;
     private ImmutableList<Violation> drcViolations;
 
     public Editor(Ui ui) {
@@ -33,7 +29,7 @@ public class Editor {
         }
         this.ui = ui;
         this.drcAgent = new DrcAgent();
-        this.design = new Design(Technologies.CONCEPT, 1, 1);
+        this.operationExecutor = new UndoRedoOperationExecutor(new Design(Technologies.CONCEPT, 1, 1));
         drcAgent.addResultListener(this::consumeDrcResult);
     }
 
@@ -42,25 +38,15 @@ public class Editor {
     }
 
     public Design getDesign() {
-        return design;
+        return operationExecutor.getDesign();
     }
 
     public void restart(Design design) {
         if (design == null) {
             throw new IllegalArgumentException("design cannot be null");
         }
-        this.design = design;
+        this.operationExecutor = new UndoRedoOperationExecutor(design);
         ui.onRestart();
-        consumeDrcResult(null);
-        drcAgent.setDesign(design);
-    }
-
-    public void setDesign(Design design) {
-        if (design == null) {
-            throw new IllegalArgumentException("design cannot be null");
-        }
-        this.design = design;
-        ui.onDesignObjectReplaced();
         consumeDrcResult(null);
         drcAgent.setDesign(design);
     }
@@ -70,48 +56,33 @@ public class Editor {
     }
 
     public void performOperation(DesignOperation operation) throws UserVisibleMessageException {
-        if (operation == null) {
-            throw new IllegalArgumentException("operation cannot be null");
-        }
-        redoStack.clear();
-        performOrRedoOperation(operation);
-    }
-
-    private void performOrRedoOperation(DesignOperation operation) throws UserVisibleMessageException {
-        DesignOperation.Result result = operation.perform(design);
-        if (result == null) {
-            throw new RuntimeException("operation returned null");
-        }
-        if (result.undoer == null) {
-            undoStack.clear();
-        } else {
-            undoStack.add(new UndoEntry(operation, result.undoer));
-        }
-        afterOperationOrUndo(result.newDesign);
+        Design oldDesign = getDesign();
+        operationExecutor.perform(operation);
+        afterModification(oldDesign);
     }
 
     public void undo() throws UserVisibleMessageException {
-        if (!undoStack.isEmpty()) {
-            UndoEntry entry = undoStack.removeLast();
-            Design newDesign = entry.undoer.perform(design);
-            redoStack.add(entry.originalOperation);
-            afterOperationOrUndo(newDesign);
-        }
+        Design oldDesign = getDesign();
+        operationExecutor.undo();
+        afterModification(oldDesign);
     }
 
     public void redo() throws UserVisibleMessageException {
-        if (!redoStack.isEmpty()) {
-            performOrRedoOperation(redoStack.removeLast());
-        }
+        Design oldDesign = getDesign();
+        operationExecutor.redo();
+        afterModification(oldDesign);
     }
 
-    private void afterOperationOrUndo(Design newDesign) {
-        if (newDesign != null) {
-            setDesign(newDesign);
-        } else {
+    private void afterModification(Design oldDesign) {
+        Design newDesign = operationExecutor.getDesign();
+        if (newDesign == oldDesign) {
             ui.onDesignModified();
             consumeDrcResult(null);
             drcAgent.trigger();
+        } else {
+            ui.onDesignObjectReplaced();
+            consumeDrcResult(null);
+            drcAgent.setDesign(newDesign);
         }
     }
 
@@ -133,7 +104,7 @@ public class Editor {
          * editing the "same" design. That is, the UI state (e.g. zoom level) should be kept intact, and the editor
          * also keeps editor state such as the undo stack intact. This case happens when an operation has radical
          * effects such as changing the size or technology of the design.
-         *
+         * <p>
          * (Note: It is unclear whether we will keep this kind of change in the future, or rather make the
          * {@link Design} class handle even radical changes internally).
          */
@@ -149,18 +120,6 @@ public class Editor {
          * the errors.
          */
         void consumeDrcResult(ImmutableList<Violation> violations);
-
-    }
-
-    private static final class UndoEntry {
-
-        private final DesignOperation originalOperation;
-        private final Undoer undoer;
-
-        private UndoEntry(DesignOperation originalOperation, Undoer undoer) {
-            this.originalOperation = originalOperation;
-            this.undoer = undoer;
-        }
 
     }
 

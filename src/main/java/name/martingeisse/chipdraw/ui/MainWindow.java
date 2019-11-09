@@ -4,9 +4,7 @@ import com.google.common.collect.ImmutableList;
 import name.martingeisse.chipdraw.About;
 import name.martingeisse.chipdraw.Editor;
 import name.martingeisse.chipdraw.Workbench;
-import name.martingeisse.chipdraw.design.Design;
-import name.martingeisse.chipdraw.design.DesignOperation;
-import name.martingeisse.chipdraw.design.Plane;
+import name.martingeisse.chipdraw.design.*;
 import name.martingeisse.chipdraw.drc.Violation;
 import name.martingeisse.chipdraw.global_tools.Autocropper;
 import name.martingeisse.chipdraw.global_tools.ConnectivityExtractor;
@@ -220,18 +218,20 @@ public class MainWindow extends JFrame implements Editor.Ui {
             @Override
             public void mouseMoved(MouseEvent e) {
                 if (drawing || erasing) {
-                    performOperation(design -> {
-                        int x = e.getX() / pixelSize;
-                        int y = e.getY() / pixelSize;
-                        int globalMaterialIndex = materialUiState.getEditingGlobalMaterialIndex();
-                        int localMaterialIndex = design.getTechnology().getLocalMaterialIndexForGlobalMaterialIndex(globalMaterialIndex);
-                        int planeIndex = design.getTechnology().getPlaneIndexForGlobalMaterialIndex(globalMaterialIndex);
-                        Plane plane = design.getPlanes().get(planeIndex);
-                        if (plane.isValidPosition(x, y)) {
-                            int offset = (cursorSize - 1) / 2;
-                            plane.drawRectangleAutoclip(x - offset, y - offset, cursorSize, cursorSize, drawing ? localMaterialIndex : Plane.EMPTY_PIXEL);
+                    performOperation(new SnapshottingDesignOperation() {
+                        @Override
+                        protected void doPerform(Design design) throws UserVisibleMessageException {
+                            int x = e.getX() / pixelSize;
+                            int y = e.getY() / pixelSize;
+                            int globalMaterialIndex = materialUiState.getEditingGlobalMaterialIndex();
+                            int localMaterialIndex = design.getTechnology().getLocalMaterialIndexForGlobalMaterialIndex(globalMaterialIndex);
+                            int planeIndex = design.getTechnology().getPlaneIndexForGlobalMaterialIndex(globalMaterialIndex);
+                            Plane plane = design.getPlanes().get(planeIndex);
+                            if (plane.isValidPosition(x, y)) {
+                                int offset = (cursorSize - 1) / 2;
+                                plane.drawRectangleAutoclip(x - offset, y - offset, cursorSize, cursorSize, drawing ? localMaterialIndex : Plane.EMPTY_PIXEL);
+                            }
                         }
-                        return new DesignOperation.Result();
                     });
                 }
             }
@@ -318,8 +318,18 @@ public class MainWindow extends JFrame implements Editor.Ui {
             builder.add("Corner Stitching Extractor", () -> new CornerStitchingExtrator.Test().extract(editor.getDesign()));
             builder.add("Connectivity Extractor", () -> new ConnectivityExtractor.Test().extract(editor.getDesign()));
             builder.add("Magic Export", () -> MagicExportDialog.showExportDialog(this, editor.getDesign()));
-            builder.add("Enlarge", () -> performOperation(design -> new DesignOperation.Result(design, new Enlarger(design).enlarge())));
-            builder.add("Autocrop", () -> performOperation(design -> new DesignOperation.Result(design, new Autocropper(design).autocrop())));
+            builder.add("Enlarge", () -> performOperation(new OutOfPlaceDesignOperation() {
+                @Override
+                protected Design createNewDesign(Design oldDesign) throws UserVisibleMessageException {
+                    return new Enlarger(oldDesign).enlarge();
+                }
+            }));
+            builder.add("Autocrop", () -> performOperation(new OutOfPlaceDesignOperation() {
+                @Override
+                protected Design createNewDesign(Design oldDesign) throws UserVisibleMessageException {
+                    return new Autocropper(oldDesign).autocrop();
+                }
+            }));
             builder.addMenu("Help");
             builder.addExternalLink("Contents", "https://github.com/MartinGeisse/chipdraw/blob/master/doc/index.md"); // TODO link to commit for this version
             builder.add("About", () -> JOptionPane.showMessageDialog(MainWindow.this, About.ABOUT_TEXT));

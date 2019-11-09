@@ -3,57 +3,35 @@ package name.martingeisse.chipdraw.design;
 import name.martingeisse.chipdraw.util.UserVisibleMessageException;
 
 /**
- * Implementations must be immutable.
+ * Implementations cannot be re-used to perform an operation multiple times -- the state of this object is stored
+ * on the undo stack.
+ *
+ * This class cannot be used directly. Use one of the subclasses to implement an operation.
+ *
+ * TODO SimpleOperationExecutor without undo/redo, UndoRedoOperationExecutor with u/r -- those can be used by callers
  */
-public interface DesignOperation {
+public abstract class DesignOperation {
 
-    /**
-     * Performs this operation on the specified design.
-     *
-     * If this operation is undo-able, then the result returned by this method contains an {@link Undoer} that can
-     * be used later to undo the operation. This entry stores enough information to change the new state of the design
-     * back to the old state. The undo entry should not keep a reference to the design -- a reference will be passed to
-     * the undo entry, which should be used instead.
-     *
-     * If this operation is not undo-able, the undo entry in the result is null.
-     *
-     * Instead of an undo entry, the result may contain a new {@link Design} instance that is to be used instead of the
-     * old one. This is useful if the changes to the design are too radical, so building a new object is easier. In
-     * this case, the old design instance should not be modified, and an undo entry will be built automatically that
-     * simply restores the old design.
-     */
-    Result perform(Design design) throws UserVisibleMessageException;
+    DesignOperation() {
+    }
+
+    abstract InternalResponse performInternal(Design design, DesignOperation previousOperation) throws UserVisibleMessageException;
+
+    abstract Design undoInternal(Design design) throws UserVisibleMessageException;
 
     /**
      * Represents the result of an operation.
      */
-    class Result {
+    class InternalResponse {
 
-        public final Undoer undoer;
-        public final Design newDesign;
+        final boolean merged;
+        final Design newDesign;
 
-        /**
-         * Result for an operation that modifies the original design in-place and cannot be undone.
-         */
-        public Result() {
-            this.undoer = null;
-            this.newDesign = null;
-        }
-
-        /**
-         * Result for an operation that modifies the original design in-place that can be undone.
-         */
-        public Result(Undoer undoer) {
-            this.undoer = undoer;
-            this.newDesign = null;
-        }
-
-        /**
-         * Result for an operation that returns a new design and can be undone implicitly by changing back to
-         * the old design.
-         */
-        public Result(Design oldDesign, Design newDesign) {
-            this.undoer = new RestoringUndoer(oldDesign);
+        public InternalResponse(boolean merged, Design newDesign) {
+            if (newDesign == null) {
+                throw new IllegalArgumentException("newDesign cannot be null");
+            }
+            this.merged = merged;
             this.newDesign = newDesign;
         }
 

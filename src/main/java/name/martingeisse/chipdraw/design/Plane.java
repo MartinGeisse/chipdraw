@@ -43,7 +43,7 @@ public final class Plane implements Serializable, RectangularSize {
     }
 
     void initializeAfterDeserialization(PlaneSchema planeSchema) {
-		this.planeSchema = planeSchema;
+        this.planeSchema = planeSchema;
     }
 
     public PlaneSchema getSchema() {
@@ -89,7 +89,7 @@ public final class Plane implements Serializable, RectangularSize {
         if (!isValidLocalMaterialIndex(localMaterialIndex)) {
             throw new IllegalArgumentException("invalid local material index: " + localMaterialIndex);
         }
-        return (byte)localMaterialIndex;
+        return (byte) localMaterialIndex;
     }
 
     public void setPixel(int x, int y, int localMaterialIndex) {
@@ -213,6 +213,13 @@ public final class Plane implements Serializable, RectangularSize {
             }
         }
         return false;
+    }
+
+    public void copyFrom(Plane source) {
+        if (source.getWidth() != getWidth() || source.getHeight() != getHeight()) {
+            throw new IllegalArgumentException("source plane has different size");
+        }
+        copyFrom(source, 0, 0, 0, 0, getWidth(), getHeight());
     }
 
     public void copyFrom(Plane source, int sourceX, int sourceY, int destinationX, int destinationY, int rectangleWidth, int rectangleHeight) {

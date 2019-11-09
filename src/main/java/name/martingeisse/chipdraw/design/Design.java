@@ -35,6 +35,13 @@ public final class Design implements Serializable, RectangularSize {
         this.planes = ImmutableList.copyOf(planes);
     }
 
+    public Design(Design original) {
+        this(original.getTechnology(), original.getWidth(), original.getHeight());
+        for (int i = 0; i < planes.size(); i++) {
+            planes.get(i).copyFrom(original.getPlanes().get(i));
+        }
+    }
+
     void initializeAfterDeserialization(TechnologyRepository technologyRepository) throws NoSuchTechnologyException {
         this.technology = technologyRepository.getTechnology(technologyId);
         if (technology.getPlaneSchemas().size() != planes.size()) {
