@@ -102,10 +102,20 @@ public final class Plane implements Serializable, RectangularSize {
         }
     }
 
-    public void drawRectangle(int x, int y, int width, int height, int localMaterialIndex) {
+    private void validateRectangleSize(int width, int height) {
+        if (width < 0 || height < 0) {
+            throw new IllegalArgumentException("invalid rectangle size: " + width + " x " + height);
+        }
+    }
+
+    private void validateRectangle(int x, int y, int width, int height) {
         validateRectangleSize(width, height);
         validatePosition(x, y);
         validatePosition(x + width - 1, y + height - 1);
+    }
+
+    public void drawRectangle(int x, int y, int width, int height, int localMaterialIndex) {
+        validateRectangle(x, y, width, height);
         drawRectangleInternal(x, y, width, height, localMaterialIndex);
     }
 
@@ -128,12 +138,6 @@ public final class Plane implements Serializable, RectangularSize {
         drawRectangleInternal(x, y, width, height, localMaterialIndex);
     }
 
-    private void validateRectangleSize(int width, int height) {
-        if (width < 0 || height < 0) {
-            throw new IllegalArgumentException("invalid rectangle size: " + width + " x " + height);
-        }
-    }
-
     private void drawRectangleInternal(int x, int y, int width, int height, int localMaterialIndex) {
         validateLocalMaterialIndex(localMaterialIndex);
         for (int i = 0; i < width; i++) {
@@ -147,9 +151,7 @@ public final class Plane implements Serializable, RectangularSize {
      * Note: to check uniformity without an expected value, get the value from (x, y) and pass that as expected value.
      */
     public boolean isReactangleUniform(int x, int y, int width, int height, int expectedLocalMaterialIndex) {
-        validateRectangleSize(width, height);
-        validatePosition(x, y);
-        validatePosition(x + width - 1, y + height - 1);
+        validateRectangle(x, y, width, height);
         return isReactangleUniformInternal(x, y, width, height, expectedLocalMaterialIndex);
     }
 
@@ -232,6 +234,32 @@ public final class Plane implements Serializable, RectangularSize {
             for (int dy = 0; dy < rectangleHeight; dy++) {
                 setPixel(destinationX + dx, destinationY + dy, source.getPixel(sourceX + dx, sourceY + dy));
             }
+        }
+    }
+
+    public byte[] copyToArray(int x, int y, int width, int height) {
+        byte[] destination = new byte[width * height];
+        copyToArray(x, y, width, height, destination);
+        return destination;
+    }
+
+    public void copyToArray(int x, int y, int width, int height, byte[] destination) {
+        validateRectangle(x, y, width, height);
+        if (destination.length != width * height) {
+            throw new IllegalArgumentException("array has wrong size (" + destination.length + "), expected " + (width * height));
+        }
+        for (int dy = 0; dy < height; dy++) {
+            System.arraycopy(pixels, (y + dy) * this.width + x, destination, dy * width, width);
+        }
+    }
+
+    public void copyFormArray(int x, int y, int width, int height, byte[] source) {
+        validateRectangle(x, y, width, height);
+        if (source.length != width * height) {
+            throw new IllegalArgumentException("array has wrong size (" + source.length + "), expected " + (width * height));
+        }
+        for (int dy = 0; dy < height; dy++) {
+            System.arraycopy(source, dy * width, pixels, (y + dy) * this.width + x, width);
         }
     }
 
