@@ -55,9 +55,9 @@ public class Editor {
         return drcViolations;
     }
 
-    public void performOperation(DesignOperation operation) throws UserVisibleMessageException {
+    public void performOperation(DesignOperation operation, boolean merge) throws UserVisibleMessageException {
         Design oldDesign = getDesign();
-        operationExecutor.perform(operation);
+        operationExecutor.perform(operation, merge);
         afterModification(oldDesign);
     }
 

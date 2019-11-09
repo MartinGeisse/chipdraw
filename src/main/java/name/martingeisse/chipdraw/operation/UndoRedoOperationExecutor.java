@@ -22,12 +22,12 @@ public final class UndoRedoOperationExecutor {
         return design;
     }
 
-    public void perform(DesignOperation operation) throws UserVisibleMessageException {
+    public void perform(DesignOperation operation, boolean merge) throws UserVisibleMessageException {
         if (operation == null) {
             throw new IllegalArgumentException("operation cannot be null");
         }
         redoStack.clear();
-        performOrRedoOperation(operation);
+        performOrRedoOperation(operation, merge);
     }
 
     public void undo() throws UserVisibleMessageException {
@@ -40,13 +40,26 @@ public final class UndoRedoOperationExecutor {
 
     public void redo() throws UserVisibleMessageException {
         if (!redoStack.isEmpty()) {
-            performOrRedoOperation(redoStack.pop());
+            performOrRedoOperation(redoStack.pop(), false);
         }
     }
 
-    private void performOrRedoOperation(DesignOperation operation) throws UserVisibleMessageException {
+    private void performOrRedoOperation(DesignOperation operation, boolean merge) throws UserVisibleMessageException {
         design = operation.performInternalNullChecked(design);
-        undoStack.push(operation);
+        if (merge && !undoStack.isEmpty()) {
+            DesignOperation previous = undoStack.peek();
+            if (previous instanceof MergedDesignOperation) {
+                ((MergedDesignOperation) previous).getOperations().add(operation);
+            } else {
+                undoStack.pop();
+                MergedDesignOperation merged = new MergedDesignOperation();
+                merged.getOperations().add(previous);
+                merged.getOperations().add(operation);
+                undoStack.push(merged);
+            }
+        } else {
+            undoStack.push(operation);
+        }
     }
 
 }

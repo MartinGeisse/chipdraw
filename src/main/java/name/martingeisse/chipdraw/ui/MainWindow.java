@@ -369,8 +369,12 @@ public class MainWindow extends JFrame implements Editor.Ui {
     }
 
     public void performOperation(DesignOperation operation) {
+        performOperation(operation, false);
+    }
+
+    public void performOperation(DesignOperation operation, boolean merge) {
         try {
-            editor.performOperation(operation);
+            editor.performOperation(operation, merge);
         } catch (UserVisibleMessageException e) {
             JOptionPane.showMessageDialog(this, e.getMessage());
         }
