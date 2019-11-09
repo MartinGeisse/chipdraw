@@ -15,6 +15,7 @@ import name.martingeisse.chipdraw.icons.Icons;
 import name.martingeisse.chipdraw.operation.DesignOperation;
 import name.martingeisse.chipdraw.operation.OutOfPlaceDesignOperation;
 import name.martingeisse.chipdraw.operation.SnapshottingDesignOperation;
+import name.martingeisse.chipdraw.operation.library.DrawPoints;
 import name.martingeisse.chipdraw.technology.NoSuchTechnologyException;
 import name.martingeisse.chipdraw.ui.util.DesignPixelPanel;
 import name.martingeisse.chipdraw.ui.util.MenuBarBuilder;
@@ -225,19 +226,9 @@ public class MainWindow extends JFrame implements Editor.Ui {
                     int y = event.getY() / pixelSize;
                     int cursorSize = MainWindow.this.cursorSize;
                     boolean drawing = MainWindow.this.drawing;
-                    performOperation(new SnapshottingDesignOperation() {
-                        @Override
-                        protected void doPerform(Design design) throws UserVisibleMessageException {
-                            int globalMaterialIndex = materialUiState.getEditingGlobalMaterialIndex();
-                            int localMaterialIndex = design.getTechnology().getLocalMaterialIndexForGlobalMaterialIndex(globalMaterialIndex);
-                            int planeIndex = design.getTechnology().getPlaneIndexForGlobalMaterialIndex(globalMaterialIndex);
-                            Plane plane = design.getPlanes().get(planeIndex);
-                            if (plane.isValidPosition(x, y)) {
-                                int offset = (cursorSize - 1) / 2;
-                                plane.drawRectangleAutoclip(x - offset, y - offset, cursorSize, cursorSize, drawing ? localMaterialIndex : Plane.EMPTY_PIXEL);
-                            }
-                        }
-                    });
+                    int globalMaterialIndex = drawing ? materialUiState.getEditingGlobalMaterialIndex() : Plane.EMPTY_PIXEL;
+                    int offset = (cursorSize - 1) / 2;
+                    performOperation(new DrawPoints(x - offset, y - offset, cursorSize, cursorSize, globalMaterialIndex));
                 }
             }
 
