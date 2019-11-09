@@ -19,7 +19,7 @@ public final class SimpleOperationExecutor {
     }
 
     public void perform(DesignOperation operation) throws UserVisibleMessageException {
-        design = operation.performInternal(design, null).newDesign;
+        design = operation.performInternalNullChecked(design);
     }
 
 }

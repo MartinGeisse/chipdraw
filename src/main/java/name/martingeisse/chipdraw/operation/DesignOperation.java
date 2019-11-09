@@ -6,7 +6,7 @@ import name.martingeisse.chipdraw.util.UserVisibleMessageException;
 /**
  * Implementations cannot be re-used to perform an operation multiple times -- the state of this object is stored
  * on the undo stack.
- *
+ * <p>
  * This class cannot be used directly. Use one of the subclasses to implement an operation.
  */
 public abstract class DesignOperation {
@@ -14,26 +14,30 @@ public abstract class DesignOperation {
     DesignOperation() {
     }
 
-    abstract InternalResponse performInternal(Design design, DesignOperation previousOperation) throws UserVisibleMessageException;
+    abstract Design performInternal(Design design) throws UserVisibleMessageException;
+
+    final Design performInternalNullChecked(Design design) throws UserVisibleMessageException {
+        if (design == null) {
+            throw new IllegalArgumentException("design argument is null");
+        }
+        Design newDesign = performInternal(design);
+        if (newDesign == null) {
+            throw new RuntimeException("operation returned null");
+        }
+        return newDesign;
+    }
 
     abstract Design undoInternal(Design design) throws UserVisibleMessageException;
 
-    /**
-     * Represents the result of an operation.
-     */
-    class InternalResponse {
-
-        final boolean merged;
-        final Design newDesign;
-
-        public InternalResponse(boolean merged, Design newDesign) {
-            if (newDesign == null) {
-                throw new IllegalArgumentException("newDesign cannot be null");
-            }
-            this.merged = merged;
-            this.newDesign = newDesign;
+    final Design undoInternalNullChecked(Design design) throws UserVisibleMessageException {
+        if (design == null) {
+            throw new IllegalArgumentException("design argument is null");
         }
-
+        Design newDesign = undoInternal(design);
+        if (newDesign == null) {
+            throw new RuntimeException("operation returned null");
+        }
+        return newDesign;
     }
 
 }

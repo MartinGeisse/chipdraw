@@ -12,10 +12,13 @@ public abstract class OutOfPlaceDesignOperation extends DesignOperation {
     private Design oldDesign;
 
     @Override
-    final InternalResponse performInternal(Design oldDesign, DesignOperation previousOperation) throws UserVisibleMessageException {
+    final Design performInternal(Design oldDesign) throws UserVisibleMessageException {
         this.oldDesign = oldDesign;
         Design newDesign = createNewDesign(oldDesign);
-        return new InternalResponse(false, newDesign);
+        if (newDesign == null) {
+            throw new RuntimeException("createNewDesign() returned null");
+        }
+        return newDesign;
     }
 
     @Override

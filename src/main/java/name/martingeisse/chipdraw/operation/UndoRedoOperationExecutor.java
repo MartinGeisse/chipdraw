@@ -33,10 +33,7 @@ public final class UndoRedoOperationExecutor {
     public void undo() throws UserVisibleMessageException {
         if (!undoStack.isEmpty()) {
             DesignOperation operation = undoStack.pop();
-            design = operation.undoInternal(design);
-            if (design == null) {
-                throw new RuntimeException("undo returned null");
-            }
+            design = operation.undoInternalNullChecked(design);
             redoStack.push(operation);
         }
     }
@@ -48,11 +45,7 @@ public final class UndoRedoOperationExecutor {
     }
 
     private void performOrRedoOperation(DesignOperation operation) throws UserVisibleMessageException {
-        DesignOperation.InternalResponse response = operation.performInternal(design, null); // TODO merging
-        if (response == null) {
-            throw new RuntimeException("operation returned null");
-        }
-        design = response.newDesign;
+        design = operation.performInternalNullChecked(design);
         undoStack.push(operation);
     }
 
