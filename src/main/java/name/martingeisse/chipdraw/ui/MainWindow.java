@@ -216,13 +216,15 @@ public class MainWindow extends JFrame implements Editor.Ui {
             }
 
             @Override
-            public void mouseMoved(MouseEvent e) {
+            public void mouseMoved(MouseEvent event) {
                 if (drawing || erasing) {
+                    int x = event.getX() / pixelSize;
+                    int y = event.getY() / pixelSize;
+                    int cursorSize = MainWindow.this.cursorSize;
+                    boolean drawing = MainWindow.this.drawing;
                     performOperation(new SnapshottingDesignOperation() {
                         @Override
                         protected void doPerform(Design design) throws UserVisibleMessageException {
-                            int x = e.getX() / pixelSize;
-                            int y = e.getY() / pixelSize;
                             int globalMaterialIndex = materialUiState.getEditingGlobalMaterialIndex();
                             int localMaterialIndex = design.getTechnology().getLocalMaterialIndexForGlobalMaterialIndex(globalMaterialIndex);
                             int planeIndex = design.getTechnology().getPlaneIndexForGlobalMaterialIndex(globalMaterialIndex);
