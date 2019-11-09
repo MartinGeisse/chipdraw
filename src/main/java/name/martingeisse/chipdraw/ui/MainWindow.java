@@ -39,8 +39,7 @@ public class MainWindow extends JFrame implements Editor.Ui {
     private final MaterialUiState materialUiState;
     private final Editor editor;
 
-    private boolean drawing;
-    private boolean erasing;
+    private boolean drawing, erasing, firstPixelOfStroke;
     private int pixelSize;
     private int cursorSize = 1;
 
@@ -211,6 +210,7 @@ public class MainWindow extends JFrame implements Editor.Ui {
             public void mousePressed(MouseEvent e) {
                 drawing = (e.getButton() == MouseEvent.BUTTON1);
                 erasing = (e.getButton() == MouseEvent.BUTTON3);
+                firstPixelOfStroke = true;
                 mouseMoved(e);
             }
 
@@ -228,7 +228,8 @@ public class MainWindow extends JFrame implements Editor.Ui {
                     boolean drawing = MainWindow.this.drawing;
                     int globalMaterialIndex = drawing ? materialUiState.getEditingGlobalMaterialIndex() : Plane.EMPTY_PIXEL;
                     int offset = (cursorSize - 1) / 2;
-                    performOperation(new DrawPoints(x - offset, y - offset, cursorSize, cursorSize, globalMaterialIndex));
+                    performOperation(new DrawPoints(x - offset, y - offset, cursorSize, cursorSize, globalMaterialIndex), !firstPixelOfStroke);
+                    firstPixelOfStroke = false;
                 }
             }
 
