@@ -2,8 +2,8 @@ package name.martingeisse.chipdraw;
 
 import com.google.common.collect.ImmutableList;
 import name.martingeisse.chipdraw.design.Design;
-import name.martingeisse.chipdraw.design.DesignOperation;
-import name.martingeisse.chipdraw.design.UndoRedoOperationExecutor;
+import name.martingeisse.chipdraw.operation.DesignOperation;
+import name.martingeisse.chipdraw.operation.UndoRedoOperationExecutor;
 import name.martingeisse.chipdraw.drc.DrcAgent;
 import name.martingeisse.chipdraw.drc.Violation;
 import name.martingeisse.chipdraw.technology.Technologies;

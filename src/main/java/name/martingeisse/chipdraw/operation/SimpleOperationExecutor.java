@@ -1,5 +1,6 @@
-package name.martingeisse.chipdraw.design;
+package name.martingeisse.chipdraw.operation;
 
+import name.martingeisse.chipdraw.design.Design;
 import name.martingeisse.chipdraw.util.UserVisibleMessageException;
 
 /**

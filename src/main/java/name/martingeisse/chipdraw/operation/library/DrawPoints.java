@@ -1,12 +1,5 @@
-package name.martingeisse.chipdraw.design.operations;
+package name.martingeisse.chipdraw.operation.library;
 
-import name.martingeisse.chipdraw.design.Design;
-import name.martingeisse.chipdraw.design.InPlaceDesignOperation;
-import name.martingeisse.chipdraw.util.Point;
-import name.martingeisse.chipdraw.util.UserVisibleMessageException;
-
-import java.util.HashMap;
-import java.util.Map;
 /*
 public final class DrawPoints extends InPlaceDesignOperation {
 

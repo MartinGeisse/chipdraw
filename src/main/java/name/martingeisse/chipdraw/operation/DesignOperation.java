@@ -1,5 +1,6 @@
-package name.martingeisse.chipdraw.design;
+package name.martingeisse.chipdraw.operation;
 
+import name.martingeisse.chipdraw.design.Design;
 import name.martingeisse.chipdraw.util.UserVisibleMessageException;
 
 /**
@@ -7,8 +8,6 @@ import name.martingeisse.chipdraw.util.UserVisibleMessageException;
  * on the undo stack.
  *
  * This class cannot be used directly. Use one of the subclasses to implement an operation.
- *
- * TODO SimpleOperationExecutor without undo/redo, UndoRedoOperationExecutor with u/r -- those can be used by callers
  */
 public abstract class DesignOperation {
 
