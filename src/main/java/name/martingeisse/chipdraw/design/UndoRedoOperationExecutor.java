@@ -31,18 +31,18 @@ public final class UndoRedoOperationExecutor {
 
     public void undo() throws UserVisibleMessageException {
         if (!undoStack.isEmpty()) {
-            DesignOperation operation = undoStack.removeLast();
+            DesignOperation operation = undoStack.pop();
             design = operation.undoInternal(design);
             if (design == null) {
                 throw new RuntimeException("undo returned null");
             }
-            redoStack.add(operation);
+            redoStack.push(operation);
         }
     }
 
     public void redo() throws UserVisibleMessageException {
         if (!redoStack.isEmpty()) {
-            performOrRedoOperation(redoStack.removeLast());
+            performOrRedoOperation(redoStack.pop());
         }
     }
 
