@@ -3,8 +3,8 @@ package name.martingeisse.chipdraw.global_tools.magic;
 import name.martingeisse.chipdraw.design.Design;
 import name.martingeisse.chipdraw.design.Plane;
 import name.martingeisse.chipdraw.global_tools.CornerStitchingExtrator;
-import name.martingeisse.chipdraw.technology.Material;
-import name.martingeisse.chipdraw.technology.Technologies;
+import name.martingeisse.chipdraw.design.Material;
+import name.martingeisse.chipdraw.design.Technologies;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;

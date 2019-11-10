@@ -2,7 +2,7 @@ package name.martingeisse.chipdraw.global_tools.magic;
 
 import name.martingeisse.chipdraw.design.Design;
 import name.martingeisse.chipdraw.design.Plane;
-import name.martingeisse.chipdraw.technology.Technologies;
+import name.martingeisse.chipdraw.design.Technologies;
 
 public final class ConceptToLibresiliconConverter {
 

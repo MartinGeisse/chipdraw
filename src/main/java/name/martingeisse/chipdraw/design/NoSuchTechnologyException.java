@@ -1,4 +1,4 @@
-package name.martingeisse.chipdraw.technology;
+package name.martingeisse.chipdraw.design;
 
 public final class NoSuchTechnologyException extends Exception {
 

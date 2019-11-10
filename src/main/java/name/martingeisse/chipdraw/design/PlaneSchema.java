@@ -1,4 +1,4 @@
-package name.martingeisse.chipdraw.technology;
+package name.martingeisse.chipdraw.design;
 
 import com.google.common.collect.ImmutableList;
 
@@ -7,9 +7,10 @@ import java.util.List;
 
 public final class PlaneSchema {
 
-    private int index = -1;
     private final String name;
     private final ImmutableList<Material> materials;
+    Technology technology;
+    int index = -1;
 
     /**
      * Constructor for a single-material plane.
@@ -33,12 +34,10 @@ public final class PlaneSchema {
         this.materials = ImmutableList.copyOf(materials);
     }
 
-    void setIndex(int index) {
-        this.index = index;
-    }
-
-    public int getIndex() {
-        return index;
+    void initialize() {
+        for (int i = 0; i < materials.size(); i++) {
+            materials.get(i).localIndex = i;
+        }
     }
 
     public String getName() {
@@ -47,6 +46,10 @@ public final class PlaneSchema {
 
     public ImmutableList<Material> getMaterials() {
         return materials;
+    }
+
+    public Technology getTechnology() {
+        return technology;
     }
 
 }

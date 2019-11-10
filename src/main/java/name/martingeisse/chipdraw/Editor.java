@@ -6,7 +6,7 @@ import name.martingeisse.chipdraw.operation.DesignOperation;
 import name.martingeisse.chipdraw.operation.UndoRedoOperationExecutor;
 import name.martingeisse.chipdraw.drc.DrcAgent;
 import name.martingeisse.chipdraw.drc.Violation;
-import name.martingeisse.chipdraw.technology.Technologies;
+import name.martingeisse.chipdraw.design.Technologies;
 import name.martingeisse.chipdraw.util.UserVisibleMessageException;
 
 /**

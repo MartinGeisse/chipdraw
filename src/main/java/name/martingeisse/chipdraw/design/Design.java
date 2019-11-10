@@ -1,10 +1,6 @@
 package name.martingeisse.chipdraw.design;
 
 import com.google.common.collect.ImmutableList;
-import name.martingeisse.chipdraw.technology.PlaneSchema;
-import name.martingeisse.chipdraw.technology.NoSuchTechnologyException;
-import name.martingeisse.chipdraw.technology.Technology;
-import name.martingeisse.chipdraw.technology.TechnologyRepository;
 import name.martingeisse.chipdraw.util.RectangularSize;
 
 import java.io.Serializable;

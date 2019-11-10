@@ -1,7 +1,7 @@
 package name.martingeisse.chipdraw.ui;
 
-import name.martingeisse.chipdraw.technology.PlaneSchema;
-import name.martingeisse.chipdraw.technology.Technology;
+import name.martingeisse.chipdraw.design.PlaneSchema;
+import name.martingeisse.chipdraw.design.Technology;
 
 import javax.swing.table.AbstractTableModel;
 import javax.swing.table.TableModel;

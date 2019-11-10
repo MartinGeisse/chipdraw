@@ -1,8 +1,5 @@
 package name.martingeisse.chipdraw.design;
 
-import name.martingeisse.chipdraw.technology.NoSuchTechnologyException;
-import name.martingeisse.chipdraw.technology.TechnologyRepository;
-
 import java.io.*;
 
 public final class DesignPersistence {

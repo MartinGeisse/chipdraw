@@ -1,20 +1,19 @@
 package name.martingeisse.chipdraw.design;
 
-import name.martingeisse.chipdraw.technology.PlaneSchema;
 import name.martingeisse.chipdraw.util.RectangularSize;
 
 import java.io.Serializable;
 import java.util.Arrays;
 
 /**
- * TODO consider using value types LocalMaterialIndex and GlobalMaterialIndex to avoid confusion (passing one as the other)
+ *
  */
 public final class Plane implements Serializable, RectangularSize {
 
     private static final long serialVersionUID = 1;
 
-    public static final int EMPTY_PIXEL = 255;
-    public static final int MAX_LOCAL_MATERIAL_INDEX = 250;
+    private static final int EMPTY_PIXEL = 255;
+    private static final int MAX_LOCAL_MATERIAL_INDEX = 250;
 
     private transient PlaneSchema planeSchema;
     private final int width, height;
@@ -52,6 +51,16 @@ public final class Plane implements Serializable, RectangularSize {
         return planeSchema;
     }
 
+    public boolean isMaterialValid(Material material) {
+        return material.getPlaneSchema() == planeSchema;
+    }
+
+    public void validateMaterial(Material material) {
+        if (!isMaterialValid(material)) {
+            throw new IllegalArgumentException("unknown material " + material + " for plane " + this);
+        }
+    }
+
     public int getWidth() {
         return width;
     }
@@ -74,6 +83,8 @@ public final class Plane implements Serializable, RectangularSize {
         validatePosition(x, y);
         return y * width + x;
     }
+
+    TODO ab hier
 
     public int getPixel(int x, int y) {
         return pixels[getIndex(x, y)] & 0xff;

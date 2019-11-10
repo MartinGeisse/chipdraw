@@ -1,4 +1,4 @@
-package name.martingeisse.chipdraw.technology;
+package name.martingeisse.chipdraw.design;
 
 import com.google.common.collect.ImmutableList;
 

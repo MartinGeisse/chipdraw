@@ -2,8 +2,8 @@ package name.martingeisse.chipdraw.ui;
 
 import name.martingeisse.chipdraw.design.Design;
 import name.martingeisse.chipdraw.design.DesignPersistence;
-import name.martingeisse.chipdraw.technology.NoSuchTechnologyException;
-import name.martingeisse.chipdraw.technology.TechnologyRepository;
+import name.martingeisse.chipdraw.design.NoSuchTechnologyException;
+import name.martingeisse.chipdraw.design.TechnologyRepository;
 
 import javax.swing.*;
 import javax.swing.filechooser.FileNameExtensionFilter;

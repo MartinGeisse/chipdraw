@@ -1,6 +1,6 @@
 package name.martingeisse.chipdraw;
 
-import name.martingeisse.chipdraw.technology.TechnologyRepository;
+import name.martingeisse.chipdraw.design.TechnologyRepository;
 
 public final class Workbench {
 
