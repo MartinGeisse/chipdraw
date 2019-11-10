@@ -16,6 +16,8 @@ import java.util.List;
  */
 public final class Design implements Serializable, RectangularSize {
 
+    private static final long serialVersionUID = 1;
+
     private final String technologyId;
     private transient Technology technology;
     private final int width;

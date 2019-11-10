@@ -11,6 +11,8 @@ import java.util.Arrays;
  */
 public final class Plane implements Serializable, RectangularSize {
 
+    private static final long serialVersionUID = 1;
+
     public static final int EMPTY_PIXEL = 255;
     public static final int MAX_LOCAL_MATERIAL_INDEX = 250;
 
