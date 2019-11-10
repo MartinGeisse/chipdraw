@@ -36,17 +36,19 @@ public final class Technology {
         // count number of materials across all planes
         int globalMaterialCount = 0;
         for (PlaneSchema planeSchema : planeSchemas) {
-            globalMaterialCount += planeSchema.getMaterialNames().size();
+            globalMaterialCount += planeSchema.getMaterials().size();
         }
         this.globalMaterialCount = globalMaterialCount;
 
-        // assign plane indices; initialize mappings using global material indices as keys
+        // assign plane indices; initialize mappings using global material indices as keys as well as
+        // mappings inside the Material class
         int planeIndex = 0, globalMaterialIndex = 0;
         this.globalMaterialIndexToPlaneIndex = new int[globalMaterialCount];
         this.globalMaterialIndexToLocalMaterialIndex = new int[globalMaterialCount];
         for (PlaneSchema planeSchema : planeSchemas) {
             planeSchema.setIndex(planeIndex);
-            for (int i = 0; i < planeSchema.getMaterialNames().size(); i++) {
+            for (int i = 0; i < planeSchema.getMaterials().size(); i++) {
+                planeSchema.getMaterials().get(i).setIndices(i, globalMaterialIndex);
                 globalMaterialIndexToPlaneIndex[globalMaterialIndex] = planeIndex;
                 globalMaterialIndexToLocalMaterialIndex[globalMaterialIndex] = i;
                 globalMaterialIndex++;

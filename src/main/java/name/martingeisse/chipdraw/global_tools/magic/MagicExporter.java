@@ -3,6 +3,7 @@ package name.martingeisse.chipdraw.global_tools.magic;
 import name.martingeisse.chipdraw.design.Design;
 import name.martingeisse.chipdraw.design.Plane;
 import name.martingeisse.chipdraw.global_tools.CornerStitchingExtrator;
+import name.martingeisse.chipdraw.technology.Material;
 import name.martingeisse.chipdraw.technology.Technologies;
 
 import java.io.*;
@@ -55,10 +56,9 @@ public class MagicExporter {
         out.println("tech scmos");
         out.println("timestamp " + new Date().getTime());
         for (Plane plane : design.getPlanes()) {
-            for (int localMaterialIndex = 0; localMaterialIndex < plane.getSchema().getMaterialNames().size(); localMaterialIndex++) {
-                if (plane.hasMaterial(localMaterialIndex)) {
-                    int localMaterialIndexFinal = localMaterialIndex;
-                    out.println("<< " + plane.getSchema().getMaterialNames().get(localMaterialIndex) + " >>");
+            for (Material material : plane.getSchema().getMaterials()) {
+                if (plane.hasMaterial(material)) {
+                    out.println("<< " + material.getName() + " >>");
                     new CornerStitchingExtrator() {
                         @Override
                         protected void finishRectangle(int rectangleLocalMaterialIndex, int x, int y, int width, int height) {

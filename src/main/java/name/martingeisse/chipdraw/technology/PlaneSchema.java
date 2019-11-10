@@ -2,11 +2,14 @@ package name.martingeisse.chipdraw.technology;
 
 import com.google.common.collect.ImmutableList;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public final class PlaneSchema {
 
     private int index = -1;
     private final String name;
-    private final ImmutableList<String> materialNames;
+    private final ImmutableList<Material> materials;
 
     /**
      * Constructor for a single-material plane.
@@ -23,7 +26,11 @@ public final class PlaneSchema {
             throw new IllegalArgumentException("plane must have at least one material");
         }
         this.name = name;
-        this.materialNames = materialNames;
+        List<Material> materials = new ArrayList<>();
+        for (String materialName : materialNames) {
+            materials.add(new Material(this, materialName));
+        }
+        this.materials = ImmutableList.copyOf(materials);
     }
 
     void setIndex(int index) {
@@ -38,8 +45,8 @@ public final class PlaneSchema {
         return name;
     }
 
-    public ImmutableList<String> getMaterialNames() {
-        return materialNames;
+    public ImmutableList<Material> getMaterials() {
+        return materials;
     }
 
 }

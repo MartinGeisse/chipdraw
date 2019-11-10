@@ -21,7 +21,7 @@ public final class Plane implements Serializable, RectangularSize {
     private final byte[] pixels;
 
     private Plane(PlaneSchema planeSchema, int width, int height, byte[] dataSource) {
-        if (planeSchema.getMaterialNames().size() > MAX_LOCAL_MATERIAL_INDEX) {
+        if (planeSchema.getMaterials().size() > MAX_LOCAL_MATERIAL_INDEX) {
             // so we can use bytes to store local material indices and also reserve a special byte value for EMPTY_PIXEL
             throw new IllegalArgumentException("more than 250 materials in a single plane currently not supported");
         }
