@@ -1,146 +1,163 @@
 package name.martingeisse.chipdraw.ui;
 
+import com.google.common.collect.ImmutableList;
+import name.martingeisse.chipdraw.design.Material;
 import name.martingeisse.chipdraw.design.PlaneSchema;
 import name.martingeisse.chipdraw.design.Technology;
 
 import javax.swing.table.AbstractTableModel;
 import javax.swing.table.TableModel;
-import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  *
  */
 public final class MaterialUiState {
 
-	private final SidebarTableModel sidebarTableModel = new SidebarTableModel();
-	private Technology technology;
-	private boolean[] planesVisible;
-	private int editingGlobalMaterialIndex;
+    private final SidebarTableModel sidebarTableModel = new SidebarTableModel();
+    private Technology technology;
+    private ImmutableList<Material> materials;
+    private Set<PlaneSchema> visiblePlanes;
+    private Material editingMaterial;
 
-	public MaterialUiState(Technology technology) {
-		setTechnology(technology);
-	}
+    public MaterialUiState(Technology technology) {
+        setTechnology(technology);
+    }
 
-	public void setTechnology(Technology technology) {
-		this.technology = technology;
-		this.planesVisible = new boolean[technology.getPlaneCount()];
-		Arrays.fill(planesVisible, true);
-		editingGlobalMaterialIndex = 0;
-		sidebarTableModel.fireTableDataChanged();
+    public void setTechnology(Technology technology) {
+        this.technology = technology;
+        this.materials = technology.getFlattenedMaterialList();
+        this.visiblePlanes = new HashSet<>(technology.getPlaneSchemas());
+        this.editingMaterial = materials.get(0);
+        sidebarTableModel.fireTableDataChanged();
+    }
 
-	}
+    public TableModel getSidebarTableModel() {
+        return sidebarTableModel;
+    }
 
-	public TableModel getSidebarTableModel() {
-		return sidebarTableModel;
-	}
+//region plane-oriented visibility accessors
 
-//region plane-oriented accessors
+    public boolean isPlaneVisible(PlaneSchema planeSchema) {
+        technology.validatePlaneSchema(planeSchema);
+        return visiblePlanes.contains(planeSchema);
+    }
 
-	public boolean isPlaneVisible(int planeIndex) {
-		technology.validatePlaneIndex(planeIndex);
-		return planesVisible[planeIndex];
-	}
+    public void setPlaneVisible(PlaneSchema planeSchema, boolean visible) {
+        technology.validatePlaneSchema(planeSchema);
+        if (visible) {
+            visiblePlanes.add(planeSchema);
+        } else {
+            visiblePlanes.remove(planeSchema);
+        }
+        sidebarTableModel.fireTableDataChanged();
+    }
 
-	public void setPlaneVisible(int planeIndex, boolean visible) {
-		technology.validatePlaneIndex(planeIndex);
-		planesVisible[planeIndex] = visible;
-		sidebarTableModel.fireTableDataChanged();
-	}
-
-	public void togglePlaneVisible(int planeIndex) {
-		technology.validatePlaneIndex(planeIndex);
-		planesVisible[planeIndex] = !planesVisible[planeIndex];
-		sidebarTableModel.fireTableDataChanged();
-	}
-
-//endregion
-
-//region material-oriented accessors
-
-	public boolean isMaterialVisible(int globalMaterialIndex) {
-		return isPlaneVisible(technology.getPlaneIndexForGlobalMaterialIndex(globalMaterialIndex));
-	}
-
-	public void setMaterialVisible(int globalMaterialIndex, boolean visible) {
-		setPlaneVisible(technology.getPlaneIndexForGlobalMaterialIndex(globalMaterialIndex), visible);
-	}
-
-	public void toggleMaterialVisible(int globalMaterialIndex) {
-		togglePlaneVisible(technology.getPlaneIndexForGlobalMaterialIndex(globalMaterialIndex));
-	}
+    public void togglePlaneVisible(PlaneSchema planeSchema) {
+        setPlaneVisible(planeSchema, !isPlaneVisible(planeSchema));
+    }
 
 //endregion
 
-	public int getEditingGlobalMaterialIndex() {
-		return editingGlobalMaterialIndex;
-	}
+//region material-oriented visibility accessors
 
-	public void setEditingGlobalMaterialIndex(int editingGlobalMaterialIndex) {
-		technology.validateGlobalMaterialIndex(editingGlobalMaterialIndex);
-		int old = this.editingGlobalMaterialIndex;
-		this.editingGlobalMaterialIndex = editingGlobalMaterialIndex;
-		sidebarTableModel.fireTableCellUpdated(old, 0);
-		sidebarTableModel.fireTableCellUpdated(editingGlobalMaterialIndex, 0);
-	}
+    public boolean isMaterialVisible(Material material) {
+        return isPlaneVisible(material.getPlaneSchema());
+    }
 
-	private class SidebarTableModel extends AbstractTableModel {
+    public void setMaterialVisible(Material material, boolean visible) {
+        setPlaneVisible(material.getPlaneSchema(), visible);
+    }
 
-		@Override
-		public int getRowCount() {
-			return technology.getGlobalMaterialCount();
-		}
+    public void toggleMaterialVisible(Material material) {
+        togglePlaneVisible(material.getPlaneSchema());
+    }
 
-		@Override
-		public int getColumnCount() {
-			return 3;
-		}
+//endregion
 
-		@Override
-		public String getColumnName(int column) {
-			switch (column) {
+//region current editing material
 
-				case 0:
-					return "editing";
+    public Material getEditingMaterial() {
+        return editingMaterial;
+    }
 
-				case 1:
-					return "visible";
+    public void setEditingMaterial(Material editingMaterial) {
+        technology.validatePlaneSchema(editingMaterial.getPlaneSchema());
+        this.editingMaterial = editingMaterial;
+        sidebarTableModel.fireTableDataChanged();
+    }
 
-				case 2:
-					return "name";
+//endregion
 
-				default:
-					return super.getColumnName(column);
+    private class SidebarTableModel extends AbstractTableModel {
 
-			}
-		}
+        @Override
+        public int getRowCount() {
+            return materials.size();
+        }
 
-		@Override
-		public Class<?> getColumnClass(int columnIndex) {
-			return (columnIndex < 2) ? Boolean.TYPE : String.class;
-		}
+        @Override
+        public int getColumnCount() {
+            return 3;
+        }
 
-		@Override
-		public Object getValueAt(int rowIndex, int columnIndex) {
-			switch (columnIndex) {
+        @Override
+        public String getColumnName(int column) {
+            switch (column) {
 
-				case 0:
-					return rowIndex == editingGlobalMaterialIndex;
+                case 0:
+                    return "editing";
 
-				case 1:
-					return isMaterialVisible(rowIndex);
+                case 1:
+                    return "visible";
 
-				case 2: {
-					PlaneSchema planeSchema = technology.getPlaneSchemaForGlobalMaterialIndex(rowIndex);
-					int localIndex = technology.getLocalMaterialIndexForGlobalMaterialIndex(rowIndex);
-					return planeSchema.getMaterialNames().get(localIndex);
-				}
+                case 2:
+                    return "name";
 
-				default:
-					return null;
+                default:
+                    return super.getColumnName(column);
 
-			}
-		}
+            }
+        }
 
-	}
+        @Override
+        public Class<?> getColumnClass(int columnIndex) {
+            return (columnIndex < 2) ? Boolean.TYPE : String.class;
+        }
+
+        @Override
+        public Object getValueAt(int rowIndex, int columnIndex) {
+            if (rowIndex < 0 || rowIndex >= materials.size()) {
+                return null;
+            }
+            switch (columnIndex) {
+
+                case 0:
+                    return materials.get(rowIndex) == editingMaterial;
+
+                case 1:
+                    return visiblePlanes.contains(materials.get(rowIndex).getPlaneSchema());
+
+                case 2:
+                    return materials.get(rowIndex).getName();
+
+                default:
+                    return null;
+
+            }
+        }
+
+    }
+
+    public void onClick(int rowIndex, int columnIndex) {
+        if (rowIndex >= 0 && rowIndex < materials.size()) {
+            if (columnIndex == 1) {
+                toggleMaterialVisible(materials.get(rowIndex));
+            } else {
+                setEditingMaterial(materials.get(rowIndex));
+            }
+        }
+    }
 
 }

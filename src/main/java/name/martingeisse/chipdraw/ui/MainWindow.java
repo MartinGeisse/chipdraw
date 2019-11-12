@@ -84,16 +84,8 @@ public class MainWindow extends JFrame implements Editor.Ui {
                     }
                     int rowIndex = table.rowAtPoint(e.getPoint());
                     int columnIndex = table.columnAtPoint(e.getPoint());
-                    if (!editor.getDesign().getTechnology().isGlobalMaterialIndexValid(rowIndex)) {
-                        return;
-                    }
-                    if (columnIndex == 1) {
-                        materialUiState.toggleMaterialVisible(rowIndex);
-                        table.repaint();
-                    } else {
-                        materialUiState.setEditingGlobalMaterialIndex(rowIndex);
-                        table.repaint();
-                    }
+                    materialUiState.onClick(rowIndex, columnIndex);
+                    table.repaint();
                 }
             });
             table.setRowSelectionAllowed(false);
@@ -162,11 +154,12 @@ public class MainWindow extends JFrame implements Editor.Ui {
             private final Paint metal2Paint = new Color(0x00c0c0);
             private final Paint padPaint = new Color(0xff00ff);
 
-            private int getPixel(int planeIndex, int x, int y) {
-                if (materialUiState.isPlaneVisible(planeIndex)) {
-                    return editor.getDesign().getPlanes().get(planeIndex).getPixel(x, y);
+            private Material getPixel(int planeIndex, int x, int y) {
+                Plane plane = editor.getDesign().getPlanes().get(planeIndex);
+                if (materialUiState.isPlaneVisible(plane.getSchema())) {
+                    return plane.getPixel(x, y);
                 } else {
-                    return Plane.EMPTY_PIXEL;
+                    return Material.NONE;
                 }
             }
 
@@ -174,25 +167,25 @@ public class MainWindow extends JFrame implements Editor.Ui {
             protected void drawPixel(Graphics2D g, int pixelX, int pixelY, int screenX, int screenY, int screenSize) {
 
                 // read pixel per plane
-                int wellPlane = getPixel(0, pixelX, pixelY);
-                int diffPlane = getPixel(1, pixelX, pixelY);
-                int polyPlane = getPixel(2, pixelX, pixelY);
-                int metal1Plane = getPixel(3, pixelX, pixelY);
-                int metal2Plane = getPixel(4, pixelX, pixelY);
-                int padPlane = getPixel(5, pixelX, pixelY);
+                Material wellPlane = getPixel(0, pixelX, pixelY);
+                Material diffPlane = getPixel(1, pixelX, pixelY);
+                Material polyPlane = getPixel(2, pixelX, pixelY);
+                Material metal1Plane = getPixel(3, pixelX, pixelY);
+                Material metal2Plane = getPixel(4, pixelX, pixelY);
+                Material padPlane = getPixel(5, pixelX, pixelY);
 
                 // select paint
-                if (padPlane != Plane.EMPTY_PIXEL) {
+                if (padPlane != Material.NONE) {
                     g.setPaint(padPaint);
-                } else if (metal2Plane != Plane.EMPTY_PIXEL) {
+                } else if (metal2Plane != Material.NONE) {
                     g.setPaint(metal2Plane == 0 ? via12Paint : metal2Paint);
-                } else if (metal1Plane != Plane.EMPTY_PIXEL) {
+                } else if (metal1Plane != Material.NONE) {
                     g.setPaint(metal1Plane == 0 ? contactPaint : metal1Paint);
-                } else if (polyPlane != Plane.EMPTY_PIXEL) {
+                } else if (polyPlane != Material.NONE) {
                     g.setPaint(polyPaint);
-                } else if (diffPlane != Plane.EMPTY_PIXEL) {
+                } else if (diffPlane != Material.NONE) {
                     g.setPaint(diffPlane == 0 ? ndiffPaint : pdiffPaint);
-                } else if (wellPlane != Plane.EMPTY_PIXEL) {
+                } else if (wellPlane != Material.NONE) {
                     g.setPaint(wellPlane == 0 ? nwellPaint : pwellPaint);
                 } else {
                     return;
@@ -225,9 +218,9 @@ public class MainWindow extends JFrame implements Editor.Ui {
                     int y = event.getY() / pixelSize;
                     int cursorSize = MainWindow.this.cursorSize;
                     boolean drawing = MainWindow.this.drawing;
-                    int globalMaterialIndex = drawing ? materialUiState.getEditingGlobalMaterialIndex() : Plane.EMPTY_PIXEL;
+                    Material material = drawing ? materialUiState.getEditingMaterial() : Material.NONE;
                     int offset = (cursorSize - 1) / 2;
-                    performOperation(new DrawPoints(x - offset, y - offset, cursorSize, cursorSize, globalMaterialIndex), !firstPixelOfStroke);
+                    performOperation(new DrawPoints(x - offset, y - offset, cursorSize, cursorSize, material), !firstPixelOfStroke);
                     firstPixelOfStroke = false;
                 }
             }
@@ -253,18 +246,12 @@ public class MainWindow extends JFrame implements Editor.Ui {
                     case '6':
                     case '7':
                     case '8':
-                    case '9': {
-                        int globalMaterialIndex = event.getKeyChar() - '1';
-                        if (editor.getDesign().getTechnology().isGlobalMaterialIndexValid(globalMaterialIndex)) {
-                            materialUiState.setEditingGlobalMaterialIndex(globalMaterialIndex);
-                        }
+                    case '9':
+                        materialUiState.onClick(event.getKeyChar() - '1', 0);
                         break;
-                    }
 
                     case '0':
-                        if (editor.getDesign().getTechnology().isGlobalMaterialIndexValid(9)) {
-                            materialUiState.setEditingGlobalMaterialIndex(9);
-                        }
+                        materialUiState.onClick(9, 0);
                         break;
 
                     case '+':
@@ -383,7 +370,7 @@ public class MainWindow extends JFrame implements Editor.Ui {
     @Override
     public void onRestart() {
         materialUiState.setTechnology(editor.getDesign().getTechnology());
-        materialUiState.setEditingGlobalMaterialIndex(0);
+        materialUiState.onClick(0, 0);
         drawing = false;
         erasing = false;
         pixelSize = 16;

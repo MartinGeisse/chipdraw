@@ -2,6 +2,9 @@ package name.martingeisse.chipdraw.design;
 
 import com.google.common.collect.ImmutableList;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Using a simple string / identifier as the technology ID: My original plan was to use an identifier plus a hash code,
  * to detect version changes or other differences in technologies using the same identifier on different machines.
@@ -69,6 +72,14 @@ public final class Technology {
         if (!isPlaneSchemaValid(planeSchema)) {
             throw new IllegalArgumentException("unknown plane schema: " + planeSchema);
         }
+    }
+
+    public ImmutableList<Material> getFlattenedMaterialList() {
+        List<Material> result = new ArrayList<>();
+        for (PlaneSchema planeSchema : planeSchemas) {
+            result.addAll(planeSchema.getMaterials());
+        }
+        return ImmutableList.copyOf(result);
     }
 
 }
