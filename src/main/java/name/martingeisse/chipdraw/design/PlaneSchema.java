@@ -23,6 +23,12 @@ public final class PlaneSchema {
      * Constructor for a multi-material plane.
      */
     public PlaneSchema(String name, ImmutableList<String> materialNames) {
+        if (name == null || name.isEmpty()) {
+            throw new IllegalArgumentException("name cannot be null or empty");
+        }
+        if (materialNames == null) {
+            throw new IllegalArgumentException("materialNames cannot be null");
+        }
         if (materialNames.isEmpty()) {
             throw new IllegalArgumentException("plane must have at least one material");
         }
@@ -36,7 +42,7 @@ public final class PlaneSchema {
 
     void initialize() {
         for (int i = 0; i < materials.size(); i++) {
-            materials.get(i).localIndex = i;
+            materials.get(i).code = (byte)i;
         }
     }
 
@@ -50,6 +56,19 @@ public final class PlaneSchema {
 
     public Technology getTechnology() {
         return technology;
+    }
+
+    public boolean isMaterialValid(Material material) {
+        if (material == null) {
+            throw new IllegalArgumentException("material is null");
+        }
+        return material == Material.NONE || material.getPlaneSchema() == this;
+    }
+
+    public void validateMaterial(Material material) {
+        if (!isMaterialValid(material)) {
+            throw new IllegalArgumentException("unknown material: " + material);
+        }
     }
 
 }

@@ -17,6 +17,12 @@ public final class Technology {
     private final ImmutableList<PlaneSchema> planeSchemas;
 
     public Technology(String id, ImmutableList<PlaneSchema> planeSchemas) {
+        if (id == null || id.isEmpty()) {
+            throw new IllegalArgumentException("id cannot be null or empty");
+        }
+        if (planeSchemas == null) {
+            throw new IllegalArgumentException("planeSchemas cannot be null");
+        }
         if (planeSchemas.isEmpty()) {
             throw new IllegalArgumentException("technology must have at least one plane");
         }
@@ -53,6 +59,9 @@ public final class Technology {
     }
 
     public boolean isPlaneSchemaValid(PlaneSchema planeSchema) {
+        if (planeSchema == null) {
+            throw new IllegalArgumentException("planeSchema is null");
+        }
         return planeSchema.technology == this;
     }
 

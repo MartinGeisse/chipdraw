@@ -12,24 +12,24 @@ public final class Plane implements Serializable, RectangularSize {
 
     private static final long serialVersionUID = 1;
 
-    private static final int EMPTY_PIXEL = 255;
-    private static final int MAX_LOCAL_MATERIAL_INDEX = 250;
-
     private transient PlaneSchema planeSchema;
     private final int width, height;
     private final byte[] pixels;
 
     private Plane(PlaneSchema planeSchema, int width, int height, byte[] dataSource) {
-        if (planeSchema.getMaterials().size() > MAX_LOCAL_MATERIAL_INDEX) {
+        if (planeSchema == null) {
+            throw new IllegalArgumentException("planeSchema cannot be null");
+        }
+        if (planeSchema.getMaterials().size() > Material.MAX_MATERIALS) {
             // so we can use bytes to store local material indices and also reserve a special byte value for EMPTY_PIXEL
-            throw new IllegalArgumentException("more than 250 materials in a single plane currently not supported");
+            throw new IllegalArgumentException("more than " + Material.MAX_MATERIALS + " materials in a single plane currently not supported");
         }
         this.planeSchema = planeSchema;
         this.width = width;
         this.height = height;
         this.pixels = new byte[width * height];
         if (dataSource == null) {
-            Arrays.fill(pixels, (byte) EMPTY_PIXEL);
+            Arrays.fill(pixels, Material.EMPTY_PIXEL_CODE);
         } else {
             System.arraycopy(dataSource, 0, pixels, 0, pixels.length);
         }
@@ -52,13 +52,11 @@ public final class Plane implements Serializable, RectangularSize {
     }
 
     public boolean isMaterialValid(Material material) {
-        return material.getPlaneSchema() == planeSchema;
+        return planeSchema.isMaterialValid(material);
     }
 
     public void validateMaterial(Material material) {
-        if (!isMaterialValid(material)) {
-            throw new IllegalArgumentException("unknown material " + material + " for plane " + this);
-        }
+        planeSchema.validateMaterial(material);
     }
 
     public int getWidth() {
@@ -84,34 +82,27 @@ public final class Plane implements Serializable, RectangularSize {
         return y * width + x;
     }
 
-    TODO ab hier
-
-    public int getPixel(int x, int y) {
-        return pixels[getIndex(x, y)] & 0xff;
-    }
-
-    public int getPixelAutoclip(int x, int y) {
-        return isValidPosition(x, y) ? getPixel(x, y) : EMPTY_PIXEL;
-    }
-
-    public boolean isValidLocalMaterialIndex(int value) {
-        return (value >= 0 && value <= MAX_LOCAL_MATERIAL_INDEX) || value == EMPTY_PIXEL;
-    }
-
-    private byte validateLocalMaterialIndex(int localMaterialIndex) {
-        if (!isValidLocalMaterialIndex(localMaterialIndex)) {
-            throw new IllegalArgumentException("invalid local material index: " + localMaterialIndex);
+    public Material getPixel(int x, int y) {
+        byte code = pixels[getIndex(x, y)];
+        if (code == Material.EMPTY_PIXEL_CODE) {
+            return Material.NONE;
+        } else {
+            return planeSchema.getMaterials().get(code & 0xff);
         }
-        return (byte) localMaterialIndex;
     }
 
-    public void setPixel(int x, int y, int localMaterialIndex) {
-        pixels[getIndex(x, y)] = validateLocalMaterialIndex(localMaterialIndex);
+    public Material getPixelAutoclip(int x, int y) {
+        return isValidPosition(x, y) ? getPixel(x, y) : Material.NONE;
     }
 
-    public void setPixelAutoclip(int x, int y, int localMaterialIndex) {
+    public void setPixel(int x, int y, Material material) {
+        validateMaterial(material);
+        pixels[getIndex(x, y)] = material.code;
+    }
+
+    public void setPixelAutoclip(int x, int y, Material material) {
         if (isValidPosition(x, y)) {
-            setPixel(x, y, localMaterialIndex);
+            setPixel(x, y, material);
         }
     }
 
@@ -127,12 +118,12 @@ public final class Plane implements Serializable, RectangularSize {
         validatePosition(x + width - 1, y + height - 1);
     }
 
-    public void drawRectangle(int x, int y, int width, int height, int localMaterialIndex) {
+    public void drawRectangle(int x, int y, int width, int height, Material material) {
         validateRectangle(x, y, width, height);
-        drawRectangleInternal(x, y, width, height, localMaterialIndex);
+        drawRectangleInternal(x, y, width, height, material);
     }
 
-    public void drawRectangleAutoclip(int x, int y, int width, int height, int localMaterialIndex) {
+    public void drawRectangleAutoclip(int x, int y, int width, int height, Material material) {
         validateRectangleSize(width, height);
         if (x < 0) {
             width += x;
@@ -148,14 +139,14 @@ public final class Plane implements Serializable, RectangularSize {
         if (height > this.height - y) {
             height = this.height - y;
         }
-        drawRectangleInternal(x, y, width, height, localMaterialIndex);
+        drawRectangleInternal(x, y, width, height, material);
     }
 
-    private void drawRectangleInternal(int x, int y, int width, int height, int localMaterialIndex) {
-        validateLocalMaterialIndex(localMaterialIndex);
+    private void drawRectangleInternal(int x, int y, int width, int height, Material material) {
+        validateMaterial(material);
         for (int i = 0; i < width; i++) {
             for (int j = 0; j < height; j++) {
-                setPixel(x + i, y + j, localMaterialIndex);
+                setPixel(x + i, y + j, material);
             }
         }
     }
@@ -163,21 +154,21 @@ public final class Plane implements Serializable, RectangularSize {
     /**
      * Note: to check uniformity without an expected value, get the value from (x, y) and pass that as expected value.
      */
-    public boolean isReactangleUniform(int x, int y, int width, int height, int expectedLocalMaterialIndex) {
+    public boolean isReactangleUniform(int x, int y, int width, int height, Material material) {
         validateRectangle(x, y, width, height);
-        return isReactangleUniformInternal(x, y, width, height, expectedLocalMaterialIndex);
+        return isReactangleUniformInternal(x, y, width, height, material);
     }
 
-    public boolean isReactangleUniformAutoclip(int x, int y, int width, int height, int expectedLocalMaterialIndex) {
+    public boolean isReactangleUniformAutoclip(int x, int y, int width, int height, Material material) {
         validateRectangleSize(width, height);
 
         // handle non-clip case
         if (isValidPosition(x, y) && isValidPosition(x + width - 1, y + height - 1)) {
-            return isReactangleUniformInternal(x, y, width, height, expectedLocalMaterialIndex);
+            return isReactangleUniformInternal(x, y, width, height, material);
         }
 
         // clipped case: at least one pixel is implicitly empty, so if we are looking for nonempty pixels, it can't be uniform
-        if (expectedLocalMaterialIndex != EMPTY_PIXEL) {
+        if (material != Material.NONE) {
             return false;
         }
 
@@ -196,13 +187,13 @@ public final class Plane implements Serializable, RectangularSize {
         if (height > this.height - y) {
             height = this.height - y;
         }
-        return isReactangleUniformInternal(x, y, width, height, expectedLocalMaterialIndex);
+        return isReactangleUniformInternal(x, y, width, height, material);
     }
 
-    private boolean isReactangleUniformInternal(int x, int y, int width, int height, int expectedLocalMaterialIndex) {
+    private boolean isReactangleUniformInternal(int x, int y, int width, int height, Material material) {
         for (int i = 0; i < width; i++) {
             for (int j = 0; j < height; j++) {
-                if (getPixel(x + i, y + j) != expectedLocalMaterialIndex) {
+                if (getPixel(x + i, y + j) != material) {
                     return false;
                 }
             }
@@ -212,18 +203,16 @@ public final class Plane implements Serializable, RectangularSize {
 
     public boolean isEmpty() {
         for (byte pixelValue : pixels) {
-            int localMaterialIndex = pixelValue & 0xff;
-            if (localMaterialIndex != EMPTY_PIXEL) {
+            if (pixelValue != Material.EMPTY_PIXEL_CODE) {
                 return false;
             }
         }
         return true;
     }
 
-    public boolean hasMaterial(int expectedLocalMaterialIndex) {
+    public boolean hasMaterial(Material material) {
         for (byte pixelValue : pixels) {
-            int localMaterialIndex = pixelValue & 0xff;
-            if (localMaterialIndex == expectedLocalMaterialIndex) {
+            if (pixelValue == material.code) {
                 return true;
             }
         }
