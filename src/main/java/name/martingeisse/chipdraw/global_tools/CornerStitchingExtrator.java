@@ -1,6 +1,7 @@
 package name.martingeisse.chipdraw.global_tools;
 
 import name.martingeisse.chipdraw.design.Design;
+import name.martingeisse.chipdraw.design.Material;
 import name.martingeisse.chipdraw.design.Plane;
 
 /**
@@ -8,15 +9,15 @@ import name.martingeisse.chipdraw.design.Plane;
  */
 public abstract class CornerStitchingExtrator extends AbstractPerPlaneExtractor {
 
-	private int localMaterialIndex = -1;
+	private Material material = null;
 
 	@Override
 	protected void handlePlane(Plane plane) {
 		Plane copy = new Plane(plane);
 		for (int y = 0; y < copy.getHeight(); y++) {
 			for (int x = 0; x < copy.getWidth(); x++) {
-				localMaterialIndex = copy.getPixel(x, y);
-				if (localMaterialIndex != Plane.EMPTY_PIXEL) {
+				material = copy.getPixel(x, y);
+				if (material != Material.NONE) {
 					extractRectangle(copy, x, y);
 				}
 			}
@@ -24,11 +25,11 @@ public abstract class CornerStitchingExtrator extends AbstractPerPlaneExtractor 
 	}
 
 	private void extractRectangle(Plane copy, int topLeftX, int topLeftY) {
-		beginRectangle(localMaterialIndex);
+		beginRectangle(material);
 
 		// determine width of the first row which is also the width of the rectangle
 		int rectangleWidth = 1;
-		while (topLeftX + rectangleWidth < copy.getWidth() && copy.getPixel(topLeftX + rectangleWidth, topLeftY) == localMaterialIndex) {
+		while (topLeftX + rectangleWidth < copy.getWidth() && copy.getPixel(topLeftX + rectangleWidth, topLeftY) == material) {
 			rectangleWidth++;
 		}
 
@@ -37,29 +38,29 @@ public abstract class CornerStitchingExtrator extends AbstractPerPlaneExtractor 
 		while (topLeftY + rectangleHeight < copy.getHeight()) {
 
 			// check if all extension pixels are set
-			if (!copy.isReactangleUniformAutoclip(topLeftX, topLeftY + rectangleHeight, rectangleWidth, 1, localMaterialIndex)) {
+			if (!copy.isReactangleUniformAutoclip(topLeftX, topLeftY + rectangleHeight, rectangleWidth, 1, material)) {
 				break;
 			}
 
 			// check that the extension row cannot be filled by a wider rectangle
-			if (topLeftX > 0 && copy.getPixel(topLeftX - 1, topLeftY + rectangleHeight) == localMaterialIndex) {
+			if (topLeftX > 0 && copy.getPixel(topLeftX - 1, topLeftY + rectangleHeight) == material) {
 				break;
 			}
-			if (topLeftX + rectangleWidth < copy.getWidth() && copy.getPixel(topLeftX + rectangleWidth, topLeftY + rectangleHeight) == localMaterialIndex) {
+			if (topLeftX + rectangleWidth < copy.getWidth() && copy.getPixel(topLeftX + rectangleWidth, topLeftY + rectangleHeight) == material) {
 				break;
 			}
 
 			rectangleHeight++;
 		}
 
-		finishRectangle(localMaterialIndex, topLeftX, topLeftY, rectangleWidth, rectangleHeight);
-		copy.drawRectangle(topLeftX, topLeftY, rectangleWidth, rectangleHeight, Plane.EMPTY_PIXEL);
+		finishRectangle(material, topLeftX, topLeftY, rectangleWidth, rectangleHeight);
+		copy.drawRectangle(topLeftX, topLeftY, rectangleWidth, rectangleHeight, Material.NONE);
 	}
 
-	protected void beginRectangle(int localMaterialIndex) {
+	protected void beginRectangle(Material material) {
 	}
 
-	protected void finishRectangle(int localMaterialIndex, int x, int y, int width, int height) {
+	protected void finishRectangle(Material material, int x, int y, int width, int height) {
 	}
 
 	public static class Test extends CornerStitchingExtrator {
@@ -80,9 +81,9 @@ public abstract class CornerStitchingExtrator extends AbstractPerPlaneExtractor 
 		}
 
 		@Override
-		protected void finishRectangle(int localMaterialIndex, int x, int y, int width, int height) {
+		protected void finishRectangle(Material material, int x, int y, int width, int height) {
 			System.out.println("found rectangle: " + x + ", " + y + " / " + width + " x " + height +
-					", local material index " + localMaterialIndex);
+					", local material index " + material);
 		}
 
 	}

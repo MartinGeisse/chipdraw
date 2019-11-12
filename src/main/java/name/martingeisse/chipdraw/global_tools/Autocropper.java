@@ -1,6 +1,7 @@
 package name.martingeisse.chipdraw.global_tools;
 
 import name.martingeisse.chipdraw.design.Design;
+import name.martingeisse.chipdraw.design.Material;
 import name.martingeisse.chipdraw.design.Plane;
 import name.martingeisse.chipdraw.util.UserVisibleMessageException;
 
@@ -50,7 +51,7 @@ public final class Autocropper {
 
     private boolean isRowEmpty(int y) {
         for (Plane plane : design.getPlanes()) {
-            if (!plane.isReactangleUniform(0, y, design.getWidth(), 1, Plane.EMPTY_PIXEL)) {
+            if (!plane.isReactangleUniform(0, y, design.getWidth(), 1, Material.NONE)) {
                 return false;
             }
         }
@@ -59,7 +60,7 @@ public final class Autocropper {
 
     private boolean isColumnEmpty(int x) {
         for (Plane plane : design.getPlanes()) {
-            if (!plane.isReactangleUniform(x, 0, 1, design.getHeight(), Plane.EMPTY_PIXEL)) {
+            if (!plane.isReactangleUniform(x, 0, 1, design.getHeight(), Material.NONE)) {
                 return false;
             }
         }
