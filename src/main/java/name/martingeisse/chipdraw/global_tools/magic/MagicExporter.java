@@ -1,10 +1,10 @@
 package name.martingeisse.chipdraw.global_tools.magic;
 
 import name.martingeisse.chipdraw.design.Design;
-import name.martingeisse.chipdraw.design.Plane;
-import name.martingeisse.chipdraw.global_tools.CornerStitchingExtrator;
 import name.martingeisse.chipdraw.design.Material;
+import name.martingeisse.chipdraw.design.Plane;
 import name.martingeisse.chipdraw.design.Technologies;
+import name.martingeisse.chipdraw.global_tools.CornerStitchingExtrator;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
@@ -56,13 +56,13 @@ public class MagicExporter {
         out.println("tech scmos");
         out.println("timestamp " + new Date().getTime());
         for (Plane plane : design.getPlanes()) {
-            for (Material material : plane.getSchema().getMaterials()) {
-                if (plane.hasMaterial(material)) {
-                    out.println("<< " + material.getName() + " >>");
+            for (Material outputMaterial : plane.getSchema().getMaterials()) {
+                if (plane.hasMaterial(outputMaterial)) {
+                    out.println("<< " + outputMaterial.getName() + " >>");
                     new CornerStitchingExtrator() {
                         @Override
-                        protected void finishRectangle(int rectangleLocalMaterialIndex, int x, int y, int width, int height) {
-                            if (rectangleLocalMaterialIndex == localMaterialIndexFinal) {
+                        protected void finishRectangle(Material rectangleMaterial, int x, int y, int width, int height) {
+                            if (rectangleMaterial == outputMaterial) {
                                 int flippedY1 = design.getHeight() - y - height;
                                 int flippedY2 = design.getHeight() - y;
                                 out.println("rect " + x + " " + flippedY1 + " " + (x + width) + " " + flippedY2);
