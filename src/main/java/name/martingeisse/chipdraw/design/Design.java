@@ -66,6 +66,17 @@ public final class Design implements Serializable, RectangularSize {
         return planes;
     }
 
+    public Plane getPlane(PlaneSchema schema) {
+        technology.validatePlaneSchema(schema);
+        for (Plane plane : planes) {
+            if (plane.getSchema() == schema) {
+                return plane;
+            }
+        }
+        throw new RuntimeException("this should not happen: plane schema " + schema + " is valid for technology " +
+                technology + " but no plane found for it");
+    }
+
     public void copyFrom(Design source, int sourceX, int sourceY, int destinationX, int destinationY, int rectangleWidth, int rectangleHeight) {
         if (source.getTechnology() != getTechnology()) {
             throw new IllegalArgumentException("cannot copy from design with different technology");

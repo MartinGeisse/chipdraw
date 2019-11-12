@@ -1,5 +1,6 @@
 package name.martingeisse.chipdraw.drc;
 
+import name.martingeisse.chipdraw.design.Material;
 import name.martingeisse.chipdraw.design.Plane;
 
 public final class Drc {
@@ -18,7 +19,7 @@ public final class Drc {
     }
 
     private static void check(DrcContext context, Plane plane, int x, int y) {
-        if (plane.getPixel(x, y) != Plane.EMPTY_PIXEL) {
+        if (plane.getPixel(x, y) != Material.NONE) {
             context.report(x, y, "plane 0 must keep a padding of at least 1 pixel from the design boundary");
         }
     }
