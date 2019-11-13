@@ -3,23 +3,23 @@ package name.martingeisse.chipdraw.operation.library;
 import name.martingeisse.chipdraw.design.Material;
 import name.martingeisse.chipdraw.design.PlaneSchema;
 
-public final class DrawPoints extends AbstractDrawPointsOperation {
+public final class ErasePoints extends AbstractDrawPointsOperation {
 
-    private final Material material;
+    private final PlaneSchema planeSchema;
 
-    public DrawPoints(int x, int y, int width, int height, Material material) {
+    public ErasePoints(int x, int y, int width, int height, PlaneSchema planeSchema) {
         super(x, y, width, height);
-        this.material = material;
+        this.planeSchema = planeSchema;
     }
 
     @Override
     public Material getMaterial() {
-        return material;
+        return Material.NONE;
     }
 
     @Override
     protected PlaneSchema getPlaneSchema() {
-        return material.getPlaneSchema();
+        return planeSchema;
     }
 
 }

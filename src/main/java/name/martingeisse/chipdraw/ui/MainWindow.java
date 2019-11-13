@@ -16,6 +16,7 @@ import name.martingeisse.chipdraw.operation.DesignOperation;
 import name.martingeisse.chipdraw.operation.OutOfPlaceDesignOperation;
 import name.martingeisse.chipdraw.operation.library.DrawPoints;
 import name.martingeisse.chipdraw.design.NoSuchTechnologyException;
+import name.martingeisse.chipdraw.operation.library.ErasePoints;
 import name.martingeisse.chipdraw.ui.util.DesignPixelPanel;
 import name.martingeisse.chipdraw.ui.util.MenuBarBuilder;
 import name.martingeisse.chipdraw.ui.util.SingleIconBooleanCellRenderer;
@@ -217,10 +218,13 @@ public class MainWindow extends JFrame implements Editor.Ui {
                     int x = event.getX() / pixelSize;
                     int y = event.getY() / pixelSize;
                     int cursorSize = MainWindow.this.cursorSize;
-                    boolean drawing = MainWindow.this.drawing;
-                    Material material = drawing ? materialUiState.getEditingMaterial() : Material.NONE;
                     int offset = (cursorSize - 1) / 2;
-                    performOperation(new DrawPoints(x - offset, y - offset, cursorSize, cursorSize, material), !firstPixelOfStroke);
+                    Material material = materialUiState.getEditingMaterial();
+                    if (MainWindow.this.drawing) {
+                        performOperation(new DrawPoints(x - offset, y - offset, cursorSize, cursorSize, material), !firstPixelOfStroke);
+                    } else {
+                        performOperation(new ErasePoints(x - offset, y - offset, cursorSize, cursorSize, material.getPlaneSchema()), !firstPixelOfStroke);
+                    }
                     firstPixelOfStroke = false;
                 }
             }
