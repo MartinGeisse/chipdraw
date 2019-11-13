@@ -178,15 +178,15 @@ public class MainWindow extends JFrame implements Editor.Ui {
                 if (padPlane != Material.NONE) {
                     g.setPaint(padPaint);
                 } else if (metal2Plane != Material.NONE) {
-                    g.setPaint(metal2Plane == 0 ? via12Paint : metal2Paint);
+                    g.setPaint(metal2Plane == Technologies.Concept.MATERIAL_VIA12 ? via12Paint : metal2Paint);
                 } else if (metal1Plane != Material.NONE) {
-                    g.setPaint(metal1Plane == 0 ? contactPaint : metal1Paint);
+                    g.setPaint(metal1Plane == Technologies.Concept.MATERIAL_CONTACT ? contactPaint : metal1Paint);
                 } else if (polyPlane != Material.NONE) {
                     g.setPaint(polyPaint);
                 } else if (diffPlane != Material.NONE) {
-                    g.setPaint(diffPlane == 0 ? ndiffPaint : pdiffPaint);
+                    g.setPaint(diffPlane == Technologies.Concept.MATERIAL_NDIFF ? ndiffPaint : pdiffPaint);
                 } else if (wellPlane != Material.NONE) {
-                    g.setPaint(wellPlane == 0 ? nwellPaint : pwellPaint);
+                    g.setPaint(wellPlane == Technologies.Concept.MATERIAL_NWELL ? nwellPaint : pwellPaint);
                 } else {
                     return;
                 }
