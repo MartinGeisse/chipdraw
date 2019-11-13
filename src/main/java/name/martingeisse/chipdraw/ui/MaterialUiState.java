@@ -63,14 +63,26 @@ public final class MaterialUiState {
 //region material-oriented visibility accessors
 
     public boolean isMaterialVisible(Material material) {
+        if (material == null) {
+            throw new IllegalArgumentException("material cannot be null");
+        }
+        material.validateNotNone();
         return isPlaneVisible(material.getPlaneSchema());
     }
 
     public void setMaterialVisible(Material material, boolean visible) {
+        if (material == null) {
+            throw new IllegalArgumentException("material cannot be null");
+        }
+        material.validateNotNone();
         setPlaneVisible(material.getPlaneSchema(), visible);
     }
 
     public void toggleMaterialVisible(Material material) {
+        if (material == null) {
+            throw new IllegalArgumentException("material cannot be null");
+        }
+        material.validateNotNone();
         togglePlaneVisible(material.getPlaneSchema());
     }
 
@@ -83,6 +95,10 @@ public final class MaterialUiState {
     }
 
     public void setEditingMaterial(Material editingMaterial) {
+        if (editingMaterial == null) {
+            throw new IllegalArgumentException("editingMaterial cannot be null");
+        }
+        editingMaterial.validateNotNone();
         technology.validatePlaneSchema(editingMaterial.getPlaneSchema());
         this.editingMaterial = editingMaterial;
         sidebarTableModel.fireTableDataChanged();

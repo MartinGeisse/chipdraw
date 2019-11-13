@@ -46,4 +46,10 @@ public final class Material {
         return name;
     }
 
+    public void validateNotNone() {
+        if (this == NONE) {
+            throw new IllegalArgumentException("passing Material.NONE not allowed here");
+        }
+    }
+
 }
