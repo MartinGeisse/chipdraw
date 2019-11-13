@@ -154,8 +154,8 @@ public class MainWindow extends JFrame implements Editor.Ui {
             private final Paint metal2Paint = new Color(0x00c0c0);
             private final Paint padPaint = new Color(0xff00ff);
 
-            private Material getPixel(int planeIndex, int x, int y) {
-                Plane plane = editor.getDesign().getPlanes().get(planeIndex);
+            private Material getPixel(PlaneSchema planeSchema, int x, int y) {
+                Plane plane = editor.getDesign().getPlane(planeSchema);
                 if (materialUiState.isPlaneVisible(plane.getSchema())) {
                     return plane.getPixel(x, y);
                 } else {
@@ -167,12 +167,12 @@ public class MainWindow extends JFrame implements Editor.Ui {
             protected void drawPixel(Graphics2D g, int pixelX, int pixelY, int screenX, int screenY, int screenSize) {
 
                 // read pixel per plane
-                Material wellPlane = getPixel(0, pixelX, pixelY);
-                Material diffPlane = getPixel(1, pixelX, pixelY);
-                Material polyPlane = getPixel(2, pixelX, pixelY);
-                Material metal1Plane = getPixel(3, pixelX, pixelY);
-                Material metal2Plane = getPixel(4, pixelX, pixelY);
-                Material padPlane = getPixel(5, pixelX, pixelY);
+                Material wellPlane = getPixel(Technologies.Concept.PLANE_WELL, pixelX, pixelY);
+                Material diffPlane = getPixel(Technologies.Concept.PLANE_DIFF, pixelX, pixelY);
+                Material polyPlane = getPixel(Technologies.Concept.PLANE_POLY, pixelX, pixelY);
+                Material metal1Plane = getPixel(Technologies.Concept.PLANE_METAL1, pixelX, pixelY);
+                Material metal2Plane = getPixel(Technologies.Concept.PLANE_METAL2, pixelX, pixelY);
+                Material padPlane = getPixel(Technologies.Concept.PLANE_PAD, pixelX, pixelY);
 
                 // select paint
                 if (padPlane != Material.NONE) {
