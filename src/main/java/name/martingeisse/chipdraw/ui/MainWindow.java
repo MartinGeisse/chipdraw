@@ -240,6 +240,7 @@ public class MainWindow extends JFrame implements Editor.Ui {
         mainPanel.addKeyListener(new KeyAdapter() {
             @Override
             public void keyTyped(KeyEvent event) {
+                boolean controlOrCommand = (event.getModifiersEx() & Toolkit.getDefaultToolkit().getMenuShortcutKeyMaskEx()) != 0;
                 switch (event.getKeyChar()) {
 
                     case '1':
@@ -280,6 +281,19 @@ public class MainWindow extends JFrame implements Editor.Ui {
                     case 'l':
                     case 'L':
                         showLoadDialog();
+                        break;
+
+                    case 'z':
+                        if (controlOrCommand) {
+                            System.out.println("undo");
+                        }
+                        break;
+
+                    case 'y':
+                    case 'Z':
+                        if (controlOrCommand) {
+                            System.out.println("redo");
+                        }
                         break;
 
                 }
