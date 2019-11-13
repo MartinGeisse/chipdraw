@@ -9,10 +9,10 @@ public class Main {
 
     public static void main(String[] args) {
         SimpleTechnologyRepository technologyRepository = new SimpleTechnologyRepository();
-        technologyRepository.add(Technologies.CONCEPT);
-        technologyRepository.add(Technologies.LIBRESILICON_MAGIC_SCMOS);
+        technologyRepository.add(Technologies.Concept.TECHNOLOGY);
+        technologyRepository.add(Technologies.LibreSiliconMagicScmos.TECHNOLOGY);
         Workbench workbench = new Workbench(technologyRepository);
-        Design design = new Design(Technologies.CONCEPT, 200, 200);
+        Design design = new Design(Technologies.Concept.TECHNOLOGY, 200, 200);
         new MainWindow(workbench, design).setVisible(true);
     }
 

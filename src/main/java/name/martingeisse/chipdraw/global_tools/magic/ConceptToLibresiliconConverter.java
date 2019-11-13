@@ -9,28 +9,28 @@ public final class ConceptToLibresiliconConverter {
     private final Design original;
 
     public ConceptToLibresiliconConverter(Design conceptDesign) {
-        if (conceptDesign.getTechnology() != Technologies.CONCEPT) {
+        if (conceptDesign.getTechnology() != Technologies.Concept.TECHNOLOGY) {
             throw new IllegalArgumentException("input design for conversion must use 'concept' technology");
         }
         this.original = conceptDesign;
     }
 
     public Design convert() throws IncompatibilityException {
-        Design converted = new Design(Technologies.LIBRESILICON_MAGIC_SCMOS, original.getWidth(), original.getHeight());
+        Design converted = new Design(Technologies.LibreSiliconMagicScmos.TECHNOLOGY, original.getWidth(), original.getHeight());
 
         // original planes
-        Plane originalWellPlane = original.getPlanes().get(Technologies.Concept.PLANE_WELL);
-        Plane originalDiffPlane = original.getPlanes().get(Technologies.Concept.PLANE_DIFF);
-        Plane originalPolyPlane = original.getPlanes().get(Technologies.Concept.PLANE_POLY);
-        Plane originalMetal1Plane = original.getPlanes().get(Technologies.Concept.PLANE_METAL1);
-        Plane originalMetal2Plane = original.getPlanes().get(Technologies.Concept.PLANE_METAL2);
-        Plane originalPadPlane = original.getPlanes().get(Technologies.Concept.PLANE_PAD);
+        Plane originalWellPlane = original.getPlane(Technologies.Concept.PLANE_WELL);
+        Plane originalDiffPlane = original.getPlane(Technologies.Concept.PLANE_DIFF);
+        Plane originalPolyPlane = original.getPlane(Technologies.Concept.PLANE_POLY);
+        Plane originalMetal1Plane = original.getPlane(Technologies.Concept.PLANE_METAL1);
+        Plane originalMetal2Plane = original.getPlane(Technologies.Concept.PLANE_METAL2);
+        Plane originalPadPlane = original.getPlane(Technologies.Concept.PLANE_PAD);
 
         // converted planes
-        Plane convertedWellPlane = converted.getPlanes().get(Technologies.LibreSiliconMagicScmos.PLANE_WELL);
-        Plane convertedActivePlane = converted.getPlanes().get(Technologies.LibreSiliconMagicScmos.PLANE_ACTIVE);
-        Plane convertedMetal1Plane = converted.getPlanes().get(Technologies.LibreSiliconMagicScmos.PLANE_METAL1);
-        Plane convertedMetal2Plane = converted.getPlanes().get(Technologies.LibreSiliconMagicScmos.PLANE_METAL2);
+        Plane convertedWellPlane = converted.getPlane(Technologies.LibreSiliconMagicScmos.PLANE_WELL);
+        Plane convertedActivePlane = converted.getPlane(Technologies.LibreSiliconMagicScmos.PLANE_ACTIVE);
+        Plane convertedMetal1Plane = converted.getPlane(Technologies.LibreSiliconMagicScmos.PLANE_METAL1);
+        Plane convertedMetal2Plane = converted.getPlane(Technologies.LibreSiliconMagicScmos.PLANE_METAL2);
 
         for (int x = 0; x < original.getWidth(); x++) {
             for (int y = 0; y < original.getHeight(); y++) {

@@ -33,9 +33,9 @@ public class MagicExporter {
     }
 
     public void export() throws IOException, ConceptToLibresiliconConverter.IncompatibilityException {
-        if (originalDesign.getTechnology() == Technologies.CONCEPT) {
+        if (originalDesign.getTechnology() == Technologies.Concept.TECHNOLOGY) {
             design = new ConceptToLibresiliconConverter(originalDesign).convert();
-        } else if (originalDesign.getTechnology() == Technologies.LIBRESILICON_MAGIC_SCMOS) {
+        } else if (originalDesign.getTechnology() == Technologies.LibreSiliconMagicScmos.TECHNOLOGY) {
             design = originalDesign;
         } else {
             throw new IllegalArgumentException("input design for conversion must use 'concept' or 'libresilicon-magic-scmos' technology");

@@ -29,7 +29,7 @@ public class Editor {
         }
         this.ui = ui;
         this.drcAgent = new DrcAgent();
-        this.operationExecutor = new UndoRedoOperationExecutor(new Design(Technologies.CONCEPT, 1, 1));
+        this.operationExecutor = new UndoRedoOperationExecutor(new Design(Technologies.Concept.TECHNOLOGY, 1, 1));
         drcAgent.addResultListener(this::consumeDrcResult);
     }
 
