@@ -1,0 +1,27 @@
+
+.h files sind nur teilweise nützlich, da in den Funktionsprototypen die Parameter fehlen.
+
+Ich habe globale Variablen gefunden, die "beim Einlesen des Technology Files" initialisiert werden. Diese können also nur pro Schaltung oder für alle Schaltungen mit
+derselben Technologie gelten. Ich habe die Ahnung, dass der gesamte Magic-Logik-Prozess einmal je Schaltung / offenem Fenster existiert. Das ist aber noch ungesichert.
+
+Der "utils"-Ordner scheint ein guter Anfang für ein "Glossar" zu sein, da diese Dinge oft benutzt werden.
+
+Memory Management: mallocMagic, callocMagic, freeMagic (entsprechen "fast" den normalen).
+!!! freeMagic frees the previously requested memory item, not the one passed as the argument.  This allows efficient coding of loops which
+	run through linked lists and process and free them at the same time.
+	...
+	Magic may reference an object after it is free'ed, but only one object. This is a change from previous versions of Magic, which
+	needed to reference an arbitrary number of objects before the next call to malloc.  Only then would no further references would
+	be made to free'ed storage.
+
+In configure.in sieht es so aus, als könnte man Scheme ALTERNATIV zu TCL benutzen. Dementsprechend werden der Ordner "tcltk" oder "lisp" benutzt.
+Das resultiert im Normalfall in: #define MAGIC_WRAPPER 1
+Mit Scheme ist es: #define SCHEME_INTERPRETER 1
+Die Scheme-Variante ist deprecated aber könnte noch interessante Befehle/Funktionen enthalten.
+Magic enthält nicht TCL sondern das Starter-Script startet TCL mit Magic als Extension.
+
+Commandline:
+	-noconsole hängt den Tcl-Interpreter an das Startende Terminal statt an ein neues fenster. Alles, was damit zusammenhängt, kann ignoriert werden.
+	-wrapper unklar, mal ausprobieren.
+
+Ein Rewrite kann eine flexible Console auch gut brauchen. Groovy kommt mir da in den Sinn.
