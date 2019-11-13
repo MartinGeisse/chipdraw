@@ -1,6 +1,7 @@
 package name.martingeisse.chipdraw.global_tools.magic;
 
 import name.martingeisse.chipdraw.design.Design;
+import name.martingeisse.chipdraw.design.Material;
 import name.martingeisse.chipdraw.design.Plane;
 import name.martingeisse.chipdraw.design.Technologies;
 
@@ -36,33 +37,33 @@ public final class ConceptToLibresiliconConverter {
             for (int y = 0; y < original.getHeight(); y++) {
 
                 // read original pixels
-                int originalWell = originalWellPlane.getPixel(x, y);
-                int originalDiff = originalDiffPlane.getPixel(x, y);
-                int originalPoly = originalPolyPlane.getPixel(x, y);
-                int originalMetal1 = originalMetal1Plane.getPixel(x, y);
-                int originalMetal2 = originalMetal2Plane.getPixel(x, y);
-                int originalPad = originalPadPlane.getPixel(x, y);
+                Material originalWell = originalWellPlane.getPixel(x, y);
+                Material originalDiff = originalDiffPlane.getPixel(x, y);
+                Material originalPoly = originalPolyPlane.getPixel(x, y);
+                Material originalMetal1 = originalMetal1Plane.getPixel(x, y);
+                Material originalMetal2 = originalMetal2Plane.getPixel(x, y);
+                Material originalPad = originalPadPlane.getPixel(x, y);
 
                 // wells can be copied directly
                 convertedWellPlane.setPixel(x, y, originalWell);
 
                 // active has lots of different upwards contact types in Magic, all of which are represented by
                 // downwards contacts in metal1 in our "concept" tech
-                if (originalMetal1 == Technologies.Concept.MATERIAL_LOCAL_METAL1_CONTACT) {
+                if (originalMetal1 == Technologies.Concept.MATERIAL_CONTACT) {
                     // concept metal1 has a downwards contact
 
-                    if (originalPoly != Plane.EMPTY_PIXEL) {
-                        convertedActivePlane.setPixel(x, y, Technologies.LibreSiliconMagicScmos.MATERIAL_LOCAL_ACTIVE_POLYCONTACT);
-                    } else if (originalDiff != Plane.EMPTY_PIXEL) {
+                    if (originalPoly != Material.NONE) {
+                        convertedActivePlane.setPixel(x, y, Technologies.LibreSiliconMagicScmos.MATERIAL_POLYCONTACT);
+                    } else if (originalDiff != Material.NONE) {
                         convertedActivePlane.setPixel(x, y,
-                            originalDiff == Technologies.Concept.MATERIAL_LOCAL_DIFF_NDIFF ?
-                                Technologies.LibreSiliconMagicScmos.MATERIAL_LOCAL_ACTIVE_NDCONTACT :
-                                    Technologies.LibreSiliconMagicScmos.MATERIAL_LOCAL_ACTIVE_PDCONTACT);
-                    } else if (originalWell != Plane.EMPTY_PIXEL) {
+                            originalDiff == Technologies.Concept.MATERIAL_NDIFF ?
+                                Technologies.LibreSiliconMagicScmos.MATERIAL_NDCONTACT :
+                                    Technologies.LibreSiliconMagicScmos.MATERIAL_PDCONTACT);
+                    } else if (originalWell != Material.NONE) {
                         convertedActivePlane.setPixel(x, y,
-                            originalWell == Technologies.Concept.MATERIAL_LOCAL_WELL_NWELL ?
-                                Technologies.LibreSiliconMagicScmos.MATERIAL_LOCAL_ACTIVE_NSUBSTRATENCONTACT :
-                                    Technologies.LibreSiliconMagicScmos.MATERIAL_LOCAL_ACTIVE_PSUBSTRATEPCONTACT);
+                            originalWell == Technologies.Concept.MATERIAL_NWELL ?
+                                Technologies.LibreSiliconMagicScmos.MATERIAL_NSUBSTRATENCONTACT :
+                                    Technologies.LibreSiliconMagicScmos.MATERIAL_PSUBSTRATEPCONTACT);
                     } else {
                         throw new IncompatibilityException(x, y, "contact without poly, diff or well");
                     }
@@ -70,47 +71,47 @@ public final class ConceptToLibresiliconConverter {
                 } else {
                     // no downwards contact
 
-                    if (originalPoly != Plane.EMPTY_PIXEL) {
-                        if (originalDiff != Plane.EMPTY_PIXEL) {
+                    if (originalPoly != Material.NONE) {
+                        if (originalDiff != Material.NONE) {
                             convertedActivePlane.setPixel(x, y,
-                                    originalDiff == Technologies.Concept.MATERIAL_LOCAL_DIFF_NDIFF ?
-                                            Technologies.LibreSiliconMagicScmos.MATERIAL_LOCAL_ACTIVE_NTRANSISTOR :
-                                            Technologies.LibreSiliconMagicScmos.MATERIAL_LOCAL_ACTIVE_PTRANSISTOR);
+                                    originalDiff == Technologies.Concept.MATERIAL_NDIFF ?
+                                            Technologies.LibreSiliconMagicScmos.MATERIAL_NTRANSISTOR :
+                                            Technologies.LibreSiliconMagicScmos.MATERIAL_PTRANSISTOR);
                         } else {
-                            convertedActivePlane.setPixel(x, y, Technologies.LibreSiliconMagicScmos.MATERIAL_LOCAL_ACTIVE_POLYSILICON);
+                            convertedActivePlane.setPixel(x, y, Technologies.LibreSiliconMagicScmos.MATERIAL_POLYSILICON);
                         }
-                    } else if (originalDiff != Plane.EMPTY_PIXEL) {
+                    } else if (originalDiff != Material.NONE) {
                         convertedActivePlane.setPixel(x, y,
-                                originalDiff == Technologies.Concept.MATERIAL_LOCAL_DIFF_NDIFF ?
-                                        Technologies.LibreSiliconMagicScmos.MATERIAL_LOCAL_ACTIVE_NDIFFUSION :
-                                        Technologies.LibreSiliconMagicScmos.MATERIAL_LOCAL_ACTIVE_PDIFFUSION);
+                                originalDiff == Technologies.Concept.MATERIAL_NDIFF ?
+                                        Technologies.LibreSiliconMagicScmos.MATERIAL_NDIFFUSION :
+                                        Technologies.LibreSiliconMagicScmos.MATERIAL_PDIFFUSION);
                     }
 
                 }
 
                 // LibreSilicon metal1 plane contains metal1/2 vias as "m2contact", which are in the metal2 plane in the "concept" tech
-                if (originalMetal1 == Plane.EMPTY_PIXEL) {
-                    if (originalMetal2 == Technologies.Concept.MATERIAL_LOCAL_METAL2_VIA12) {
+                if (originalMetal1 == Material.NONE) {
+                    if (originalMetal2 == Technologies.Concept.MATERIAL_VIA12) {
                         throw new IncompatibilityException(x, y, "via12 without metal1");
                     } // else: empty
                 } else {
-                    if (originalMetal2 == Technologies.Concept.MATERIAL_LOCAL_METAL2_VIA12) {
-                        convertedMetal1Plane.setPixel(x, y, Technologies.LibreSiliconMagicScmos.MATERIAL_LOCAL_METAL1_M2CONTACT);
+                    if (originalMetal2 == Technologies.Concept.MATERIAL_VIA12) {
+                        convertedMetal1Plane.setPixel(x, y, Technologies.LibreSiliconMagicScmos.MATERIAL_M2CONTACT);
                     } else {
-                        convertedMetal1Plane.setPixel(x, y, Technologies.LibreSiliconMagicScmos.MATERIAL_LOCAL_METAL1_METAL1);
+                        convertedMetal1Plane.setPixel(x, y, Technologies.LibreSiliconMagicScmos.MATERIAL_METAL1);
                     }
                 }
 
                 // LibreSilicon metal2 plane contains pads as "pad", which are in the "pad" plane in the "concept" tech
-                if (originalMetal2 == Plane.EMPTY_PIXEL) {
-                    if (originalPad == Technologies.Concept.MATERIAL_LOCAL_PAD_PAD) {
+                if (originalMetal2 == Material.NONE) {
+                    if (originalPad == Technologies.Concept.MATERIAL_PAD) {
                         throw new IncompatibilityException(x, y, "pad without metal2");
                     } // else: empty
                 } else {
-                    if (originalPad == Technologies.Concept.MATERIAL_LOCAL_PAD_PAD) {
-                        convertedMetal2Plane.setPixel(x, y, Technologies.LibreSiliconMagicScmos.MATERIAL_LOCAL_METAL2_PAD);
+                    if (originalPad == Technologies.Concept.MATERIAL_PAD) {
+                        convertedMetal2Plane.setPixel(x, y, Technologies.LibreSiliconMagicScmos.MATERIAL_PAD);
                     } else {
-                        convertedMetal2Plane.setPixel(x, y, Technologies.LibreSiliconMagicScmos.MATERIAL_LOCAL_METAL2_METAL2);
+                        convertedMetal2Plane.setPixel(x, y, Technologies.LibreSiliconMagicScmos.MATERIAL_METAL2);
                     }
                 }
 
