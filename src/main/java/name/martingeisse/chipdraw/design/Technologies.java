@@ -39,9 +39,6 @@ public final class Technologies {
         public static final Material MATERIAL_METAL2;
         public static final Material MATERIAL_PAD;
 
-        private Concept() {
-        }
-
         static {
             PLANE_WELL = new PlaneSchema("well", ImmutableList.of("nwell", "pwell"));
             MATERIAL_NWELL = PLANE_WELL.getMaterials().get(0);
@@ -62,6 +59,9 @@ public final class Technologies {
             TECHNOLOGY = new Technology("concept", ImmutableList.of(PLANE_WELL, PLANE_DIFF, PLANE_POLY, PLANE_METAL1, PLANE_METAL2, PLANE_PAD));
         }
 
+        private Concept() {
+        }
+
     }
 
     /**
@@ -71,34 +71,33 @@ public final class Technologies {
 
         public static final Technology TECHNOLOGY;
 
-        public static final PlaneSchema PLANE_WELL = 0;
-        public static final PlaneSchema PLANE_ACTIVE = 1;
-        public static final PlaneSchema PLANE_METAL1 = 2;
-        public static final PlaneSchema PLANE_METAL2 = 3;
+        public static final PlaneSchema PLANE_WELL;
+        public static final PlaneSchema PLANE_ACTIVE;
+        public static final PlaneSchema PLANE_METAL1;
+        public static final PlaneSchema PLANE_METAL2;
 
-        public static final Material MATERIAL_NWELL = 0;
-        public static final Material MATERIAL_PWELL = 1;
-        public static final Material MATERIAL_POLYSILICON = 0;
-        public static final Material MATERIAL_NDIFFUSION = 1;
-        public static final Material MATERIAL_PDIFFUSION = 2;
-        public static final Material MATERIAL_NTRANSISTOR = 3;
-        public static final Material MATERIAL_PTRANSISTOR = 4;
-        public static final Material MATERIAL_POLYCONTACT = 5;
-        public static final Material MATERIAL_NDCONTACT = 6;
-        public static final Material MATERIAL_PDCONTACT = 7;
-        public static final Material MATERIAL_NSUBSTRATENCONTACT = 8;
-        public static final Material MATERIAL_PSUBSTRATEPCONTACT = 9;
-        public static final Material MATERIAL_METAL1 = 0;
-        public static final Material MATERIAL_M2CONTACT = 1;
-        public static final Material MATERIAL_METAL2 = 0;
-        public static final Material MATERIAL_PAD = 1;
+        public static final Material MATERIAL_NWELL;
+        public static final Material MATERIAL_PWELL;
+        public static final Material MATERIAL_POLYSILICON;
+        public static final Material MATERIAL_NDIFFUSION;
+        public static final Material MATERIAL_PDIFFUSION;
+        public static final Material MATERIAL_NTRANSISTOR;
+        public static final Material MATERIAL_PTRANSISTOR;
+        public static final Material MATERIAL_POLYCONTACT;
+        public static final Material MATERIAL_NDCONTACT;
+        public static final Material MATERIAL_PDCONTACT;
+        public static final Material MATERIAL_NSUBSTRATENCONTACT;
+        public static final Material MATERIAL_PSUBSTRATEPCONTACT;
+        public static final Material MATERIAL_METAL1;
+        public static final Material MATERIAL_M2CONTACT;
+        public static final Material MATERIAL_METAL2;
+        public static final Material MATERIAL_PAD;
 
-        private LibreSiliconMagicScmos() {
-        }
-
-        private static Technology build() {
-            PlaneSchema well = new PlaneSchema("well", ImmutableList.of("nwell", "pwell"));
-            PlaneSchema active = new PlaneSchema("active", ImmutableList.of(
+        static {
+            PLANE_WELL = new PlaneSchema("well", ImmutableList.of("nwell", "pwell"));
+            MATERIAL_NWELL = PLANE_WELL.getMaterials().get(0);
+            MATERIAL_PWELL = PLANE_WELL.getMaterials().get(1);
+            PLANE_ACTIVE = new PlaneSchema("active", ImmutableList.of(
                     "polysilicon",
                     "ndiffusion", "pdiffusion",
                     "ntransistor", "ptransistor",
@@ -106,10 +105,26 @@ public final class Technologies {
                     "ndcontact", "pdcontact",
                     "nsubstratencontact", "psubstratepcontact"
             ));
-            PlaneSchema metal1 = new PlaneSchema("metal1", ImmutableList.of("metal1", "m2contact"));
-            PlaneSchema metal2 = new PlaneSchema("metal2", ImmutableList.of("metal2", "pad"));
-            ImmutableList<PlaneSchema> planeSchemas = ImmutableList.of(well, active, metal1, metal2);
-            return new Technology("libresilicon-magic-scmos", planeSchemas);
+            MATERIAL_POLYSILICON = PLANE_ACTIVE.getMaterials().get(0);
+            MATERIAL_NDIFFUSION = PLANE_ACTIVE.getMaterials().get(1);
+            MATERIAL_PDIFFUSION = PLANE_ACTIVE.getMaterials().get(2);
+            MATERIAL_NTRANSISTOR = PLANE_ACTIVE.getMaterials().get(3);
+            MATERIAL_PTRANSISTOR = PLANE_ACTIVE.getMaterials().get(4);
+            MATERIAL_POLYCONTACT = PLANE_ACTIVE.getMaterials().get(5);
+            MATERIAL_NDCONTACT = PLANE_ACTIVE.getMaterials().get(6);
+            MATERIAL_PDCONTACT = PLANE_ACTIVE.getMaterials().get(7);
+            MATERIAL_NSUBSTRATENCONTACT = PLANE_ACTIVE.getMaterials().get(8);
+            MATERIAL_PSUBSTRATEPCONTACT = PLANE_ACTIVE.getMaterials().get(9);
+            PLANE_METAL1 = new PlaneSchema("metal1", ImmutableList.of("metal1", "m2contact"));
+            MATERIAL_METAL1 = PLANE_METAL1.getMaterials().get(0);
+            MATERIAL_M2CONTACT = PLANE_METAL1.getMaterials().get(1);
+            PLANE_METAL2 = new PlaneSchema("metal2", ImmutableList.of("metal2", "pad"));
+            MATERIAL_METAL2 = PLANE_METAL2.getMaterials().get(0);
+            MATERIAL_PAD = PLANE_METAL2.getMaterials().get(1);
+            TECHNOLOGY = new Technology("libresilicon-magic-scmos", ImmutableList.of(PLANE_WELL, PLANE_ACTIVE, PLANE_METAL1, PLANE_METAL2));
+        }
+
+        private LibreSiliconMagicScmos() {
         }
 
     }
