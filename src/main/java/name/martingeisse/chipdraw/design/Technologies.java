@@ -57,16 +57,13 @@ public final class Technologies {
             PLANE_WELL = new PlaneSchema("well", ImmutableList.of("nwell", "pwell"));
             MATERIAL_NWELL = PLANE_WELL.getMaterials().get(0);
             MATERIAL_PWELL = PLANE_WELL.getMaterials().get(1);
-
-
-
             TechnologyBehavior technologyBehavior = new TechnologyBehavior() {
                 @Override
-                public ImmutableList<ImmutableSet<PlaneSchema>> getPlaneGroups() {
+                public ImmutableList<ImmutableList<PlaneSchema>> getPlaneGroups() {
                     return ImmutableList.of(
-                            ImmutableSet.of(PLANE_METAL2, PLANE_PAD),
-                            ImmutableSet.of(PLANE_METAL1, PLANE_METAL2),
-                            ImmutableSet.of(PLANE_WELL, PLANE_DIFF, PLANE_POLY, PLANE_METAL1)
+                            ImmutableList.of(PLANE_PAD, PLANE_METAL2),
+                            ImmutableList.of(PLANE_METAL2, PLANE_METAL1),
+                            ImmutableList.of(PLANE_METAL1, PLANE_POLY, PLANE_DIFF, PLANE_WELL)
                     );
                 }
             };

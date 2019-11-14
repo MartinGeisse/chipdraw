@@ -100,7 +100,7 @@ public final class MaterialUiState {
     }
 
     private void shiftVisibility(int delta) {
-        ImmutableList<ImmutableSet<PlaneSchema>> planeGroups = technology.getBehavior().getPlaneGroups();
+        ImmutableList<ImmutableList<PlaneSchema>> planeGroups = technology.getBehavior().getPlaneGroups();
         if (planeGroups.isEmpty()) {
             return;
         }
@@ -109,12 +109,9 @@ public final class MaterialUiState {
         final int currentPlaneGroupIndex;
         outer: {
             for (int i = 0; i < planeGroups.size(); i++) {
-                ImmutableSet<PlaneSchema> planeGroup = planeGroups.get(i);
-                for (PlaneSchema planeSchema : planeGroup) {
-                    if (visiblePlanes.contains(planeSchema)) {
-                        currentPlaneGroupIndex = i;
-                        break outer;
-                    }
+                if (visiblePlanes.contains(planeGroups.get(i).get(0))) {
+                    currentPlaneGroupIndex = i;
+                    break outer;
                 }
             }
             currentPlaneGroupIndex = - 1;
