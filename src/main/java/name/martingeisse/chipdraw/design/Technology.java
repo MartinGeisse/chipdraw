@@ -18,8 +18,9 @@ public final class Technology {
 
     private final String id;
     private final ImmutableList<PlaneSchema> planeSchemas;
+    private final TechnologyBehavior behavior;
 
-    public Technology(String id, ImmutableList<PlaneSchema> planeSchemas) {
+    public Technology(String id, ImmutableList<PlaneSchema> planeSchemas, TechnologyBehavior behavior) {
         if (id == null || id.isEmpty()) {
             throw new IllegalArgumentException("id cannot be null or empty");
         }
@@ -31,6 +32,7 @@ public final class Technology {
         }
         this.id = id;
         this.planeSchemas = planeSchemas;
+        this.behavior = (behavior == null ? TechnologyBehavior.DEFAULT : behavior);
 
         // make sure that none of the plane schemas is already in use
         for (PlaneSchema planeSchema : planeSchemas) {
@@ -59,6 +61,10 @@ public final class Technology {
 
     public ImmutableList<PlaneSchema> getPlaneSchemas() {
         return planeSchemas;
+    }
+
+    public TechnologyBehavior getBehavior() {
+        return behavior;
     }
 
     public boolean isPlaneSchemaValid(PlaneSchema planeSchema) {

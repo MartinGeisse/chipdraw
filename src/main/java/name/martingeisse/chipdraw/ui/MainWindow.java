@@ -334,6 +334,9 @@ public class MainWindow extends JFrame implements Editor.Ui {
             builder.addMenu("Edit");
             builder.add("Undo", editor::undo);
             builder.add("Redo", editor::redo);
+            builder.addMenu("View");
+            builder.add("Up", materialUiState::moveVisibilityUp);
+            builder.add("Down", materialUiState::moveVisibilityDown);
             builder.addMenu("Test");
             builder.add("Corner Stitching Extractor", () -> new CornerStitchingExtrator.Test().extract(editor.getDesign()));
             builder.add("Connectivity Extractor", () -> new ConnectivityExtractor.Test().extract(editor.getDesign()));

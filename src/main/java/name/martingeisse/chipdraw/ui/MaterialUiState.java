@@ -88,6 +88,18 @@ public final class MaterialUiState {
 
 //endregion
 
+//region visibility up/down
+
+    public void moveVisibilityUp() {
+
+    }
+
+    public void moveVisibilityDown() {
+
+    }
+
+//endregion
+
 //region current editing material
 
     public Material getEditingMaterial() {
