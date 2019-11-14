@@ -105,6 +105,7 @@ public final class MaterialUiState {
             return;
         }
 
+        /* TODO this will not work because the same plane schema can be part of multiple plane groups! */
         final int currentPlaneGroupIndex;
         outer: {
             for (int i = 0; i < planeGroups.size(); i++) {

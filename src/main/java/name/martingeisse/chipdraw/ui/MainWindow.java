@@ -243,31 +243,35 @@ public class MainWindow extends JFrame implements Editor.Ui {
             inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_Z, Toolkit.getDefaultToolkit().getMenuShortcutKeyMaskEx()), ActionName.UNDO);
             inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_Y, Toolkit.getDefaultToolkit().getMenuShortcutKeyMaskEx()), ActionName.REDO);
             inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_Z, KeyEvent.SHIFT_DOWN_MASK | Toolkit.getDefaultToolkit().getMenuShortcutKeyMaskEx()), ActionName.REDO);
-            inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_PAGE_UP, Toolkit.getDefaultToolkit().getMenuShortcutKeyMaskEx()), ActionName.VISIBILITY_UP);
-            inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_PAGE_DOWN, Toolkit.getDefaultToolkit().getMenuShortcutKeyMaskEx()), ActionName.VISIBILITY_DOWN);
+            inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_Q, 0), ActionName.VISIBILITY_UP);
+            inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_A, 0), ActionName.VISIBILITY_DOWN);
         }
         mainPanel.getActionMap().put(ActionName.UNDO, new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 run(editor::undo);
+                repaint();
             }
         });
         mainPanel.getActionMap().put(ActionName.REDO, new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 run(editor::redo);
+                repaint();
             }
         });
         mainPanel.getActionMap().put(ActionName.VISIBILITY_UP, new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 run(materialUiState::moveVisibilityUp);
+                repaint();
             }
         });
         mainPanel.getActionMap().put(ActionName.VISIBILITY_DOWN, new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 run(materialUiState::moveVisibilityDown);
+                repaint();
             }
         });
         mainPanel.addKeyListener(new KeyAdapter() {

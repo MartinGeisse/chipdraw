@@ -1,6 +1,7 @@
 package name.martingeisse.chipdraw.design;
 
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableSet;
 
 public final class Technologies {
 
@@ -9,7 +10,7 @@ public final class Technologies {
      * be DRC-checked) then an actual technology-specific layout can in theory be generated from this one. This is
      * "halfway SCMOS": The numeric values used in the DRC are still technology-specific, but the way the design is
      * built (i.e. the planes and materials) are technology-independent.
-     *
+     * <p>
      * Vias and contacts are drawn as special materials in the *upper* connected plane. That is, well taps, diffusion
      * contacts and poly contacts are drawn in the metal1 plane using a special "contact" material instead of the
      * normal metal1 material. Metal1-to-metal2 vias are drawn in metal2 using a special via12 material, and so on.
@@ -56,7 +57,19 @@ public final class Technologies {
             MATERIAL_METAL2 = PLANE_METAL2.getMaterials().get(1);
             PLANE_PAD = new PlaneSchema("pad");
             MATERIAL_PAD = PLANE_PAD.getMaterials().get(0);
-            TECHNOLOGY = new Technology("concept", ImmutableList.of(PLANE_WELL, PLANE_DIFF, PLANE_POLY, PLANE_METAL1, PLANE_METAL2, PLANE_PAD));
+            TechnologyBehavior technologyBehavior = new TechnologyBehavior() {
+                @Override
+                public ImmutableList<ImmutableSet<PlaneSchema>> getPlaneGroups() {
+                    return ImmutableList.of(
+                            ImmutableSet.of(PLANE_WELL, PLANE_DIFF, PLANE_POLY, PLANE_METAL1),
+                            ImmutableSet.of(PLANE_METAL1, PLANE_METAL2),
+                            ImmutableSet.of(PLANE_METAL2, PLANE_PAD)
+                    );
+                }
+            };
+            TECHNOLOGY = new Technology("concept",
+                    ImmutableList.of(PLANE_WELL, PLANE_DIFF, PLANE_POLY, PLANE_METAL1, PLANE_METAL2, PLANE_PAD),
+                    technologyBehavior);
         }
 
         private Concept() {
@@ -121,7 +134,9 @@ public final class Technologies {
             PLANE_METAL2 = new PlaneSchema("metal2", ImmutableList.of("metal2", "pad"));
             MATERIAL_METAL2 = PLANE_METAL2.getMaterials().get(0);
             MATERIAL_PAD = PLANE_METAL2.getMaterials().get(1);
-            TECHNOLOGY = new Technology("libresilicon-magic-scmos", ImmutableList.of(PLANE_WELL, PLANE_ACTIVE, PLANE_METAL1, PLANE_METAL2));
+            TECHNOLOGY = new Technology("libresilicon-magic-scmos",
+                    ImmutableList.of(PLANE_WELL, PLANE_ACTIVE, PLANE_METAL1, PLANE_METAL2),
+                    null);
         }
 
         private LibreSiliconMagicScmos() {

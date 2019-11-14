@@ -34,7 +34,6 @@ public final class Technology {
         this.planeSchemas = planeSchemas;
         this.behavior = new TechnologyBehavior.SafeWrapper(
             behavior == null ? TechnologyBehavior.DEFAULT : behavior);
-        this.behavior.bind(this);
 
         // make sure that none of the plane schemas is already in use
         for (PlaneSchema planeSchema : planeSchemas) {

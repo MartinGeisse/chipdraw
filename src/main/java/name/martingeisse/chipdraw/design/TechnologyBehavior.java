@@ -8,14 +8,9 @@ import com.google.common.collect.ImmutableSet;
  */
 public interface TechnologyBehavior {
 
-	void bind(Technology technology);
 	ImmutableList<ImmutableSet<PlaneSchema>> getPlaneGroups();
 
 	TechnologyBehavior DEFAULT = new TechnologyBehavior() {
-
-		@Override
-		public void bind(Technology technology) {
-		}
 
 		@Override
 		public ImmutableList<ImmutableSet<PlaneSchema>> getPlaneGroups() {
@@ -34,11 +29,6 @@ public interface TechnologyBehavior {
 
 		public TechnologyBehavior getWrapped() {
 			return wrapped;
-		}
-
-		@Override
-		public void bind(Technology technology) {
-			wrapped.bind(technology);
 		}
 
 		@Override
