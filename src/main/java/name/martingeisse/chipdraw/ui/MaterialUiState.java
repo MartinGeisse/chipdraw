@@ -1,6 +1,7 @@
 package name.martingeisse.chipdraw.ui;
 
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableSet;
 import name.martingeisse.chipdraw.design.Material;
 import name.martingeisse.chipdraw.design.PlaneSchema;
 import name.martingeisse.chipdraw.design.Technology;
@@ -91,11 +92,48 @@ public final class MaterialUiState {
 //region visibility up/down
 
     public void moveVisibilityUp() {
-
+        shiftVisibility(-1);
     }
 
     public void moveVisibilityDown() {
+        shiftVisibility(1);
+    }
 
+    private void shiftVisibility(int delta) {
+        ImmutableList<ImmutableSet<PlaneSchema>> planeGroups = technology.getBehavior().getPlaneGroups();
+        if (planeGroups.isEmpty()) {
+            return;
+        }
+
+        final int currentPlaneGroupIndex;
+        outer: {
+            for (int i = 0; i < planeGroups.size(); i++) {
+                ImmutableSet<PlaneSchema> planeGroup = planeGroups.get(i);
+                for (PlaneSchema planeSchema : planeGroup) {
+                    if (visiblePlanes.contains(planeSchema)) {
+                        currentPlaneGroupIndex = i;
+                        break outer;
+                    }
+                }
+            }
+            currentPlaneGroupIndex = - 1;
+        }
+
+        final int newPlaneGroupIndex;
+        if (currentPlaneGroupIndex < 0) {
+            if (delta < 0) {
+                newPlaneGroupIndex = 0;
+            } else {
+                newPlaneGroupIndex = planeGroups.size() - 1;
+            }
+        } else if (delta < 0) {
+            newPlaneGroupIndex = Math.max(currentPlaneGroupIndex + delta, 0);
+        } else {
+            newPlaneGroupIndex = Math.min(currentPlaneGroupIndex + delta, planeGroups.size() - 1);
+        }
+
+        visiblePlanes.clear();
+        visiblePlanes.addAll(planeGroups.get(newPlaneGroupIndex));
     }
 
 //endregion
