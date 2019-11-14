@@ -20,6 +20,7 @@ import name.martingeisse.chipdraw.operation.library.ErasePoints;
 import name.martingeisse.chipdraw.ui.util.DesignPixelPanel;
 import name.martingeisse.chipdraw.ui.util.MenuBarBuilder;
 import name.martingeisse.chipdraw.ui.util.SingleIconBooleanCellRenderer;
+import name.martingeisse.chipdraw.ui.util.UiRunnable;
 import name.martingeisse.chipdraw.util.UserVisibleMessageException;
 
 import javax.swing.*;
@@ -246,13 +247,13 @@ public class MainWindow extends JFrame implements Editor.Ui {
         mainPanel.getActionMap().put(ActionName.UNDO, new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                System.out.println("UNDO!");
+                run(editor::undo);
             }
         });
         mainPanel.getActionMap().put(ActionName.REDO, new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                System.out.println("REDO!");
+                run(editor::redo);
             }
         });
         mainPanel.addKeyListener(new KeyAdapter() {
@@ -432,6 +433,14 @@ public class MainWindow extends JFrame implements Editor.Ui {
             drcButton.setForeground(new Color(0, 128, 0));
         } else {
             drcButton.setForeground(new Color(128, 0, 0));
+        }
+    }
+
+    private void run(UiRunnable runnable) {
+        try {
+            runnable.run();
+        } catch (UserVisibleMessageException e) {
+            JOptionPane.showMessageDialog(this, e.getMessage());
         }
     }
 
