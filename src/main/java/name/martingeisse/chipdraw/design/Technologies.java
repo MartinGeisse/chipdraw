@@ -22,53 +22,56 @@ public final class Technologies {
 
         public static final Technology TECHNOLOGY;
 
-        public static final PlaneSchema PLANE_WELL;
-        public static final PlaneSchema PLANE_DIFF;
-        public static final PlaneSchema PLANE_POLY;
-        public static final PlaneSchema PLANE_METAL1;
-        public static final PlaneSchema PLANE_METAL2;
         public static final PlaneSchema PLANE_PAD;
+        public static final PlaneSchema PLANE_METAL2;
+        public static final PlaneSchema PLANE_METAL1;
+        public static final PlaneSchema PLANE_POLY;
+        public static final PlaneSchema PLANE_DIFF;
+        public static final PlaneSchema PLANE_WELL;
 
-        public static final Material MATERIAL_NWELL;
-        public static final Material MATERIAL_PWELL;
+        public static final Material MATERIAL_PAD;
+        public static final Material MATERIAL_METAL2;
+        public static final Material MATERIAL_VIA12;
+        public static final Material MATERIAL_METAL1;
+        public static final Material MATERIAL_CONTACT;
+        public static final Material MATERIAL_POLY;
         public static final Material MATERIAL_NDIFF;
         public static final Material MATERIAL_PDIFF;
-        public static final Material MATERIAL_POLY;
-        public static final Material MATERIAL_CONTACT;
-        public static final Material MATERIAL_METAL1;
-        public static final Material MATERIAL_VIA12;
-        public static final Material MATERIAL_METAL2;
-        public static final Material MATERIAL_PAD;
+        public static final Material MATERIAL_NWELL;
+        public static final Material MATERIAL_PWELL;
 
         static {
-            PLANE_WELL = new PlaneSchema("well", ImmutableList.of("nwell", "pwell"));
-            MATERIAL_NWELL = PLANE_WELL.getMaterials().get(0);
-            MATERIAL_PWELL = PLANE_WELL.getMaterials().get(1);
+            PLANE_PAD = new PlaneSchema("pad");
+            MATERIAL_PAD = PLANE_PAD.getMaterials().get(0);
+            PLANE_METAL2 = new PlaneSchema("metal2", ImmutableList.of("metal2", "via12"));
+            MATERIAL_METAL2 = PLANE_METAL2.getMaterials().get(0);
+            MATERIAL_VIA12 = PLANE_METAL2.getMaterials().get(1);
+            PLANE_METAL1 = new PlaneSchema("metal1", ImmutableList.of("metal1", "contact"));
+            MATERIAL_METAL1 = PLANE_METAL1.getMaterials().get(0);
+            MATERIAL_CONTACT = PLANE_METAL1.getMaterials().get(1);
+            PLANE_POLY = new PlaneSchema("poly");
+            MATERIAL_POLY = PLANE_POLY.getMaterials().get(0);
             PLANE_DIFF = new PlaneSchema("diff", ImmutableList.of("ndiff", "pdiff"));
             MATERIAL_NDIFF = PLANE_DIFF.getMaterials().get(0);
             MATERIAL_PDIFF = PLANE_DIFF.getMaterials().get(1);
-            PLANE_POLY = new PlaneSchema("poly");
-            MATERIAL_POLY = PLANE_POLY.getMaterials().get(0);
-            PLANE_METAL1 = new PlaneSchema("metal1", ImmutableList.of("contact", "metal1"));
-            MATERIAL_CONTACT = PLANE_METAL1.getMaterials().get(0);
-            MATERIAL_METAL1 = PLANE_METAL1.getMaterials().get(1);
-            PLANE_METAL2 = new PlaneSchema("metal2", ImmutableList.of("via12", "metal2"));
-            MATERIAL_VIA12 = PLANE_METAL2.getMaterials().get(0);
-            MATERIAL_METAL2 = PLANE_METAL2.getMaterials().get(1);
-            PLANE_PAD = new PlaneSchema("pad");
-            MATERIAL_PAD = PLANE_PAD.getMaterials().get(0);
+            PLANE_WELL = new PlaneSchema("well", ImmutableList.of("nwell", "pwell"));
+            MATERIAL_NWELL = PLANE_WELL.getMaterials().get(0);
+            MATERIAL_PWELL = PLANE_WELL.getMaterials().get(1);
+
+
+
             TechnologyBehavior technologyBehavior = new TechnologyBehavior() {
                 @Override
                 public ImmutableList<ImmutableSet<PlaneSchema>> getPlaneGroups() {
                     return ImmutableList.of(
-                            ImmutableSet.of(PLANE_WELL, PLANE_DIFF, PLANE_POLY, PLANE_METAL1),
+                            ImmutableSet.of(PLANE_METAL2, PLANE_PAD),
                             ImmutableSet.of(PLANE_METAL1, PLANE_METAL2),
-                            ImmutableSet.of(PLANE_METAL2, PLANE_PAD)
+                            ImmutableSet.of(PLANE_WELL, PLANE_DIFF, PLANE_POLY, PLANE_METAL1)
                     );
                 }
             };
             TECHNOLOGY = new Technology("concept",
-                    ImmutableList.of(PLANE_WELL, PLANE_DIFF, PLANE_POLY, PLANE_METAL1, PLANE_METAL2, PLANE_PAD),
+                    ImmutableList.of(PLANE_PAD, PLANE_METAL2, PLANE_METAL1, PLANE_POLY, PLANE_DIFF, PLANE_WELL),
                     technologyBehavior);
         }
 
