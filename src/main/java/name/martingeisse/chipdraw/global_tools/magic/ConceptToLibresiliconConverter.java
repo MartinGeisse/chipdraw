@@ -45,8 +45,11 @@ public final class ConceptToLibresiliconConverter {
                 Material originalPad = originalPadPlane.getPixel(x, y);
 
                 // wells can be copied directly
-                convertedWellPlane.setPixel(x, y, originalWell == Technologies.Concept.MATERIAL_NWELL ?
-                        Technologies.LibreSiliconMagicScmos.MATERIAL_NWELL : Technologies.LibreSiliconMagicScmos.MATERIAL_PWELL);
+                if (originalWell == Technologies.Concept.MATERIAL_NWELL) {
+                    convertedWellPlane.setPixel(x, y, Technologies.LibreSiliconMagicScmos.MATERIAL_NWELL);
+                } else if (originalWell == Technologies.Concept.MATERIAL_PWELL) {
+                    convertedWellPlane.setPixel(x, y, Technologies.LibreSiliconMagicScmos.MATERIAL_PWELL);
+                }
 
                 // active has lots of different upwards contact types in Magic, all of which are represented by
                 // downwards contacts in metal1 in our "concept" tech
