@@ -45,7 +45,8 @@ public final class ConceptToLibresiliconConverter {
                 Material originalPad = originalPadPlane.getPixel(x, y);
 
                 // wells can be copied directly
-                convertedWellPlane.setPixel(x, y, originalWell);
+                convertedWellPlane.setPixel(x, y, originalWell == Technologies.Concept.MATERIAL_NWELL ?
+                        Technologies.LibreSiliconMagicScmos.MATERIAL_NWELL : Technologies.LibreSiliconMagicScmos.MATERIAL_PWELL);
 
                 // active has lots of different upwards contact types in Magic, all of which are represented by
                 // downwards contacts in metal1 in our "concept" tech
@@ -65,6 +66,8 @@ public final class ConceptToLibresiliconConverter {
                                 Technologies.LibreSiliconMagicScmos.MATERIAL_NSUBSTRATENCONTACT :
                                     Technologies.LibreSiliconMagicScmos.MATERIAL_PSUBSTRATEPCONTACT);
                     } else {
+                        // TODO we must decide for either a n-substrate or twin-well process. The reduced information
+                        // in the "concept" technology is otherwise not enough.
                         throw new IncompatibilityException(x, y, "contact without poly, diff or well");
                     }
 
