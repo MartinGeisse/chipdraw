@@ -63,10 +63,16 @@ public abstract class DesignPixelPanel extends JPanel {
 
 	protected abstract void drawPixel(Graphics2D g, int pixelX, int pixelY, int screenX, int screenY, int screenSize);
 
+	// caution: "dense" parameter is not part of the cache key!
 	protected Paint getHatching(int color, int offset) {
+		return getHatching(color, offset, false);
+	}
+
+	// caution: "dense" parameter is not part of the cache key!
+	protected Paint getHatching(int color, int offset, boolean dense) {
 		return paintCache.computeIfAbsent(Pair.of(color, offset), _ignored -> {
 			int colorAndAlpha = color | 0xff000000;
-			int size = 5;
+			int size = dense ? 3 : 5;
 			BufferedImage image = new BufferedImage(size, size, BufferedImage.TYPE_INT_ARGB);
 			for (int i = 0; i < size; i++) {
 				image.setRGB((i + offset) % size, i, colorAndAlpha);

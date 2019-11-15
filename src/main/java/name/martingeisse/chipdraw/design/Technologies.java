@@ -63,7 +63,8 @@ public final class Technologies {
                     return ImmutableList.of(
                             ImmutableList.of(PLANE_PAD, PLANE_METAL2),
                             ImmutableList.of(PLANE_METAL2, PLANE_METAL1),
-                            ImmutableList.of(PLANE_METAL1, PLANE_POLY, PLANE_DIFF, PLANE_WELL)
+                            ImmutableList.of(PLANE_METAL1, PLANE_POLY, PLANE_DIFF, PLANE_WELL),
+                            ImmutableList.of(PLANE_POLY, PLANE_DIFF, PLANE_WELL)
                     );
                 }
             };

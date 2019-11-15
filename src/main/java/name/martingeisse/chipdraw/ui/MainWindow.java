@@ -174,22 +174,30 @@ public class MainWindow extends JFrame implements Editor.Ui {
                     g.fillRect(screenX, screenY, screenSize, screenSize);
                 }
                 if (polyPlane != Material.NONE) {
-                    g.setPaint(getHatching(0x008000, 2));
+                    if (materialUiState.isPlaneVisible(Technologies.Concept.PLANE_METAL1)) {
+                        g.setPaint(new Color(0, 128, 0));
+                    } else {
+                        g.setPaint(getHatching(0x008000, 2, true));
+                    }
                     g.fillRect(screenX, screenY, screenSize, screenSize);
                 }
                 if (metal1Plane != Material.NONE) {
-                    if (materialUiState.isPlaneVisible(Technologies.Concept.PLANE_METAL2)) {
-                        g.setPaint(metal1Plane == Technologies.Concept.MATERIAL_CONTACT ? Color.GRAY : Color.LIGHT_GRAY);
+                    if (metal1Plane == Technologies.Concept.MATERIAL_CONTACT) {
+                        g.setPaint(Color.GRAY);
+                    } else if (materialUiState.isPlaneVisible(Technologies.Concept.PLANE_METAL2)) {
+                        g.setPaint(Color.LIGHT_GRAY);
                     } else {
-                        g.setPaint(metal1Plane == Technologies.Concept.MATERIAL_CONTACT ? getHatching(0x808080, 4) : getHatching(0xc0c0c0, 4));
+                        g.setPaint(getHatching(0xc0c0c0, 4));
                     }
                     g.fillRect(screenX, screenY, screenSize, screenSize);
                 }
                 if (metal2Plane != Material.NONE) {
-                    if (materialUiState.isPlaneVisible(Technologies.Concept.PLANE_PAD)) {
-                        g.setPaint(metal2Plane == Technologies.Concept.MATERIAL_VIA12 ? new Color(0x008080) : new Color(0x00c0c0));
+                    if (metal2Plane == Technologies.Concept.MATERIAL_VIA12) {
+                        g.setPaint(new Color(0x008080));
+                    } else if (materialUiState.isPlaneVisible(Technologies.Concept.PLANE_PAD)) {
+                        g.setPaint(new Color(0x00c0c0));
                     } else {
-                        g.setPaint(metal2Plane == Technologies.Concept.MATERIAL_VIA12 ? getHatching(0x008080, 4) : getHatching(0x00c0c0, 4));
+                        g.setPaint(getHatching(0x00c0c0, 0, true));
                     }
                     g.fillRect(screenX, screenY, screenSize, screenSize);
                 }
