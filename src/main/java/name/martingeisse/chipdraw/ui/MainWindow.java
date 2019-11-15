@@ -145,17 +145,6 @@ public class MainWindow extends JFrame implements Editor.Ui {
 
         mainPanel = new DesignPixelPanel(this) {
 
-            private final Paint nwellPaint = createHatching(0x0000ff);
-            private final Paint pwellPaint = createHatching(0xff0000);
-            private final Paint ndiffPaint = new Color(0x0000ff);
-            private final Paint pdiffPaint = new Color(0xff0000);
-            private final Paint polyPaint = new Color(0, 128, 0);
-            private final Paint contactPaint = Color.GRAY;
-            private final Paint metal1Paint = Color.LIGHT_GRAY;
-            private final Paint via12Paint = new Color(0x008080);
-            private final Paint metal2Paint = new Color(0x00c0c0);
-            private final Paint padPaint = new Color(0xff00ff);
-
             private Material getPixel(PlaneSchema planeSchema, int x, int y) {
                 Plane plane = editor.getDesign().getPlane(planeSchema);
                 if (materialUiState.isPlaneVisible(plane.getSchema())) {
@@ -176,25 +165,38 @@ public class MainWindow extends JFrame implements Editor.Ui {
                 Material metal2Plane = getPixel(Technologies.Concept.PLANE_METAL2, pixelX, pixelY);
                 Material padPlane = getPixel(Technologies.Concept.PLANE_PAD, pixelX, pixelY);
 
-                // select paint
-                if (padPlane != Material.NONE) {
-                    g.setPaint(padPaint);
-                } else if (metal2Plane != Material.NONE) {
-                    g.setPaint(metal2Plane == Technologies.Concept.MATERIAL_VIA12 ? via12Paint : metal2Paint);
-                } else if (metal1Plane != Material.NONE) {
-                    g.setPaint(metal1Plane == Technologies.Concept.MATERIAL_CONTACT ? contactPaint : metal1Paint);
-                } else if (polyPlane != Material.NONE) {
-                    g.setPaint(polyPaint);
-                } else if (diffPlane != Material.NONE) {
-                    g.setPaint(diffPlane == Technologies.Concept.MATERIAL_NDIFF ? ndiffPaint : pdiffPaint);
-                } else if (wellPlane != Material.NONE) {
-                    g.setPaint(wellPlane == Technologies.Concept.MATERIAL_NWELL ? nwellPaint : pwellPaint);
-                } else {
-                    return;
+                if (wellPlane != Material.NONE) {
+                    g.setPaint(wellPlane == Technologies.Concept.MATERIAL_NWELL ? getHatching(0x0000ff, 0) : getHatching(0xff0000, 0));
+                    g.fillRect(screenX, screenY, screenSize, screenSize);
                 }
-
-                // draw the pixel
-                g.fillRect(screenX, screenY, screenSize, screenSize);
+                if (diffPlane != Material.NONE) {
+                    g.setPaint(diffPlane == Technologies.Concept.MATERIAL_NDIFF ? new Color(0x0000ff) : new Color(0xff0000));
+                    g.fillRect(screenX, screenY, screenSize, screenSize);
+                }
+                if (polyPlane != Material.NONE) {
+                    g.setPaint(getHatching(0x008000, 2));
+                    g.fillRect(screenX, screenY, screenSize, screenSize);
+                }
+                if (metal1Plane != Material.NONE) {
+                    if (materialUiState.isPlaneVisible(Technologies.Concept.PLANE_METAL2)) {
+                        g.setPaint(metal1Plane == Technologies.Concept.MATERIAL_CONTACT ? Color.GRAY : Color.LIGHT_GRAY);
+                    } else {
+                        g.setPaint(metal1Plane == Technologies.Concept.MATERIAL_CONTACT ? getHatching(0x808080, 4) : getHatching(0xc0c0c0, 4));
+                    }
+                    g.fillRect(screenX, screenY, screenSize, screenSize);
+                }
+                if (metal2Plane != Material.NONE) {
+                    if (materialUiState.isPlaneVisible(Technologies.Concept.PLANE_PAD)) {
+                        g.setPaint(metal2Plane == Technologies.Concept.MATERIAL_VIA12 ? new Color(0x008080) : new Color(0x00c0c0));
+                    } else {
+                        g.setPaint(metal2Plane == Technologies.Concept.MATERIAL_VIA12 ? getHatching(0x008080, 4) : getHatching(0x00c0c0, 4));
+                    }
+                    g.fillRect(screenX, screenY, screenSize, screenSize);
+                }
+                if (padPlane != Material.NONE) {
+                    g.setPaint(new Color(0xff00ff));
+                    g.fillRect(screenX, screenY, screenSize, screenSize);
+                }
 
             }
         };

@@ -2,11 +2,14 @@ package name.martingeisse.chipdraw.ui.util;
 
 import name.martingeisse.chipdraw.design.Design;
 import name.martingeisse.chipdraw.ui.MainWindow;
+import org.apache.commons.lang3.tuple.Pair;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  *
@@ -14,6 +17,7 @@ import java.awt.image.BufferedImage;
 public abstract class DesignPixelPanel extends JPanel {
 
 	private final MainWindow mainWindow;
+	private final Map<Pair<Integer, Integer>, Paint> paintCache = new HashMap<>();
 
 	public DesignPixelPanel(MainWindow mainWindow) {
 		this.mainWindow = mainWindow;
@@ -59,23 +63,16 @@ public abstract class DesignPixelPanel extends JPanel {
 
 	protected abstract void drawPixel(Graphics2D g, int pixelX, int pixelY, int screenX, int screenY, int screenSize);
 
-	protected static Paint createHatching(int color) {
-		int size = 5;
-		BufferedImage image = new BufferedImage(size, size, BufferedImage.TYPE_INT_RGB);
-		for (int i = 0; i < size; i++) {
-			image.setRGB(i, i, color);
-		}
-		return new TexturePaint(image, new Rectangle2D.Float(0, 0, size, size));
-	}
-
-	protected static Paint createCrossHatching(int color) {
-		int size = 5;
-		BufferedImage image = new BufferedImage(size, size, BufferedImage.TYPE_INT_RGB);
-		for (int i = 0; i < size; i++) {
-			image.setRGB(i, i, color);
-			image.setRGB(size - 1 - i, i, color);
-		}
-		return new TexturePaint(image, new Rectangle2D.Float(0, 0, size, size));
+	protected Paint getHatching(int color, int offset) {
+		return paintCache.computeIfAbsent(Pair.of(color, offset), _ignored -> {
+			int colorAndAlpha = color | 0xff000000;
+			int size = 5;
+			BufferedImage image = new BufferedImage(size, size, BufferedImage.TYPE_INT_ARGB);
+			for (int i = 0; i < size; i++) {
+				image.setRGB((i + offset) % size, i, colorAndAlpha);
+			}
+			return new TexturePaint(image, new Rectangle2D.Float(0, 0, size, size));
+		});
 	}
 
 }
