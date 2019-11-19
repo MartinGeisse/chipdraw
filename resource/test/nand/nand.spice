@@ -10,8 +10,9 @@ M1002 a_24_178# inX gnd gnd nfet w=5 l=3
 +  ad=25 pd=20 as=30 ps=22
 M1003 out inY a_24_178# gnd nfet w=5 l=3
 +  ad=30 pd=22 as=0 ps=0
-C0 vdd inX 2.8fF
-C1 out gnd! 6.7fF
-C2 inY gnd! 11.2fF
-C3 inX gnd! 9.4fF
-C4 vdd gnd! 2.6fF
+C0 inX vdd 2.8fF
+C1 out gnd! 5.7fF
+C2 inY gnd! 9.5fF
+C3 inX gnd! 7.9fF
+C4 gnd gnd! 4.0fF
+C5 vdd gnd! 2.6fF

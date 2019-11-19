@@ -87,8 +87,8 @@ rect 15 176 20 183
 rect 33 178 40 183
 rect 0 171 47 176
 << labels >>
-rlabel metal1 0 205 47 210 1 vdd!
-rlabel metal1 0 171 47 176 1 gnd!
+rlabel metal1 0 205 47 210 1 vdd
+rlabel metal1 0 171 47 176 1 gnd
 rlabel metal1 0 192 15 197 1 inX
 rlabel metal1 0 185 33 190 1 inY
 rlabel metal1 35 187 47 192 1 out
