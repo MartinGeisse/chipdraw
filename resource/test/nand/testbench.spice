@@ -36,15 +36,15 @@
 * device under test
 *
 
-.include nand.spice
+.include "nand.spice"
 
 *
 * testbench
 *
 Vdd vdd gnd dc 5
 Vdd gnd gnd! dc 0
-VinX inX gnd dc 0 PULSE (0 5 1p 1p 1p 10n 20n)
-VinY inY gnd dc 0 PULSE (0 5 1p 1p 1p 20n 40n)
+VinX inX gnd dc 0 PULSE (0 5.1 1p 1p 1p 10n 20n)
+VinY inY gnd dc 0 PULSE (0 5.2 1p 1p 1p 20n 40n)
 Rout out probe 10
 Cprobe probe gnd 0.5pF
 
