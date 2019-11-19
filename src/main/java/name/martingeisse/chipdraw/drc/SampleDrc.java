@@ -3,7 +3,7 @@ package name.martingeisse.chipdraw.drc;
 import name.martingeisse.chipdraw.design.Material;
 import name.martingeisse.chipdraw.design.Plane;
 
-public final class Drc {
+public final class SampleDrc {
 
     public void perform(DrcContext context) {
         // sample DRC: ensures that plane 0 does not touch the design boundaries
