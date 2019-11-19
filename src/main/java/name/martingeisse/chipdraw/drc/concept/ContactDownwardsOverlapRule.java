@@ -15,7 +15,7 @@ import name.martingeisse.chipdraw.drc.rule.Rule;
  */
 public class ContactDownwardsOverlapRule implements Rule {
 
-	private static final int OVERLAP = ;
+	private static final int OVERLAP = 1; // TODO check
 	private static final int SQUARE_SIZE = 2 * OVERLAP + 1;
 
 	private Plane diffPlane;

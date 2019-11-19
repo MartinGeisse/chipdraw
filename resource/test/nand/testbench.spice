@@ -42,16 +42,16 @@
 * testbench
 *
 Vdd vdd gnd dc 5
-Vdd gnd gnd! dc 0
-VinX inX gnd dc 0 PULSE (0 5.1 1p 1p 1p 10n 20n)
-VinY inY gnd dc 0 PULSE (0 5.2 1p 1p 1p 20n 40n)
+Vgnd gnd gnd! dc 0
+VinX inX gnd dc 0 PULSE (0 5.01 1n 1n 1n 20n 40n)
+VinY inY gnd dc 0 PULSE (0 5.02 2n 1n 1n 40n 80n)
 Rout out probe 10
 Cprobe probe gnd 0.5pF
 
 *
 * simulation commands
 *
-.tran 10p 45n
+.tran 10p 100n
 .control
 	run
 	plot inX inY probe
