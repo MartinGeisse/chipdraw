@@ -1,0 +1,73 @@
+.title inverter test
+
+*
+* Long channel models from CMOS Circuit Design, Layout, and Simulation,
+* Level=3 models VDD=5V, see CMOSedu.com
+*
+
+.MODEL nfet NMOS LEVEL  = 3
++ TOX    = 200E-10         NSUB   = 1E17            GAMMA  = 0.5
++ PHI    = 0.7             VTO    = 0.8             DELTA  = 3.0
++ UO     = 650             ETA    = 3.0E-6          THETA  = 0.1
++ KP     = 120E-6          VMAX   = 1E5             KAPPA  = 0.3
++ RSH    = 0               NFS    = 1E12            TPG    = 1
++ XJ     = 500E-9          LD     = 100E-9
++ CGDO   = 200E-12         CGSO   = 200E-12         CGBO   = 1E-10
++ CJ     = 400E-6          PB     = 1               MJ     = 0.5
++ CJSW   = 300E-12         MJSW   = 0.5
+
+*
+* Long channel models from CMOS Circuit Design, Layout, and Simulation,
+* Level=3 models VDD=5V, see CMOSedu.com
+*
+
+.MODEL pfet PMOS LEVEL  = 3
++ TOX    = 200E-10         NSUB   = 1E17            GAMMA  = 0.6
++ PHI    = 0.7             VTO    = -0.9            DELTA  = 0.1
++ UO     = 250             ETA    = 0               THETA  = 0.1
++ KP     = 40E-6           VMAX   = 5E4             KAPPA  = 1
++ RSH    = 0               NFS    = 1E12            TPG    = -1
++ XJ     = 500E-9          LD     = 100E-9
++ CGDO   = 200E-12         CGSO   = 200E-12         CGBO   = 1E-10
++ CJ     = 400E-6          PB     = 1               MJ     = 0.5
++ CJSW   = 300E-12         MJSW   = 0.5
+
+*
+* device under test
+*
+
+.option scale=1u
+
+M1000 a_24_198# a_10_192# w_9_196# w_9_196# pfet w=5 l=3
++  ad=25 pd=20 as=130 ps=72
+M1001 w_9_196# a_28_185# a_24_198# w_9_196# pfet w=5 l=3
++  ad=0 pd=0 as=0 ps=0
+M1002 a_24_178# a_10_192# w_10_171# w_10_171# nfet w=5 l=3
++  ad=25 pd=20 as=30 ps=22
+M1003 a_24_198# a_28_185# a_24_178# w_10_171# nfet w=5 l=3
++  ad=30 pd=22 as=0 ps=0
+C0 w_9_196# a_10_192# 2.8fF
+C1 a_24_198# gnd! 5.7fF
+C2 a_28_185# gnd! 9.5fF
+C3 a_10_192# gnd! 7.9fF
+C4 w_10_171# gnd! 4.0fF
+C5 w_9_196# gnd! 2.6fF
+
+*
+* testbench
+*
+Vdd vdd gnd dc 5
+VinRaw inRaw gnd dc 0 PULSE (0 5 1p 1p 1p 10n 20n)
+Rin inRaw in 10
+Rout out outFinal 10
+C1 outFinal gnd 0.5pF
+
+*
+* simulation commands
+*
+.tran 10p 45n
+.control
+	run
+	plot inRaw outFinal
+.endc
+.end
