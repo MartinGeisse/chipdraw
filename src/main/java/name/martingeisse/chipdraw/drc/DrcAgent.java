@@ -3,6 +3,7 @@ package name.martingeisse.chipdraw.drc;
 import com.google.common.collect.ImmutableList;
 import name.martingeisse.chipdraw.design.Design;
 import name.martingeisse.chipdraw.design.Technologies;
+import name.martingeisse.chipdraw.drc.concept.ConceptDrc;
 
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicReference;

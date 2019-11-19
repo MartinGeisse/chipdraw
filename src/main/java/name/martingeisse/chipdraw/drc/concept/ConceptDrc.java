@@ -1,8 +1,9 @@
-package name.martingeisse.chipdraw.drc;
+package name.martingeisse.chipdraw.drc.concept;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 import name.martingeisse.chipdraw.design.Technologies;
+import name.martingeisse.chipdraw.drc.DrcContext;
 import name.martingeisse.chipdraw.drc.rule.MinimumOverlapRule;
 import name.martingeisse.chipdraw.drc.rule.MinimumRectangularWidthRule;
 import name.martingeisse.chipdraw.drc.rule.Rule;
