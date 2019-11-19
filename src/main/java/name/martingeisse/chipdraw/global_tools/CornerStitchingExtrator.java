@@ -38,7 +38,7 @@ public abstract class CornerStitchingExtrator extends AbstractPerPlaneExtractor 
 		while (topLeftY + rectangleHeight < copy.getHeight()) {
 
 			// check if all extension pixels are set
-			if (!copy.isReactangleUniformAutoclip(topLeftX, topLeftY + rectangleHeight, rectangleWidth, 1, material)) {
+			if (!copy.isRectangleUniformAutoclip(topLeftX, topLeftY + rectangleHeight, rectangleWidth, 1, material)) {
 				break;
 			}
 

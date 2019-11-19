@@ -51,7 +51,7 @@ public final class Autocropper {
 
     private boolean isRowEmpty(int y) {
         for (Plane plane : design.getPlanes()) {
-            if (!plane.isReactangleUniform(0, y, design.getWidth(), 1, Material.NONE)) {
+            if (!plane.isRectangleUniform(0, y, design.getWidth(), 1, Material.NONE)) {
                 return false;
             }
         }
@@ -60,7 +60,7 @@ public final class Autocropper {
 
     private boolean isColumnEmpty(int x) {
         for (Plane plane : design.getPlanes()) {
-            if (!plane.isReactangleUniform(x, 0, 1, design.getHeight(), Material.NONE)) {
+            if (!plane.isRectangleUniform(x, 0, 1, design.getHeight(), Material.NONE)) {
                 return false;
             }
         }

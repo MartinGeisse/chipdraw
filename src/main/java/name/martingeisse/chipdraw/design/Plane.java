@@ -10,292 +10,339 @@ import java.util.Arrays;
  */
 public final class Plane implements Serializable, RectangularSize {
 
-    private static final long serialVersionUID = 1;
+	private static final long serialVersionUID = 1;
 
-    private transient PlaneSchema planeSchema;
-    private final int width, height;
-    private final byte[] pixels;
+	private transient PlaneSchema planeSchema;
+	private final int width, height;
+	private final byte[] pixels;
 
-    private Plane(PlaneSchema planeSchema, int width, int height, byte[] dataSource) {
-        if (planeSchema == null) {
-            throw new IllegalArgumentException("planeSchema cannot be null");
-        }
-        if (planeSchema.getMaterials().size() > Material.MAX_MATERIALS) {
-            // so we can use bytes to store local material indices and also reserve a special byte value for EMPTY_PIXEL
-            throw new IllegalArgumentException("more than " + Material.MAX_MATERIALS + " materials in a single plane currently not supported");
-        }
-        this.planeSchema = planeSchema;
-        this.width = width;
-        this.height = height;
-        this.pixels = new byte[width * height];
-        if (dataSource == null) {
-            Arrays.fill(pixels, Material.EMPTY_PIXEL_CODE);
-        } else {
-            System.arraycopy(dataSource, 0, pixels, 0, pixels.length);
-        }
-    }
+	private Plane(PlaneSchema planeSchema, int width, int height, byte[] dataSource) {
+		if (planeSchema == null) {
+			throw new IllegalArgumentException("planeSchema cannot be null");
+		}
+		if (planeSchema.getMaterials().size() > Material.MAX_MATERIALS) {
+			// so we can use bytes to store local material indices and also reserve a special byte value for EMPTY_PIXEL
+			throw new IllegalArgumentException("more than " + Material.MAX_MATERIALS + " materials in a single plane currently not supported");
+		}
+		this.planeSchema = planeSchema;
+		this.width = width;
+		this.height = height;
+		this.pixels = new byte[width * height];
+		if (dataSource == null) {
+			Arrays.fill(pixels, Material.EMPTY_PIXEL_CODE);
+		} else {
+			System.arraycopy(dataSource, 0, pixels, 0, pixels.length);
+		}
+	}
 
-    public Plane(PlaneSchema planeSchema, int width, int height) {
-        this(planeSchema, width, height, null);
-    }
+	public Plane(PlaneSchema planeSchema, int width, int height) {
+		this(planeSchema, width, height, null);
+	}
 
-    public Plane(Plane original) {
-        this(original.getSchema(), original.getWidth(), original.getHeight(), original.pixels);
-    }
+	public Plane(Plane original) {
+		this(original.getSchema(), original.getWidth(), original.getHeight(), original.pixels);
+	}
 
-    void initializeAfterDeserialization(PlaneSchema planeSchema) {
-        this.planeSchema = planeSchema;
-    }
+	void initializeAfterDeserialization(PlaneSchema planeSchema) {
+		this.planeSchema = planeSchema;
+	}
 
-    public PlaneSchema getSchema() {
-        return planeSchema;
-    }
+	public PlaneSchema getSchema() {
+		return planeSchema;
+	}
 
-    public boolean isMaterialValid(Material material) {
-        return planeSchema.isMaterialValid(material);
-    }
+	public boolean isMaterialValid(Material material) {
+		return planeSchema.isMaterialValid(material);
+	}
 
-    public void validateMaterial(Material material) {
-        planeSchema.validateMaterial(material);
-    }
+	public void validateMaterial(Material material) {
+		planeSchema.validateMaterial(material);
+	}
 
-    public int getWidth() {
-        return width;
-    }
+	public int getWidth() {
+		return width;
+	}
 
-    public int getHeight() {
-        return height;
-    }
+	public int getHeight() {
+		return height;
+	}
 
-    public boolean isValidPosition(int x, int y) {
-        return (x >= 0 && y >= 0 && x < width && y < height);
-    }
+	public boolean isValidPosition(int x, int y) {
+		return (x >= 0 && y >= 0 && x < width && y < height);
+	}
 
-    private void validatePosition(int x, int y) {
-        if (!isValidPosition(x, y)) {
-            throw new IllegalArgumentException("invalid position (" + x + ", " + y + ") for size (" + width + ", " + height + ")");
-        }
-    }
+	private void validatePosition(int x, int y) {
+		if (!isValidPosition(x, y)) {
+			throw new IllegalArgumentException("invalid position (" + x + ", " + y + ") for size (" + width + ", " + height + ")");
+		}
+	}
 
-    private int getIndex(int x, int y) {
-        validatePosition(x, y);
-        return y * width + x;
-    }
+	private int getIndex(int x, int y) {
+		validatePosition(x, y);
+		return y * width + x;
+	}
 
-    public Material getPixel(int x, int y) {
-        byte code = pixels[getIndex(x, y)];
-        if (code == Material.EMPTY_PIXEL_CODE) {
-            return Material.NONE;
-        } else {
-            return planeSchema.getMaterials().get(code & 0xff);
-        }
-    }
+	public Material getPixel(int x, int y) {
+		byte code = pixels[getIndex(x, y)];
+		if (code == Material.EMPTY_PIXEL_CODE) {
+			return Material.NONE;
+		} else {
+			return planeSchema.getMaterials().get(code & 0xff);
+		}
+	}
 
-    public Material getPixelAutoclip(int x, int y) {
-        return isValidPosition(x, y) ? getPixel(x, y) : Material.NONE;
-    }
+	public Material getPixelAutoclip(int x, int y) {
+		return isValidPosition(x, y) ? getPixel(x, y) : Material.NONE;
+	}
 
-    public void setPixel(int x, int y, Material material) {
-        validateMaterial(material);
-        pixels[getIndex(x, y)] = material.code;
-    }
+	public void setPixel(int x, int y, Material material) {
+		validateMaterial(material);
+		pixels[getIndex(x, y)] = material.code;
+	}
 
-    public void setPixelAutoclip(int x, int y, Material material) {
-        if (isValidPosition(x, y)) {
-            setPixel(x, y, material);
-        }
-    }
+	public void setPixelAutoclip(int x, int y, Material material) {
+		if (isValidPosition(x, y)) {
+			setPixel(x, y, material);
+		}
+	}
 
-    private void validateRectangleSize(int width, int height) {
-        if (width < 0 || height < 0) {
-            throw new IllegalArgumentException("invalid rectangle size: " + width + " x " + height);
-        }
-    }
+	private void validateRectangleSize(int width, int height) {
+		if (width < 0 || height < 0) {
+			throw new IllegalArgumentException("invalid rectangle size: " + width + " x " + height);
+		}
+	}
 
-    private void validateRectangle(int x, int y, int width, int height) {
-        validateRectangleSize(width, height);
-        validatePosition(x, y);
-        validatePosition(x + width - 1, y + height - 1);
-    }
+	private void validateRectangle(int x, int y, int width, int height) {
+		validateRectangleSize(width, height);
+		validatePosition(x, y);
+		validatePosition(x + width - 1, y + height - 1);
+	}
 
-    public void drawRectangle(int x, int y, int width, int height, Material material) {
-        validateRectangle(x, y, width, height);
-        drawRectangleInternal(x, y, width, height, material);
-    }
+	public void drawRectangle(int x, int y, int width, int height, Material material) {
+		validateRectangle(x, y, width, height);
+		drawRectangleInternal(x, y, width, height, material);
+	}
 
-    public void drawRectangleAutoclip(int x, int y, int width, int height, Material material) {
-        validateRectangleSize(width, height);
-        if (x < 0) {
-            width += x;
-            x = 0;
-        }
-        if (y < 0) {
-            height += y;
-            y = 0;
-        }
-        if (width > this.width - x) {
-            width = this.width - x;
-        }
-        if (height > this.height - y) {
-            height = this.height - y;
-        }
-        drawRectangleInternal(x, y, width, height, material);
-    }
+	public void drawRectangleAutoclip(int x, int y, int width, int height, Material material) {
+		validateRectangleSize(width, height);
+		if (x < 0) {
+			width += x;
+			x = 0;
+		}
+		if (y < 0) {
+			height += y;
+			y = 0;
+		}
+		if (width > this.width - x) {
+			width = this.width - x;
+		}
+		if (height > this.height - y) {
+			height = this.height - y;
+		}
+		drawRectangleInternal(x, y, width, height, material);
+	}
 
-    private void drawRectangleInternal(int x, int y, int width, int height, Material material) {
-        validateMaterial(material);
-        for (int i = 0; i < width; i++) {
-            for (int j = 0; j < height; j++) {
-                setPixel(x + i, y + j, material);
-            }
-        }
-    }
+	private void drawRectangleInternal(int x, int y, int width, int height, Material material) {
+		validateMaterial(material);
+		for (int i = 0; i < width; i++) {
+			for (int j = 0; j < height; j++) {
+				setPixel(x + i, y + j, material);
+			}
+		}
+	}
 
-    /**
-     * Note: to check uniformity without an expected value, get the value from (x, y) and pass that as expected value.
-     */
-    public boolean isReactangleUniform(int x, int y, int width, int height, Material material) {
-        validateRectangle(x, y, width, height);
-        return isReactangleUniformInternal(x, y, width, height, material);
-    }
+	/**
+	 * Note: to check uniformity without an expected value, get the value from (x, y) and pass that as expected value.
+	 */
+	public boolean isRectangleUniform(int x, int y, int width, int height, Material material) {
+		validateRectangle(x, y, width, height);
+		return isRectangleUniformInternal(x, y, width, height, material);
+	}
 
-    public boolean isReactangleUniformAutoclip(int x, int y, int width, int height, Material material) {
-        validateRectangleSize(width, height);
+	public boolean isRectangleUniformAutoclip(int x, int y, int width, int height, Material material) {
+		validateRectangleSize(width, height);
 
-        // handle non-clip case
-        if (isValidPosition(x, y) && isValidPosition(x + width - 1, y + height - 1)) {
-            return isReactangleUniformInternal(x, y, width, height, material);
-        }
+		// handle non-clip case
+		if (isValidPosition(x, y) && isValidPosition(x + width - 1, y + height - 1)) {
+			return isRectangleUniformInternal(x, y, width, height, material);
+		}
 
-        // clipped case: at least one pixel is implicitly empty, so if we are looking for nonempty pixels, it can't be uniform
-        if (material != Material.NONE) {
-            return false;
-        }
+		// clipped case: at least one pixel is implicitly empty, so if we are looking for nonempty pixels, it can't be uniform
+		if (material != Material.NONE) {
+			return false;
+		}
 
-        // check if uniformly empty
-        if (x < 0) {
-            width += x;
-            x = 0;
-        }
-        if (y < 0) {
-            height += y;
-            y = 0;
-        }
-        if (width > this.width - x) {
-            width = this.width - x;
-        }
-        if (height > this.height - y) {
-            height = this.height - y;
-        }
-        return isReactangleUniformInternal(x, y, width, height, material);
-    }
+		// check if uniformly empty
+		if (x < 0) {
+			width += x;
+			x = 0;
+		}
+		if (y < 0) {
+			height += y;
+			y = 0;
+		}
+		if (width > this.width - x) {
+			width = this.width - x;
+		}
+		if (height > this.height - y) {
+			height = this.height - y;
+		}
+		return isRectangleUniformInternal(x, y, width, height, material);
+	}
 
-    private boolean isReactangleUniformInternal(int x, int y, int width, int height, Material material) {
-        for (int i = 0; i < width; i++) {
-            for (int j = 0; j < height; j++) {
-                if (getPixel(x + i, y + j) != material) {
-                    return false;
-                }
-            }
-        }
-        return true;
-    }
+	private boolean isRectangleUniformInternal(int x, int y, int width, int height, Material material) {
+		for (int i = 0; i < width; i++) {
+			for (int j = 0; j < height; j++) {
+				if (getPixel(x + i, y + j) != material) {
+					return false;
+				}
+			}
+		}
+		return true;
+	}
 
-    public boolean isEmpty() {
-        for (byte pixelValue : pixels) {
-            if (pixelValue != Material.EMPTY_PIXEL_CODE) {
-                return false;
-            }
-        }
-        return true;
-    }
+	public boolean isRectangleContainsMaterial(int x, int y, int width, int height, Material material) {
+		validateRectangle(x, y, width, height);
+		return isRectangleContainsMaterialInternal(x, y, width, height, material);
+	}
 
-    public boolean hasMaterial(Material material) {
-        for (byte pixelValue : pixels) {
-            if (pixelValue == material.code) {
-                return true;
-            }
-        }
-        return false;
-    }
+	public boolean isRectangleContainsMaterialAutoclip(int x, int y, int width, int height, Material material) {
+		validateRectangleSize(width, height);
 
-    public void copyFrom(Plane source) {
-        if (source.getWidth() != getWidth() || source.getHeight() != getHeight()) {
-            throw new IllegalArgumentException("source plane has different size");
-        }
-        copyFrom(source, 0, 0, 0, 0, getWidth(), getHeight());
-    }
+		// handle non-clip case
+		if (isValidPosition(x, y) && isValidPosition(x + width - 1, y + height - 1)) {
+			return isRectangleContainsMaterialInternal(x, y, width, height, material);
+		}
 
-    public void copyFrom(Plane source, int sourceX, int sourceY, int destinationX, int destinationY, int rectangleWidth, int rectangleHeight) {
-        if (source.getSchema() != getSchema()) {
-            throw new IllegalArgumentException("cannot copy from plane with different schema");
-        }
-        source.validateSubRectangle(sourceX, sourceY, rectangleWidth, rectangleHeight);
-        validateSubRectangle(destinationX, destinationY, rectangleWidth, rectangleHeight);
-        for (int dx = 0; dx < rectangleWidth; dx++) {
-            for (int dy = 0; dy < rectangleHeight; dy++) {
-                setPixel(destinationX + dx, destinationY + dy, source.getPixel(sourceX + dx, sourceY + dy));
-            }
-        }
-    }
+		// clipped case: at least one pixel is implicitly empty, so if we are looking for empty pixels, we have found them
+		if (material == Material.NONE) {
+			return true;
+		}
 
-    public byte[] copyToArray(int x, int y, int width, int height) {
-        return copytoArrayInternal(x, y, width, height, null);
-    }
+		// check if uniformly empty
+		if (x < 0) {
+			width += x;
+			x = 0;
+		}
+		if (y < 0) {
+			height += y;
+			y = 0;
+		}
+		if (width > this.width - x) {
+			width = this.width - x;
+		}
+		if (height > this.height - y) {
+			height = this.height - y;
+		}
+		return isRectangleContainsMaterialInternal(x, y, width, height, material);
+	}
 
-    public void copyToArray(int x, int y, int width, int height, byte[] destination) {
-        copytoArrayInternal(x, y, width, height, destination);
-    }
+	private boolean isRectangleContainsMaterialInternal(int x, int y, int width, int height, Material material) {
+		for (int i = 0; i < width; i++) {
+			for (int j = 0; j < height; j++) {
+				if (getPixel(x + i, y + j) == material) {
+					return true;
+				}
+			}
+		}
+		return false;
+	}
 
-    private byte[] copytoArrayInternal(int x, int y, int width, int height, byte[] destination) {
-        validateRectangleSize(width, height);
-        if (x < 0) {
-            width += x;
-            x = 0;
-        }
-        if (y < 0) {
-            height += y;
-            y = 0;
-        }
-        if (width > this.width - x) {
-            width = this.width - x;
-        }
-        if (height > this.height - y) {
-            height = this.height - y;
-        }
-        if (destination == null) {
-            destination = new byte[width * height];
-        } else if (destination.length < width * height) {
-            throw new IllegalArgumentException("array of size " + destination.length + " is too small, expected " + (width * height));
-        }
-        for (int dy = 0; dy < height; dy++) {
-            System.arraycopy(pixels, (y + dy) * this.width + x, destination, dy * width, width);
-        }
-        return destination;
-    }
+	public boolean isEmpty() {
+		for (byte pixelValue : pixels) {
+			if (pixelValue != Material.EMPTY_PIXEL_CODE) {
+				return false;
+			}
+		}
+		return true;
+	}
 
-    public void copyFormArray(int x, int y, int width, int height, byte[] source) {
-        validateRectangleSize(width, height);
-        if (x < 0) {
-            width += x;
-            x = 0;
-        }
-        if (y < 0) {
-            height += y;
-            y = 0;
-        }
-        if (width > this.width - x) {
-            width = this.width - x;
-        }
-        if (height > this.height - y) {
-            height = this.height - y;
-        }
-        if (source.length < width * height) {
-            throw new IllegalArgumentException("array of size " + source.length + " is too small, expected " + (width * height));
-        }
-        for (int dy = 0; dy < height; dy++) {
-            System.arraycopy(source, dy * width, pixels, (y + dy) * this.width + x, width);
-        }
-    }
+	public boolean hasMaterial(Material material) {
+		for (byte pixelValue : pixels) {
+			if (pixelValue == material.code) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	public void copyFrom(Plane source) {
+		if (source.getWidth() != getWidth() || source.getHeight() != getHeight()) {
+			throw new IllegalArgumentException("source plane has different size");
+		}
+		copyFrom(source, 0, 0, 0, 0, getWidth(), getHeight());
+	}
+
+	public void copyFrom(Plane source, int sourceX, int sourceY, int destinationX, int destinationY, int rectangleWidth, int rectangleHeight) {
+		if (source.getSchema() != getSchema()) {
+			throw new IllegalArgumentException("cannot copy from plane with different schema");
+		}
+		source.validateSubRectangle(sourceX, sourceY, rectangleWidth, rectangleHeight);
+		validateSubRectangle(destinationX, destinationY, rectangleWidth, rectangleHeight);
+		for (int dx = 0; dx < rectangleWidth; dx++) {
+			for (int dy = 0; dy < rectangleHeight; dy++) {
+				setPixel(destinationX + dx, destinationY + dy, source.getPixel(sourceX + dx, sourceY + dy));
+			}
+		}
+	}
+
+	public byte[] copyToArray(int x, int y, int width, int height) {
+		return copytoArrayInternal(x, y, width, height, null);
+	}
+
+	public void copyToArray(int x, int y, int width, int height, byte[] destination) {
+		copytoArrayInternal(x, y, width, height, destination);
+	}
+
+	private byte[] copytoArrayInternal(int x, int y, int width, int height, byte[] destination) {
+		validateRectangleSize(width, height);
+		if (x < 0) {
+			width += x;
+			x = 0;
+		}
+		if (y < 0) {
+			height += y;
+			y = 0;
+		}
+		if (width > this.width - x) {
+			width = this.width - x;
+		}
+		if (height > this.height - y) {
+			height = this.height - y;
+		}
+		if (destination == null) {
+			destination = new byte[width * height];
+		} else if (destination.length < width * height) {
+			throw new IllegalArgumentException("array of size " + destination.length + " is too small, expected " + (width * height));
+		}
+		for (int dy = 0; dy < height; dy++) {
+			System.arraycopy(pixels, (y + dy) * this.width + x, destination, dy * width, width);
+		}
+		return destination;
+	}
+
+	public void copyFormArray(int x, int y, int width, int height, byte[] source) {
+		validateRectangleSize(width, height);
+		if (x < 0) {
+			width += x;
+			x = 0;
+		}
+		if (y < 0) {
+			height += y;
+			y = 0;
+		}
+		if (width > this.width - x) {
+			width = this.width - x;
+		}
+		if (height > this.height - y) {
+			height = this.height - y;
+		}
+		if (source.length < width * height) {
+			throw new IllegalArgumentException("array of size " + source.length + " is too small, expected " + (width * height));
+		}
+		for (int dy = 0; dy < height; dy++) {
+			System.arraycopy(source, dy * width, pixels, (y + dy) * this.width + x, width);
+		}
+	}
 
 }
