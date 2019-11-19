@@ -8,16 +8,8 @@ import name.martingeisse.chipdraw.drc.DrcContext;
 /**
  * Ensures that each pixel of the specified plane is part of an NxN-sized square, to ensure a minimum feature width.
  *
- * The materials of the target plane can be assigned to groups that treat all those materials the same. That is, each
- * pixel must be part of an NxN square of pixels which have any material from the same group. An example of such groups
- * would be (contact, metal1) for the metal1 plane, or (via12, metal2) for the metal2 plane, since a contact or via
- * is filled with metal in the metal plane during manufacturing -- the contact or via actually affects a different
- * process step. A counterexample would be (nwell, pwell) in the well plane -- these are actually different materials
- * in the well plane and so a narrow set of nwell pixels does not become sufficiently wide by placing pwell pixels
- * next to them.
- *
- * Any materials not associated with any group are treated as a one-element group, i.e. only that exact material can be
- * part of the NxN square.
+ * If separateMaterials is true, then that square must be filled with pixels of the same material. If separateMaterials
+ * is false, then it is sufficient for the square to be filled with any nonempty pixels in the same plane.
  */
 public class MinimumRectangularWidthRule implements Rule {
 
@@ -25,7 +17,6 @@ public class MinimumRectangularWidthRule implements Rule {
 	private final int size;
 	private final boolean separateMaterials;
 	private Plane plane;
-	private Material currentCenterMaterial;
 
 	public MinimumRectangularWidthRule(PlaneSchema planeSchema, int size, boolean separateMaterials) {
 		this.planeSchema = planeSchema;
@@ -46,7 +37,7 @@ public class MinimumRectangularWidthRule implements Rule {
 	}
 
 	private boolean checkPixel(int x, int y) {
-		currentCenterMaterial = plane.getPixel(x, y);
+		Material currentCenterMaterial = plane.getPixel(x, y);
 		if (currentCenterMaterial == Material.NONE) {
 			return true;
 		}
