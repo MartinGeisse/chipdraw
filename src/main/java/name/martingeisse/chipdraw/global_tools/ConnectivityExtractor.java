@@ -9,7 +9,12 @@ import name.martingeisse.chipdraw.design.Plane;
  */
 public abstract class ConnectivityExtractor extends AbstractPerPlaneExtractor {
 
+    private final boolean mergeMaterials;
     private Material material = null;
+
+    public ConnectivityExtractor(boolean mergeMaterials) {
+        this.mergeMaterials = mergeMaterials;
+    }
 
     @Override
     protected void handlePlane(Plane plane) {
@@ -18,7 +23,7 @@ public abstract class ConnectivityExtractor extends AbstractPerPlaneExtractor {
             for (int x = 0; x < copy.getWidth(); x++) {
                 material = copy.getPixel(x, y);
                 if (material != Material.NONE) {
-                    beginPatch(material);
+                    beginPatch(mergeMaterials ? null : material);
                     clear(copy, x, y);
                     finishPatch();
                 }
@@ -28,7 +33,7 @@ public abstract class ConnectivityExtractor extends AbstractPerPlaneExtractor {
 
     private void clear(Plane copy, int x, int y) {
         Material material = copy.getPixelAutoclip(x, y);
-        if (material == this.material) {
+        if (mergeMaterials ? (material != Material.NONE) : (material == this.material)) {
             handlePixel(x, y);
             copy.setPixel(x, y, Material.NONE);
             clear(copy, x - 1, y);
@@ -48,6 +53,10 @@ public abstract class ConnectivityExtractor extends AbstractPerPlaneExtractor {
     }
 
     public static class Test extends ConnectivityExtractor {
+
+        public Test() {
+            super(false);
+        }
 
         @Override
         protected void beginDesign(Design design) {
