@@ -106,7 +106,7 @@ public class ConceptDrc {
 			// 5.4 and 6.4 (Minimum spacing to gate of transistor: 2)
 			// TODO
 
-			
+
 			//
 			// 7.x -- metal1
 			//
