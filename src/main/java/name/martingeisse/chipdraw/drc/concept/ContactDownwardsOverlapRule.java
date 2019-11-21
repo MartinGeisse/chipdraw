@@ -15,7 +15,9 @@ import name.martingeisse.chipdraw.drc.rule.Rule;
  */
 public class ContactDownwardsOverlapRule implements Rule {
 
-	private static final int OVERLAP = 1; // TODO check
+	// Actual minimum overlap is 1.5, but we cannot handle that yet, so we just use 2 to err on the safe side.
+	// This applies to contacts both to diffusion and poly.
+	private static final int OVERLAP = 2;
 	private static final int SQUARE_SIZE = 2 * OVERLAP + 1;
 
 	private Plane diffPlane;

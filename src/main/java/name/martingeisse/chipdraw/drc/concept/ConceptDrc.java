@@ -91,17 +91,22 @@ public class ConceptDrc {
 
 			//
 			// 5.x -- contact to poly
-			//
-
-			// TODO
-
-			//
 			// 6.x -- contact to active
 			//
 
+			// 5.1 and 6.1 (Exact contact size: 2x2)
 			// TODO
 
+			// 5.2 (Minimum poly overlap: 1.5 -> 2) and 6.2 (Minimum active overlap: 1.5 -> 2)
+			new ContactDownwardsOverlapRule(),
 
+			// 5.3 and 6.3 (Minimum contact spacing: 2)
+			// TODO
+
+			// 5.4 and 6.4 (Minimum spacing to gate of transistor: 2)
+			// TODO
+
+			
 			//
 			// 7.x -- metal1
 			//
