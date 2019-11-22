@@ -69,7 +69,8 @@ public class ConceptDrc {
 			// TODO
 
 			// 3.5 (Minimum field poly [spacing] to active: 1)
-			// TODO
+			// TODO -- not a MinimumSpacingRule but rather an "overlap without", since the connectivity analysis
+			// of a spacing rule only makes sense within the same plane
 
 
 			//
@@ -99,10 +100,11 @@ public class ConceptDrc {
 			new ContactDownwardsOverlapRule(),
 
 			// 5.3 and 6.3 (Minimum contact spacing: 2)
-			// TODO
+			// TODO -- could be a MinimumSpacingRule but has to filter by pivot material (contact only)
 
 			// 5.4 and 6.4 (Minimum spacing to gate of transistor: 2)
-			// TODO
+			// TODO -- not a MinimumSpacingRule but rather an "overlap without", since the connectivity analysis
+			// of a spacing rule only makes sense within the same plane
 
 
 			//
@@ -141,6 +143,7 @@ public class ConceptDrc {
 			// 8.2 (Minimum via1 spacing)
 			// TODO –- note that 9.2 ensures spacing only against unconnected vias. We need a spacing rule here that
 			// checks only for plane_metal2 == via12, not for plane_metal2 == metal2
+			// TODO -- could be a MinimumSpacingRule but has to filter by pivot material (via12 only)
 
 			// 8.3 (Minimum overlap [of via12] by metal1: 1)
 			// includes 9.3 (Minimum overlap of via12 [by metal2]: 1)
