@@ -45,14 +45,6 @@ public abstract class AbstractMinimumSpacingRule implements Rule {
 
     protected abstract String buildErrorMessage(int x, int y, Material material);
 
-    private int determineSpacingInternal(int x, int y, Material material) {
-        int result = determineSpacing(x, y, material);
-        if (result < 0) {
-            throw new RuntimeException("determineSpacing() returned negative value: " + result);
-        }
-        return result;
-    }
-
     private class MyConnectivityExtractor extends ConnectivityExtractor {
 
         private final Set<Point> points = new HashSet<>();
@@ -80,7 +72,10 @@ public abstract class AbstractMinimumSpacingRule implements Rule {
                 int x = point.getX();
                 int y = point.getY();
                 if (spacing < 0) {
-                    spacing = determineSpacingInternal(x, y, material);
+                    spacing = determineSpacing(x, y, material);
+                    if (spacing < 0) {
+                        return;
+                    }
                 }
                 for (int dx = -spacing; dx <= spacing; dx++) {
                     for (int dy = -spacing; dy <= spacing; dy++) {

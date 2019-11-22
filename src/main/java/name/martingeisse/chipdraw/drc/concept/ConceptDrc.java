@@ -1,9 +1,11 @@
 package name.martingeisse.chipdraw.drc.concept;
 
 import com.google.common.collect.ImmutableList;
+import name.martingeisse.chipdraw.design.Material;
 import name.martingeisse.chipdraw.design.Plane;
 import name.martingeisse.chipdraw.design.Technologies;
 import name.martingeisse.chipdraw.drc.DrcContext;
+import name.martingeisse.chipdraw.drc.rule.AbstractMinimumSpacingRule;
 import name.martingeisse.chipdraw.drc.rule.MinimumSpacingRule;
 import name.martingeisse.chipdraw.drc.rule.Rule;
 import name.martingeisse.chipdraw.drc.rule.experiment.AbstractPerPixelRule;
@@ -100,7 +102,12 @@ public class ConceptDrc {
 			new ContactDownwardsOverlapRule(),
 
 			// 5.3 and 6.3 (Minimum contact spacing: 2)
-			// TODO -- could be a MinimumSpacingRule but has to filter by pivot material (contact only)
+			new MinimumSpacingRule(Technologies.Concept.PLANE_METAL1, AbstractMinimumSpacingRule.MaterialMode.IGNORE_OTHER_MATERIALS, 2) {
+				@Override
+				protected boolean affects(int x, int y, Material material) {
+					return material == Technologies.Concept.MATERIAL_CONTACT;
+				}
+			},
 
 			// 5.4 and 6.4 (Minimum spacing to gate of transistor: 2)
 			// TODO -- not a MinimumSpacingRule but rather an "overlap without", since the connectivity analysis
@@ -140,10 +147,13 @@ public class ConceptDrc {
 			// 8.1 (Exact size: 2x2)
 			// TODO
 
-			// 8.2 (Minimum via1 spacing)
-			// TODO –- note that 9.2 ensures spacing only against unconnected vias. We need a spacing rule here that
-			// checks only for plane_metal2 == via12, not for plane_metal2 == metal2
-			// TODO -- could be a MinimumSpacingRule but has to filter by pivot material (via12 only)
+			// 8.2 (Minimum via1 spacing: 3)
+			new MinimumSpacingRule(Technologies.Concept.PLANE_METAL2, AbstractMinimumSpacingRule.MaterialMode.IGNORE_OTHER_MATERIALS, 3) {
+				@Override
+				protected boolean affects(int x, int y, Material material) {
+					return material == Technologies.Concept.MATERIAL_VIA12;
+				}
+			},
 
 			// 8.3 (Minimum overlap [of via12] by metal1: 1)
 			// includes 9.3 (Minimum overlap of via12 [by metal2]: 1)
