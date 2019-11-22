@@ -2,9 +2,11 @@ package name.martingeisse.chipdraw.drc.concept;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
+import name.martingeisse.chipdraw.design.Plane;
 import name.martingeisse.chipdraw.design.Technologies;
 import name.martingeisse.chipdraw.drc.DrcContext;
 import name.martingeisse.chipdraw.drc.rule.MinimumOverlapRule;
+import name.martingeisse.chipdraw.drc.rule.experiment.AbstractPerPixelRule;
 import name.martingeisse.chipdraw.drc.rule.experiment.MinimumRectangularWidthRule;
 import name.martingeisse.chipdraw.drc.rule.MinimumSpacingRule;
 import name.martingeisse.chipdraw.drc.rule.Rule;
@@ -16,14 +18,14 @@ public class ConceptDrc {
 
     private final ImmutableList<Rule> rules = ImmutableList.of(
 
-            //
-            // 1.x -- well rules
-            //
+			//
+			// 1.x -- well rules
+			//
 
 			// 1.1 (Minimum width: 10)
 			new MinimumRectangularWidthRule(Technologies.Concept.PLANE_WELL, 10, true),
 
-            // 1.2 (Minimum spacing between wells at different potential) -- N/A because we don't have any
+			// 1.2 (Minimum spacing between wells at different potential) -- N/A because we don't have any
 			// equal-implant wells at different potentials
 
 			// 1.3 (Minimum spacing between equal-implant wells at same potential: 6)
@@ -40,10 +42,10 @@ public class ConceptDrc {
 			// 2.1 (Minimum width: 3)
 			new MinimumRectangularWidthRule(Technologies.Concept.PLANE_DIFF, 3, true),
 
-            // 2.2 (Minimum spacing, same implant: 3)
+			// 2.2 (Minimum spacing, same implant: 3)
 			new MinimumSpacingRule(Technologies.Concept.PLANE_DIFF, MinimumSpacingRule.MaterialMode.CHECK_OTHER_MATERIAL_SPACING, 3),
 
-            // 2.3 (Source/drain active to well edge: 5)
+			// 2.3 (Source/drain active to well edge: 5)
 			// 2.4 (Substrate/well contact active to well edge: 3)
 			new ActiveByWellOverlapRule(),
 
@@ -58,7 +60,7 @@ public class ConceptDrc {
 			// 3.1 (Minimum width: 2)
 			new MinimumRectangularWidthRule(Technologies.Concept.PLANE_POLY, 2, true),
 
-            // 3.2 / 3.2a (Minimum spacing over field / active: 2)
+			// 3.2 / 3.2a (Minimum spacing over field / active: 2)
 			// Since the minimum spacing is the same over field and active, we can use a simple spacing rule.
 			new MinimumSpacingRule(Technologies.Concept.PLANE_POLY, MinimumSpacingRule.MaterialMode.CHECK_OTHER_MATERIAL_SPACING, 2),
 
@@ -117,9 +119,9 @@ public class ConceptDrc {
 
 			// 7.3 (Minimum overlap of any contact: 1)
 			new MinimumOverlapRule(
-						ImmutableSet.of(Technologies.Concept.MATERIAL_CONTACT),
-						ImmutableSet.of(Technologies.Concept.MATERIAL_CONTACT, Technologies.Concept.MATERIAL_METAL1),
-						1),
+					ImmutableSet.of(Technologies.Concept.MATERIAL_CONTACT),
+					ImmutableSet.of(Technologies.Concept.MATERIAL_CONTACT, Technologies.Concept.MATERIAL_METAL1),
+					1),
 
 			// 7.4 (Minimum spacing when either metal line is wider than 10 lambda: 4)
 			// TODO
@@ -136,11 +138,20 @@ public class ConceptDrc {
 			// TODO –- note that 9.2 ensures spacing only against unconnected vias. We need a spacing rule here that
 			// checks only for plane_metal2 == via12, not for plane_metal2 == metal2
 
-			// 8.3 (Minimum overlap by metal1: 1)
-            new MinimumOverlapRule(
-                    ImmutableSet.of(Technologies.Concept.MATERIAL_VIA12),
-                    ImmutableSet.of(Technologies.Concept.MATERIAL_CONTACT, Technologies.Concept.MATERIAL_METAL1),
-                    1),
+			// 8.3 (Minimum overlap [of via12] by metal1: 1)
+			// includes 9.3 (Minimum overlap of via12 [by metal2]: 1)
+			new AbstractPerPixelRule(Technologies.Concept.PLANE_METAL2) {
+				@Override
+				protected boolean checkPixel() {
+					if (getPivotMaterial() != Technologies.Concept.MATERIAL_VIA12) {
+						return true;
+					}
+					Plane metal1 = getContext().getDesign().getPlane(Technologies.Concept.PLANE_METAL1);
+					Plane metal2 = getPivotPlane();
+					int x = getPivotX(), y = getPivotY();
+					return isSurroundedByAnyMaterial(metal1, x, y, 1) && isSurroundedByAnyMaterial(metal2, x, y, 1);
+				}
+			},
 
 			// 8.4 TODO -- are stacked vias allowed?
 
@@ -157,11 +168,7 @@ public class ConceptDrc {
 			// 9.2 (Minimum spacing: 3)
 			new MinimumSpacingRule(Technologies.Concept.PLANE_METAL2, MinimumSpacingRule.MaterialMode.MERGE_MATERIALS, 3),
 
-			// 9.3 (Minimum overlap of via1: 1)
-            new MinimumOverlapRule(
-                    ImmutableSet.of(Technologies.Concept.MATERIAL_VIA12),
-                    ImmutableSet.of(Technologies.Concept.MATERIAL_VIA12, Technologies.Concept.MATERIAL_METAL2),
-                    1)
+			// 9.3 (Minimum overlap of via1: 1): grouped with 8.3
 
 			// 9.4 (Minimum spacing when either metal line is wider than 10 lambda: 6)
 			// TODO

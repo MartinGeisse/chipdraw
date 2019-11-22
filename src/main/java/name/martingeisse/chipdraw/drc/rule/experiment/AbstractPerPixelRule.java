@@ -8,6 +8,7 @@ import name.martingeisse.chipdraw.drc.DrcContext;
 public abstract class AbstractPerPixelRule extends AbstractRule {
 
     private final PlaneSchema pivotPlaneSchema;
+    private DrcContext context;
     private Plane pivotPlane;
     private int pivotX;
     private int pivotY;
@@ -23,6 +24,7 @@ public abstract class AbstractPerPixelRule extends AbstractRule {
 
     @Override
     public void check(DrcContext context) {
+        this.context = context;
         pivotPlane = context.getDesign().getPlane(pivotPlaneSchema);
         for (int pivotX = 0; pivotX < pivotPlane.getWidth(); pivotX++) {
             for (int pivotY = 0; pivotY < pivotPlane.getHeight(); pivotY++) {
@@ -32,6 +34,10 @@ public abstract class AbstractPerPixelRule extends AbstractRule {
                 }
             }
         }
+    }
+
+    public DrcContext getContext() {
+        return context;
     }
 
     protected final Plane getPivotPlane() {
