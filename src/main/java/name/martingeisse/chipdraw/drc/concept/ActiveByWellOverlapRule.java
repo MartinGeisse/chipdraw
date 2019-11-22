@@ -4,12 +4,10 @@ import name.martingeisse.chipdraw.design.Material;
 import name.martingeisse.chipdraw.design.Plane;
 import name.martingeisse.chipdraw.design.Technologies;
 import name.martingeisse.chipdraw.drc.DrcContext;
-import name.martingeisse.chipdraw.drc.rule.MinimumOverlapRule;
 import name.martingeisse.chipdraw.drc.rule.experiment.AbstractPerPixelRule;
 
 /**
- * This rule is similar to a {@link MinimumOverlapRule}, checking overlap of diffusion areas by wells, but the
- * minimum overlap depends on whether the diffusion area and the well use the same or opposite implant type.
+ * This rule checks overlap of diffusion areas by wells.
  */
 public class ActiveByWellOverlapRule extends AbstractPerPixelRule {
 

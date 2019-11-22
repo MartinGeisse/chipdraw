@@ -4,12 +4,10 @@ import name.martingeisse.chipdraw.design.Material;
 import name.martingeisse.chipdraw.design.Plane;
 import name.martingeisse.chipdraw.design.Technologies;
 import name.martingeisse.chipdraw.drc.DrcContext;
-import name.martingeisse.chipdraw.drc.rule.MinimumOverlapRule;
 import name.martingeisse.chipdraw.drc.rule.experiment.AbstractPerPixelRule;
 
 /**
- * This rule is similar to a {@link MinimumOverlapRule}, but the overlap can occur in a specific way in two different
- * planes (diffusion and poly).
+ * This rule checks overlap of contacts by poly or diffusion.
  */
 public class ContactDownwardsOverlapRule extends AbstractPerPixelRule {
 
