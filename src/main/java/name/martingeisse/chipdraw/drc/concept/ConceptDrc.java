@@ -1,15 +1,13 @@
 package name.martingeisse.chipdraw.drc.concept;
 
 import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableSet;
 import name.martingeisse.chipdraw.design.Plane;
 import name.martingeisse.chipdraw.design.Technologies;
 import name.martingeisse.chipdraw.drc.DrcContext;
-import name.martingeisse.chipdraw.drc.rule.MinimumOverlapRule;
-import name.martingeisse.chipdraw.drc.rule.experiment.AbstractPerPixelRule;
-import name.martingeisse.chipdraw.drc.rule.experiment.MinimumRectangularWidthRule;
 import name.martingeisse.chipdraw.drc.rule.MinimumSpacingRule;
 import name.martingeisse.chipdraw.drc.rule.Rule;
+import name.martingeisse.chipdraw.drc.rule.experiment.AbstractPerPixelRule;
+import name.martingeisse.chipdraw.drc.rule.experiment.MinimumRectangularWidthRule;
 
 /**
  *
@@ -118,10 +116,16 @@ public class ConceptDrc {
 			new MinimumSpacingRule(Technologies.Concept.PLANE_METAL1, MinimumSpacingRule.MaterialMode.MERGE_MATERIALS, 2),
 
 			// 7.3 (Minimum overlap of any contact: 1)
-			new MinimumOverlapRule(
-					ImmutableSet.of(Technologies.Concept.MATERIAL_CONTACT),
-					ImmutableSet.of(Technologies.Concept.MATERIAL_CONTACT, Technologies.Concept.MATERIAL_METAL1),
-					1),
+			new AbstractPerPixelRule(Technologies.Concept.PLANE_METAL1) {
+				@Override
+				protected boolean checkPixel() {
+					if (getPivotMaterial() != Technologies.Concept.MATERIAL_CONTACT) {
+						return true;
+					}
+					int x = getPivotX(), y = getPivotY();
+					return isSurroundedByAnyMaterial(getPivotPlane(), x, y, 1);
+				}
+			},
 
 			// 7.4 (Minimum spacing when either metal line is wider than 10 lambda: 4)
 			// TODO
@@ -166,7 +170,7 @@ public class ConceptDrc {
             new MinimumRectangularWidthRule(Technologies.Concept.PLANE_METAL2, 3, false),
 
 			// 9.2 (Minimum spacing: 3)
-			new MinimumSpacingRule(Technologies.Concept.PLANE_METAL2, MinimumSpacingRule.MaterialMode.MERGE_MATERIALS, 3),
+			new MinimumSpacingRule(Technologies.Concept.PLANE_METAL2, MinimumSpacingRule.MaterialMode.MERGE_MATERIALS, 3)
 
 			// 9.3 (Minimum overlap of via1: 1): grouped with 8.3
 
