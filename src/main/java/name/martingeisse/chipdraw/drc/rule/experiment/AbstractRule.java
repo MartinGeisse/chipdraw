@@ -44,6 +44,7 @@ public abstract class AbstractRule implements Rule {
     }
 
     protected final boolean isSurroundedByMaterial(Plane plane, int x, int y, int distance, Material material) {
+        // TODO autoclip -> use isUniform
         for (int dx = -distance; dx <= distance; dx++) {
             for (int dy = -distance; dy <= distance; dy++) {
                 if (plane.getPixel(x + dx, y + dy) != material) {
@@ -55,6 +56,7 @@ public abstract class AbstractRule implements Rule {
     }
 
     protected final boolean isMaterialNearby(Plane plane, int x, int y, int distance, Material material) {
+        // TODO autoclip -> use isUniform
         for (int dx = -distance; dx <= distance; dx++) {
             for (int dy = -distance; dy <= distance; dy++) {
                 if (plane.getPixel(x + dx, y + dy) == material) {

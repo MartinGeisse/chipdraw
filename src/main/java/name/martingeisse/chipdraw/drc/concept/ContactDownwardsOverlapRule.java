@@ -1,19 +1,17 @@
 package name.martingeisse.chipdraw.drc.concept;
 
-import com.google.common.collect.ImmutableSet;
 import name.martingeisse.chipdraw.design.Material;
 import name.martingeisse.chipdraw.design.Plane;
-import name.martingeisse.chipdraw.design.PlaneSchema;
 import name.martingeisse.chipdraw.design.Technologies;
 import name.martingeisse.chipdraw.drc.DrcContext;
 import name.martingeisse.chipdraw.drc.rule.MinimumOverlapRule;
-import name.martingeisse.chipdraw.drc.rule.Rule;
+import name.martingeisse.chipdraw.drc.rule.experiment.AbstractPerPixelRule;
 
 /**
  * This rule is similar to a {@link MinimumOverlapRule}, but the overlap can occur in a specific way in two different
  * planes (diffusion and poly).
  */
-public class ContactDownwardsOverlapRule implements Rule {
+public class ContactDownwardsOverlapRule extends AbstractPerPixelRule {
 
 	// Actual minimum overlap is 1.5, but we cannot handle that yet, so we just use 2 to err on the safe side.
 	// This applies to contacts both to diffusion and poly.
@@ -23,36 +21,39 @@ public class ContactDownwardsOverlapRule implements Rule {
 	private Plane diffPlane;
 	private Plane polyPlane;
 
-	@Override
-	public void check(DrcContext context) {
-		Plane innerPlane = context.getDesign().getPlane(Technologies.Concept.PLANE_METAL1);
-		diffPlane = context.getDesign().getPlane(Technologies.Concept.PLANE_DIFF);
-		polyPlane = context.getDesign().getPlane(Technologies.Concept.PLANE_POLY);
-		for (int x = 0; x < innerPlane.getWidth(); x++) {
-			for (int y = 0; y < innerPlane.getHeight(); y++) {
-				if (innerPlane.getPixel(x, y) == Technologies.Concept.MATERIAL_CONTACT) {
-					if (!checkPixel(x, y)) {
-						context.report(x, y, "minimum overlap of contact with diffusion or poly violated");
-					}
-				}
-			}
-		}
+	public ContactDownwardsOverlapRule() {
+		super(Technologies.Concept.PLANE_METAL1);
 	}
 
-	private boolean checkPixel(int x, int y) {
-		Plane outerPlane;
-		Material outerMaterial = polyPlane.getPixel(x, y);
-		if (outerMaterial != Material.NONE) {
-			outerPlane = polyPlane;
+	@Override
+	public void check(DrcContext context) {
+		diffPlane = context.getDesign().getPlane(Technologies.Concept.PLANE_DIFF);
+		polyPlane = context.getDesign().getPlane(Technologies.Concept.PLANE_POLY);
+		super.check(context);
+	}
+
+	@Override
+	protected boolean checkPixel() {
+		if (getPivotMaterial() != Technologies.Concept.MATERIAL_CONTACT) {
+			return true;
+		}
+		Plane overlappingPlane;
+		Material overlappingMaterial = polyPlane.getPixel(getPivotX(), getPivotY());
+		if (overlappingMaterial != Material.NONE) {
+			overlappingPlane = polyPlane;
 		} else {
-			outerMaterial = diffPlane.getPixel(x, y);
-			if (outerMaterial != Material.NONE) {
-				outerPlane = diffPlane;
+			overlappingMaterial = diffPlane.getPixel(getPivotX(), getPivotY());
+			if (overlappingMaterial != Material.NONE) {
+				overlappingPlane = diffPlane;
 			} else {
 				return false;
 			}
 		}
-		return outerPlane.isRectangleUniformAutoclip(x - OVERLAP, y - OVERLAP, SQUARE_SIZE, SQUARE_SIZE, outerMaterial);
+		return isSurroundedByMaterial(overlappingPlane, getPivotX(), getPivotY(), OVERLAP, overlappingMaterial);
+
+		TODO
+//		return overlappingPlane.isRectangleUniformAutoclip(getPivotX() - OVERLAP, getPivotY() - OVERLAP,
+//				SQUARE_SIZE, SQUARE_SIZE, overlappingMaterial);
 	}
 
 }
