@@ -44,10 +44,8 @@ public class ConceptDrc {
 			new MinimumSpacingRule(Technologies.Concept.PLANE_DIFF, MinimumSpacingRule.MaterialMode.CHECK_OTHER_MATERIAL_SPACING, 3),
 
             // 2.3 (Source/drain active to well edge: 5)
-			// TODO overlap rule, but we need to dynamically determine the size from the center pixel and materials in multiple planes
-
 			// 2.4 (Substrate/well contact active to well edge: 3)
-			// TODO overlap rule, but we need to dynamically determine the size from the center pixel and materials in multiple planes
+			new ActiveByWellOverlapRule(),
 
 			// 2.5 (Minimum spacing between non-abutting active of different implant: 4)
 			// TODO spacing rule but we need to dynamically determine the width
