@@ -6,14 +6,14 @@ import name.martingeisse.chipdraw.design.PlaneSchema;
 /**
  * Splits the target plane into connected "patches" and ensures that a minimum spacing between patches is obeyed.
  *
- * This class uses a fixed value for the minimum spacing. Extend {@link AbstractMinimumSpacingRule} to determine
+ * This class uses a fixed value for the minimum spacing. Extend {@link AbstractMinimumSelfSpacingRule} to determine
  * the spacing dynamically.
  */
-public class MinimumSpacingRule extends AbstractMinimumSpacingRule {
+public class MinimumSelfSpacingRule extends AbstractMinimumSelfSpacingRule {
 
 	private final int spacing;
 
-	public MinimumSpacingRule(PlaneSchema planeSchema, MaterialMode materialMode, int spacing) {
+	public MinimumSelfSpacingRule(PlaneSchema planeSchema, MaterialMode materialMode, int spacing) {
 		super(planeSchema, materialMode);
 		this.spacing = spacing;
 	}

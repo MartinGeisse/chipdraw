@@ -5,11 +5,11 @@ import name.martingeisse.chipdraw.design.Material;
 import name.martingeisse.chipdraw.design.Plane;
 import name.martingeisse.chipdraw.design.Technologies;
 import name.martingeisse.chipdraw.drc.DrcContext;
-import name.martingeisse.chipdraw.drc.rule.AbstractMinimumSpacingRule;
-import name.martingeisse.chipdraw.drc.rule.MinimumSpacingRule;
+import name.martingeisse.chipdraw.drc.rule.AbstractMinimumSelfSpacingRule;
+import name.martingeisse.chipdraw.drc.rule.MinimumSelfSpacingRule;
 import name.martingeisse.chipdraw.drc.rule.Rule;
-import name.martingeisse.chipdraw.drc.rule.experiment.AbstractPerPixelRule;
-import name.martingeisse.chipdraw.drc.rule.experiment.MinimumRectangularWidthRule;
+import name.martingeisse.chipdraw.drc.rule.AbstractPerPixelRule;
+import name.martingeisse.chipdraw.drc.rule.MinimumRectangularWidthRule;
 
 /**
  *
@@ -29,7 +29,7 @@ public class ConceptDrc {
 			// equal-implant wells at different potentials
 
 			// 1.3 (Minimum spacing between equal-implant wells at same potential: 6)
-			new MinimumSpacingRule(Technologies.Concept.PLANE_WELL, MinimumSpacingRule.MaterialMode.IGNORE_OTHER_MATERIALS, 6),
+			new MinimumSelfSpacingRule(Technologies.Concept.PLANE_WELL, MinimumSelfSpacingRule.MaterialMode.IGNORE_OTHER_MATERIALS, 6),
 
 			// 1.4 (Minimum spacing between wells of different type) is implicitly true because they are represented as
 			// different materials on the same plane.
@@ -43,13 +43,14 @@ public class ConceptDrc {
 			new MinimumRectangularWidthRule(Technologies.Concept.PLANE_DIFF, 3, true),
 
 			// 2.2 (Minimum spacing, same implant: 3)
-			new MinimumSpacingRule(Technologies.Concept.PLANE_DIFF, MinimumSpacingRule.MaterialMode.CHECK_OTHER_MATERIAL_SPACING, 3),
+			new MinimumSelfSpacingRule(Technologies.Concept.PLANE_DIFF, MinimumSelfSpacingRule.MaterialMode.CHECK_OTHER_MATERIAL_SPACING, 3),
 
 			// 2.3 (Source/drain active to well edge: 5)
 			// 2.4 (Substrate/well contact active to well edge: 3)
 			new ActiveByWellOverlapRule(),
 
 			// 2.5 (Minimum spacing between non-abutting active of different implant: 4)
+			// new abs
 			// TODO spacing rule but we need to dynamically determine the width
 
 
@@ -62,7 +63,7 @@ public class ConceptDrc {
 
 			// 3.2 / 3.2a (Minimum spacing over field / active: 2)
 			// Since the minimum spacing is the same over field and active, we can use a simple spacing rule.
-			new MinimumSpacingRule(Technologies.Concept.PLANE_POLY, MinimumSpacingRule.MaterialMode.CHECK_OTHER_MATERIAL_SPACING, 2),
+			new MinimumSelfSpacingRule(Technologies.Concept.PLANE_POLY, MinimumSelfSpacingRule.MaterialMode.CHECK_OTHER_MATERIAL_SPACING, 2),
 
 			// 3.3 (Minimum gate extension of active: 2)
 			// TODO
@@ -102,7 +103,7 @@ public class ConceptDrc {
 			new ContactDownwardsOverlapRule(),
 
 			// 5.3 and 6.3 (Minimum contact spacing: 2)
-			new MinimumSpacingRule(Technologies.Concept.PLANE_METAL1, AbstractMinimumSpacingRule.MaterialMode.IGNORE_OTHER_MATERIALS, 2) {
+			new MinimumSelfSpacingRule(Technologies.Concept.PLANE_METAL1, AbstractMinimumSelfSpacingRule.MaterialMode.IGNORE_OTHER_MATERIALS, 2) {
 				@Override
 				protected boolean affects(int x, int y, Material material) {
 					return material == Technologies.Concept.MATERIAL_CONTACT;
@@ -122,7 +123,7 @@ public class ConceptDrc {
 			new MinimumRectangularWidthRule(Technologies.Concept.PLANE_METAL1, 3, false),
 
 			// 7.2 (Minimum spacing: 2)
-			new MinimumSpacingRule(Technologies.Concept.PLANE_METAL1, MinimumSpacingRule.MaterialMode.MERGE_MATERIALS, 2),
+			new MinimumSelfSpacingRule(Technologies.Concept.PLANE_METAL1, MinimumSelfSpacingRule.MaterialMode.MERGE_MATERIALS, 2),
 
 			// 7.3 (Minimum overlap of any contact: 1)
 			new AbstractPerPixelRule(Technologies.Concept.PLANE_METAL1) {
@@ -148,7 +149,7 @@ public class ConceptDrc {
 			// TODO
 
 			// 8.2 (Minimum via1 spacing: 3)
-			new MinimumSpacingRule(Technologies.Concept.PLANE_METAL2, AbstractMinimumSpacingRule.MaterialMode.IGNORE_OTHER_MATERIALS, 3) {
+			new MinimumSelfSpacingRule(Technologies.Concept.PLANE_METAL2, AbstractMinimumSelfSpacingRule.MaterialMode.IGNORE_OTHER_MATERIALS, 3) {
 				@Override
 				protected boolean affects(int x, int y, Material material) {
 					return material == Technologies.Concept.MATERIAL_VIA12;
@@ -183,7 +184,7 @@ public class ConceptDrc {
             new MinimumRectangularWidthRule(Technologies.Concept.PLANE_METAL2, 3, false),
 
 			// 9.2 (Minimum spacing: 3)
-			new MinimumSpacingRule(Technologies.Concept.PLANE_METAL2, MinimumSpacingRule.MaterialMode.MERGE_MATERIALS, 3)
+			new MinimumSelfSpacingRule(Technologies.Concept.PLANE_METAL2, MinimumSelfSpacingRule.MaterialMode.MERGE_MATERIALS, 3)
 
 			// 9.3 (Minimum overlap of via1: 1): grouped with 8.3
 

@@ -1,4 +1,4 @@
-package name.martingeisse.chipdraw.drc.rule.experiment;
+package name.martingeisse.chipdraw.drc.rule;
 
 import name.martingeisse.chipdraw.design.Material;
 import name.martingeisse.chipdraw.design.Plane;

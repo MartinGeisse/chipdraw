@@ -11,17 +11,17 @@ import java.util.HashSet;
 import java.util.Set;
 
 /**
- * Base class for {@link MinimumSpacingRule}. Extend this class if the amount of spacing needed must be determined
+ * Base class for {@link MinimumSelfSpacingRule}. Extend this class if the amount of spacing needed must be determined
  * dynamically, e.g. based on material or other planes.
  */
-public abstract class AbstractMinimumSpacingRule implements Rule {
+public abstract class AbstractMinimumSelfSpacingRule implements Rule {
 
     private final PlaneSchema planeSchema;
     private final MaterialMode materialMode;
     private DrcContext context;
     private Plane plane;
 
-    public AbstractMinimumSpacingRule(PlaneSchema planeSchema, MaterialMode materialMode) {
+    public AbstractMinimumSelfSpacingRule(PlaneSchema planeSchema, MaterialMode materialMode) {
         this.planeSchema = planeSchema;
         this.materialMode = materialMode;
     }

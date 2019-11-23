@@ -4,7 +4,7 @@ import name.martingeisse.chipdraw.design.Material;
 import name.martingeisse.chipdraw.design.Plane;
 import name.martingeisse.chipdraw.design.Technologies;
 import name.martingeisse.chipdraw.drc.DrcContext;
-import name.martingeisse.chipdraw.drc.rule.experiment.AbstractPerPixelRule;
+import name.martingeisse.chipdraw.drc.rule.AbstractPerPixelRule;
 
 /**
  * This rule checks overlap of diffusion areas by wells.
