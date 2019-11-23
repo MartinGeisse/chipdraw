@@ -69,11 +69,29 @@ public class ConceptDrc {
 			// Since the minimum spacing is the same over field and active, we can use a simple spacing rule.
 			new MinimumSelfSpacingRule(Technologies.Concept.PLANE_POLY, MinimumSelfSpacingRule.MaterialMode.CHECK_OTHER_MATERIAL_SPACING, 2),
 
-			// 3.3 (Minimum gate extension of active: 2)
-			// TODO
+			// 3.3 (Minimum gate extension of [over] active: 2)
+			new AbstractPerPixelRule(Technologies.Concept.PLANE_POLY) {
+				@Override
+				protected boolean checkPixel() {
+					int x = getPivotX(), y = getPivotY();
+					if (getContext().getDesign().getPlane(Technologies.Concept.PLANE_DIFF).getPixel(x, y) != Material.NONE) {
+						return hasMinimumExtensionWithAnyMaterial(getPivotPlane(), x, y, 2);
+					}
+					return true;
+				}
+			},
 
-			// 3.4 (Minimum active extension of poly: 3)
-			// TODO
+			// 3.4 (Minimum active extension of [over] poly: 3)
+			new AbstractPerPixelRule(Technologies.Concept.PLANE_DIFF) {
+				@Override
+				protected boolean checkPixel() {
+					int x = getPivotX(), y = getPivotY();
+					if (getContext().getDesign().getPlane(Technologies.Concept.PLANE_POLY).getPixel(x, y) != Material.NONE) {
+						return hasMinimumExtensionWithMaterial(getPivotPlane(), x, y, 3, getPivotMaterial());
+					}
+					return true;
+				}
+			},
 
 			// 3.5 (Minimum field poly [spacing] to active: 1)
 			// TODO -- not a MinimumSpacingRule but rather an "overlap without", since the connectivity analysis

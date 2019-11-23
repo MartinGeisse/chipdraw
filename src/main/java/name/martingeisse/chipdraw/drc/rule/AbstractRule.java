@@ -2,7 +2,6 @@ package name.martingeisse.chipdraw.drc.rule;
 
 import name.martingeisse.chipdraw.design.Material;
 import name.martingeisse.chipdraw.design.Plane;
-import name.martingeisse.chipdraw.drc.rule.Rule;
 
 public abstract class AbstractRule implements Rule {
 
@@ -59,6 +58,31 @@ public abstract class AbstractRule implements Rule {
 
     protected final boolean isAnyMaterialNearby(Plane plane, int x, int y, int distance) {
         return !isSurroundedByMaterial(plane, x, y, distance, Material.NONE);
+    }
+
+    protected final boolean hasMinimumExtensionWithMaterial(Plane plane, int x, int y, int distance, Material material) {
+        if (material == null) {
+            throw new IllegalArgumentException("material cannot be null");
+        }
+        return hasMinimumExtensionInternal(plane, x, y, distance, material);
+    }
+
+
+    protected final boolean hasMinimumExtensionWithAnyMaterial(Plane plane, int x, int y, int distance) {
+        return hasMinimumExtensionInternal(plane, x, y, distance, null);
+    }
+
+    private boolean hasMinimumExtensionInternal(Plane plane, int x, int y, int distance, Material material) {
+        boolean xOkay = true, yOkay = true;
+        for (int delta = -distance; delta <= distance; delta++) {
+            if (material == null ? (plane.getPixelAutoclip(x + delta, y) == Material.NONE) : (plane.getPixelAutoclip(x + delta, y) != material)) {
+                xOkay = false;
+            }
+            if (material == null ? (plane.getPixelAutoclip(delta, y + delta) == Material.NONE) : (plane.getPixelAutoclip(x, y + delta) != material)) {
+                yOkay = false;
+            }
+        }
+        return xOkay || yOkay;
     }
 
 }
