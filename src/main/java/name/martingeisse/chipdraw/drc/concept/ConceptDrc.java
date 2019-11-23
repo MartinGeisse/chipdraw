@@ -5,11 +5,7 @@ import name.martingeisse.chipdraw.design.Material;
 import name.martingeisse.chipdraw.design.Plane;
 import name.martingeisse.chipdraw.design.Technologies;
 import name.martingeisse.chipdraw.drc.DrcContext;
-import name.martingeisse.chipdraw.drc.rule.AbstractMinimumSelfSpacingRule;
-import name.martingeisse.chipdraw.drc.rule.MinimumSelfSpacingRule;
-import name.martingeisse.chipdraw.drc.rule.Rule;
-import name.martingeisse.chipdraw.drc.rule.AbstractPerPixelRule;
-import name.martingeisse.chipdraw.drc.rule.MinimumRectangularWidthRule;
+import name.martingeisse.chipdraw.drc.rule.*;
 
 /**
  *
@@ -123,7 +119,7 @@ public class ConceptDrc {
 			//
 
 			// 5.1 and 6.1 (Exact contact size: 2x2)
-			// TODO
+			new ExactMaterialSizeRule(Technologies.Concept.MATERIAL_CONTACT, 2),
 
 			// 5.2 (Minimum poly overlap: 1.5 -> 2) and 6.2 (Minimum active overlap: 1.5 -> 2)
 			new ContactDownwardsOverlapRule(),
@@ -172,7 +168,7 @@ public class ConceptDrc {
 			//
 
 			// 8.1 (Exact size: 2x2)
-			// TODO
+			new ExactMaterialSizeRule(Technologies.Concept.MATERIAL_VIA12, 2),
 
 			// 8.2 (Minimum via1 spacing: 3)
 			new MinimumSelfSpacingRule(Technologies.Concept.PLANE_METAL2, AbstractMinimumSelfSpacingRule.MaterialMode.IGNORE_OTHER_MATERIALS, 3) {
