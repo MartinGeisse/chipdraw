@@ -215,6 +215,15 @@ public class MainWindow extends JFrame implements Editor.Ui {
                     g.fillRect(screenX, screenY, screenSize, screenSize);
                 }
 
+                if (positionedDrcViolations.get(new Point(pixelX, pixelY)) != null) {
+                    int centerX = screenX + screenSize / 2 - 2;
+                    int centerY = screenY + screenSize / 2 - 2;
+                    g.setColor(Color.RED);
+                    g.fillOval(centerX, centerY, 4, 4);
+                    g.setColor(Color.BLACK);
+                    g.drawOval(centerX, centerY, 4, 4);
+                }
+
             }
         };
         MouseAdapter mouseAdapter = new MouseAdapter() {
@@ -491,6 +500,7 @@ public class MainWindow extends JFrame implements Editor.Ui {
                 }
             }
             updatePointerDrcLine();
+            repaint();
         }
 
     }
