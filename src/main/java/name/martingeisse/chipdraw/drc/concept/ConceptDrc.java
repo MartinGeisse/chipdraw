@@ -133,8 +133,35 @@ public class ConceptDrc {
 			},
 
 			// 5.4 and 6.4 (Minimum spacing to gate of transistor: 2)
-			// TODO -- not a MinimumSpacingRule but rather an "overlap without", since the connectivity analysis
-			// of a spacing rule only makes sense within the same plane
+			new AbstractPerPixelRule(Technologies.Concept.PLANE_METAL1) {
+
+				private Plane diffPlane, polyPlane;
+
+				@Override
+				public void check(DrcContext context) {
+					diffPlane = context.getDesign().getPlane(Technologies.Concept.PLANE_DIFF);
+					polyPlane = context.getDesign().getPlane(Technologies.Concept.PLANE_POLY);
+					super.check(context);
+				}
+
+				@Override
+				protected boolean checkPixel() {
+					if (getPivotMaterial() != Technologies.Concept.MATERIAL_CONTACT) {
+						return true;
+					}
+					int x = getPivotX(), y = getPivotY();
+					int distance = 2;
+					for (int dx = -distance; dx <= distance; dx++) {
+						for (int dy = -distance; dy <= distance; dy++) {
+							if (diffPlane.getPixel(x + dx, y + dy) != Material.NONE &&
+								polyPlane.getPixel(x + dx, y + dy) != Material.NONE) {
+								return false;
+							}
+						}
+					}
+					return true;
+				}
+			},
 
 
 			//
