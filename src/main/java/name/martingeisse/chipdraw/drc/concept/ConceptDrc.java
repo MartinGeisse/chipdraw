@@ -94,8 +94,7 @@ public class ConceptDrc {
 			},
 
 			// 3.5 (Minimum field poly [spacing] to active: 1)
-			// TODO -- not a MinimumSpacingRule but rather an "overlap without", since the connectivity analysis
-			// of a spacing rule only makes sense within the same plane
+			new MinimumFieldPolyOverActiveRule(),
 
 
 			//
