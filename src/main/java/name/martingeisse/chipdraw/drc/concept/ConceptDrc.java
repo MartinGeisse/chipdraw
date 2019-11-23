@@ -51,7 +51,7 @@ public class ConceptDrc {
 				protected boolean checkPixel() {
 					return !isMaterialNearby(getPivotPlane(), getPivotX(), getPivotY(), 4, getPivotMaterial().getOther());
 				}
-			},
+			}.setErrorMessage("Minimum spacing between non-abutting active of different implant: 4"),
 
 
 			//
@@ -75,7 +75,7 @@ public class ConceptDrc {
 					}
 					return true;
 				}
-			},
+			}.setErrorMessage("Minimum gate extension over active: 2"),
 
 			// 3.4 (Minimum active extension of [over] poly: 3)
 			new AbstractPerPixelRule(Technologies.Concept.PLANE_DIFF) {
@@ -87,7 +87,7 @@ public class ConceptDrc {
 					}
 					return true;
 				}
-			},
+			}.setErrorMessage("Minimum active extension over poly: 3"),
 
 			// 3.5 (Minimum field poly [spacing] to active: 1)
 			new MinimumFieldPolyOverActiveRule(),
@@ -130,7 +130,7 @@ public class ConceptDrc {
 				protected boolean affects(int x, int y, Material material) {
 					return material == Technologies.Concept.MATERIAL_CONTACT;
 				}
-			},
+			}.setErrorMessage("Minimum contact spacing: 2"),
 
 			// 5.4 and 6.4 (Minimum spacing to gate of transistor: 2)
 			new AbstractPerPixelRule(Technologies.Concept.PLANE_METAL1) {
@@ -161,7 +161,7 @@ public class ConceptDrc {
 					}
 					return true;
 				}
-			},
+			}.setErrorMessage("Minimum spacing of contact to gate of transistor: 2"),
 
 
 			//
@@ -184,7 +184,7 @@ public class ConceptDrc {
 					int x = getPivotX(), y = getPivotY();
 					return isSurroundedByAnyMaterial(getPivotPlane(), x, y, 1);
 				}
-			},
+			}.setErrorMessage("Minimum overlap of contact with metal1: 1"),
 
 			// 7.4 (Minimum spacing when either metal line is wider than 10 lambda: 4)
 			// TODO
@@ -203,7 +203,7 @@ public class ConceptDrc {
 				protected boolean affects(int x, int y, Material material) {
 					return material == Technologies.Concept.MATERIAL_VIA12;
 				}
-			},
+			}.setErrorMessage("Minimum via12 spacing: 3"),
 
 			// 8.3 (Minimum overlap [of via12] by metal1: 1)
 			// includes 9.3 (Minimum overlap of via12 [by metal2]: 1)
@@ -218,7 +218,7 @@ public class ConceptDrc {
 					int x = getPivotX(), y = getPivotY();
 					return isSurroundedByAnyMaterial(metal1, x, y, 1) && isSurroundedByAnyMaterial(metal2, x, y, 1);
 				}
-			},
+			}.setErrorMessage("Minimum overlap of via12 by metal1 and metal2: 1"),
 
 			// 8.4 TODO -- are stacked vias allowed?
 

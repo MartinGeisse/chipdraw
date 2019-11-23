@@ -14,7 +14,7 @@ import java.util.Set;
  * Base class for {@link MinimumSelfSpacingRule}. Extend this class if the amount of spacing needed must be determined
  * dynamically, e.g. based on material or other planes.
  */
-public abstract class AbstractMinimumSelfSpacingRule implements Rule {
+public abstract class AbstractMinimumSelfSpacingRule extends AbstractRule {
 
     private final PlaneSchema planeSchema;
     private final MaterialMode materialMode;

@@ -8,6 +8,12 @@ public abstract class AbstractRule implements Rule {
     private String errorMessage;
 
     public final Rule setErrorMessage(String errorMessage) {
+        if (errorMessage != null) {
+            errorMessage = errorMessage.trim();
+            if (errorMessage.isEmpty()) {
+                throw new IllegalArgumentException("Error message cannot be empty. Pass null to use the default message.");
+            }
+        }
         this.errorMessage = errorMessage;
         return this;
     }
@@ -17,7 +23,25 @@ public abstract class AbstractRule implements Rule {
     }
 
     protected String getEffectiveErrorMessage() {
-        return errorMessage != null ? errorMessage : getClass().getSimpleName();
+        return errorMessage != null ? errorMessage : getDefaultErrorMessage();
+    }
+
+    private String getDefaultErrorMessage() {
+        String message = getClass().getSimpleName();
+        if (message != null) {
+            message = message.trim();
+            if (!message.isEmpty()) {
+                return message;
+            }
+        }
+        message = getClass().getName();
+        if (message != null) {
+            message = message.trim();
+            if (!message.isEmpty()) {
+                return message;
+            }
+        }
+        return "DRC ERROR";
     }
 
     protected final boolean hasMinimumWidthWithAnyMaterial(Plane plane, int x, int y, int expectedWidth) {
