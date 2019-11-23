@@ -15,7 +15,7 @@ public class ActiveByWellOverlapRule extends AbstractPerPixelRule {
 
     public ActiveByWellOverlapRule() {
         super(Technologies.Concept.PLANE_DIFF);
-        setErrorMessage("minimum overlap of contact with diffusion or poly");
+        setErrorMessage("minimum overlap of diffusion by well: 3 for well taps, 5 for source/drain");
     }
 
     @Override

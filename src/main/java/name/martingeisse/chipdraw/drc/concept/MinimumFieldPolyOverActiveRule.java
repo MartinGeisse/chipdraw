@@ -12,6 +12,7 @@ public class MinimumFieldPolyOverActiveRule extends AbstractPerPixelRule {
 
     public MinimumFieldPolyOverActiveRule() {
         super(Technologies.Concept.PLANE_POLY);
+        setErrorMessage("minimum spacing between field poly and active");
     }
 
     @Override
