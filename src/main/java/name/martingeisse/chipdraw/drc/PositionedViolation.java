@@ -1,5 +1,7 @@
 package name.martingeisse.chipdraw.drc;
 
+import name.martingeisse.chipdraw.util.Point;
+
 public class PositionedViolation extends Violation {
 
     private final int x, y;
@@ -16,6 +18,10 @@ public class PositionedViolation extends Violation {
 
     public final int getY() {
         return y;
+    }
+
+    public final Point getPoint() {
+        return new Point(x, y);
     }
 
     @Override

@@ -1,10 +1,12 @@
 package name.martingeisse.chipdraw.ui;
 
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableMap;
 import name.martingeisse.chipdraw.About;
 import name.martingeisse.chipdraw.Editor;
 import name.martingeisse.chipdraw.Workbench;
 import name.martingeisse.chipdraw.design.*;
+import name.martingeisse.chipdraw.drc.PositionedViolation;
 import name.martingeisse.chipdraw.drc.Violation;
 import name.martingeisse.chipdraw.global_tools.Autocropper;
 import name.martingeisse.chipdraw.global_tools.ConnectivityExtractor;
@@ -21,11 +23,14 @@ import name.martingeisse.chipdraw.ui.util.DesignPixelPanel;
 import name.martingeisse.chipdraw.ui.util.MenuBarBuilder;
 import name.martingeisse.chipdraw.ui.util.SingleIconBooleanCellRenderer;
 import name.martingeisse.chipdraw.ui.util.UiRunnable;
+import name.martingeisse.chipdraw.util.Point;
 import name.martingeisse.chipdraw.util.UserVisibleMessageException;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
+import java.util.HashMap;
+import java.util.Map;
 
 public class MainWindow extends JFrame implements Editor.Ui {
 
@@ -39,10 +44,14 @@ public class MainWindow extends JFrame implements Editor.Ui {
     private final JButton drcButton;
     private final MaterialUiState materialUiState;
     private final Editor editor;
+    private final JLabel pointerDrcLine;
 
     private boolean drawing, erasing, firstPixelOfStroke;
     private int pixelSize;
     private int cursorSize = 1;
+
+    private int mousePixelX, mousePixelY;
+    private Map<Point, String> positionedDrcViolations = ImmutableMap.of();
 
     public MainWindow(Workbench _workbench, Design _design) {
         super("Chipdraw");
@@ -225,19 +234,20 @@ public class MainWindow extends JFrame implements Editor.Ui {
 
             @Override
             public void mouseMoved(MouseEvent event) {
+                mousePixelX = event.getX() / pixelSize;
+                mousePixelY = event.getY() / pixelSize;
                 if (drawing || erasing) {
-                    int x = event.getX() / pixelSize;
-                    int y = event.getY() / pixelSize;
                     int cursorSize = MainWindow.this.cursorSize;
                     int offset = (cursorSize - 1) / 2;
                     Material material = materialUiState.getEditingMaterial();
                     if (MainWindow.this.drawing) {
-                        performOperation(new DrawPoints(x - offset, y - offset, cursorSize, cursorSize, material), !firstPixelOfStroke);
+                        performOperation(new DrawPoints(mousePixelX - offset, mousePixelY - offset, cursorSize, cursorSize, material), !firstPixelOfStroke);
                     } else {
-                        performOperation(new ErasePoints(x - offset, y - offset, cursorSize, cursorSize, material.getPlaneSchema()), !firstPixelOfStroke);
+                        performOperation(new ErasePoints(mousePixelX - offset, mousePixelY - offset, cursorSize, cursorSize, material.getPlaneSchema()), !firstPixelOfStroke);
                     }
                     firstPixelOfStroke = false;
                 }
+                updatePointerDrcLine();
             }
 
             @Override
@@ -387,6 +397,9 @@ public class MainWindow extends JFrame implements Editor.Ui {
             setJMenuBar(builder.build());
         }
 
+        pointerDrcLine = new JLabel(" ");
+        add(pointerDrcLine, BorderLayout.PAGE_END);
+
         loadAndSaveDialogs = new LoadAndSaveDialogs(workbench.getTechnologyRepository());
         editor.restart(_design);
     }
@@ -458,6 +471,8 @@ public class MainWindow extends JFrame implements Editor.Ui {
 
     @Override
     public void consumeDrcResult(ImmutableList<Violation> violations) {
+
+        // update DRC button color
         if (violations == null) {
             drcButton.setForeground(new Color(128, 128, 0));
         } else if (violations.isEmpty()) {
@@ -465,6 +480,24 @@ public class MainWindow extends JFrame implements Editor.Ui {
         } else {
             drcButton.setForeground(new Color(128, 0, 0));
         }
+
+        // Update map of positioned violations so we can show them on mouse-over. Leave old messages while DRC is running.
+        if (violations != null) {
+            positionedDrcViolations = new HashMap<>();
+            for (Violation violation : violations) {
+                if (violation instanceof PositionedViolation) {
+                    PositionedViolation positionedViolation = (PositionedViolation)violation;
+                    positionedDrcViolations.put(positionedViolation.getPoint(), positionedViolation.getMessage());
+                }
+            }
+            updatePointerDrcLine();
+        }
+
+    }
+
+    private void updatePointerDrcLine() {
+        String message = positionedDrcViolations.get(new Point(mousePixelX, mousePixelY));
+        pointerDrcLine.setText(message == null ? " " : ("  " + message));
     }
 
     private void run(UiRunnable runnable) {
