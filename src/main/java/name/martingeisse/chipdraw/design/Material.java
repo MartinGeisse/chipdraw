@@ -1,5 +1,7 @@
 package name.martingeisse.chipdraw.design;
 
+import java.util.List;
+
 public final class Material {
 
     static final int MAX_MATERIALS = 250;
@@ -49,6 +51,21 @@ public final class Material {
     public void validateNotNone() {
         if (this == NONE) {
             throw new IllegalArgumentException("passing Material.NONE not allowed here");
+        }
+    }
+
+    /**
+     * This method only works for plane schemas with exactly two materials, otherwise this method throws
+     * an exception. When allows, returns the other material in the same plane.
+     */
+    public Material getOther() {
+        List<Material> materials = planeSchema.getMaterials();
+        if (materials.size() != 2) {
+            throw new RuntimeException("getOther() can only be used for exactly two materials in a plane schema");
+        } else if (materials.get(0) == this) {
+            return materials.get(1);
+        } else {
+            return materials.get(0);
         }
     }
 
