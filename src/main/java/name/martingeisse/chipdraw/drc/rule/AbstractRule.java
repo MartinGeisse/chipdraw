@@ -102,7 +102,7 @@ public abstract class AbstractRule implements Rule {
             if (material == null ? (plane.getPixelAutoclip(x + delta, y) == Material.NONE) : (plane.getPixelAutoclip(x + delta, y) != material)) {
                 xOkay = false;
             }
-            if (material == null ? (plane.getPixelAutoclip(delta, y + delta) == Material.NONE) : (plane.getPixelAutoclip(x, y + delta) != material)) {
+            if (material == null ? (plane.getPixelAutoclip(x, y + delta) == Material.NONE) : (plane.getPixelAutoclip(x, y + delta) != material)) {
                 yOkay = false;
             }
         }
