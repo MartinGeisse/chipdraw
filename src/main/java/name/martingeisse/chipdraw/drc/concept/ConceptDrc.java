@@ -102,15 +102,20 @@ public class ConceptDrc {
 			//
 
 			// 4.1 (Minimum select spacing to channel of transistor to ensure adequate source/drain width: 3)
-			// TODO
+			// Along Manhattan directions, this is already checked by 3.4 (minimum active extension of poly). I'm
+			// no sure the rule applies todiagonal directions since it says "to ensure adequate source/drain width" --
+			// seems to apply to abutting implant regions instead. A rule that also checks diagonally would probably
+			// complain about nearby well taps unnecessarily.
+			// TODO ask
 
-			// 4.2 (Minimum select overlap of active) is implicitly obeyed since we derive the select mask automatically
+			// 4.2 (Minimum select overlap of active)
+			// is implicitly obeyed since we derive the select mask automatically
 
 			// 4.3 (Minimum select overlap of contact: 1)
-			// TODO
+			// is implicitly obeyed since we derive the select mask automatically
 
 			// 4.4 (Minimum select width and spacing (Note: P-select and N-select may be coincident, but must not overlap))
-			// TODO
+			// is implicitly obeyed since we derive the select mask automatically
 
 			//
 			// 5.x -- contact to poly
