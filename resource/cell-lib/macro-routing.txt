@@ -1,0 +1,38 @@
+
+Vias and contacts must be 2x2, surrounded by at least 1 metal1 / metal2, i.e. they need at least 4x4 metal1 / metal2.
+
+metal1 minimum width is 3, spacing is 2.
+
+metal2 spacing is 3 (don't know why this is larger, but if we use metal2 for power then it might not matter; we
+do need stacked vias for this though.
+
+Alternatively, attempt metal2 with 2λ spacing and try to scale that down as long as it works.
+
+So we assume 2λ spacing for data tracks for now.
+
+----------
+
+This leaves a pitch of at least 5λ (width 3, spacing 2), but we can't place a via next to tracks this way. Routing
+other tracks around the vias has follow-up effects that mess up the whole routing.
+
+Next try: pitch = 6λ (width 3, spacing 3). A via has width 4, spacing 2 -> works. This should even allow vias next
+to each other! A via is displaced by λ/2 compared to the metal track like this:
+
+...mmm...mmm...
+...mmm...mmm...
+...mmmm..mmm...
+...mvvm..mmm...
+...mvvm..mmm...
+...mmmm..mmm...
+.........mmm...
+.........mmm...
+
+Macro-routing therefore happens in 6x6 squares which can connect to their neighbors as well as up and down (both up
+and down are allowed if the process allows stacked vias).
+
+The editor requires special support for standard cell placement. Routing could be done with the normal pixel editor
+by distinguishing alternating "center" pixels and "connecting" pixels, but this is cumbersome, easy to displace the
+whole design by 1 (invalidates it), needs many special rules, and so on. Better: Have the macro editor deal with
+routing in terms of "pixels" which contain a routing micro-tile, not just a color.
+
+The standard cells must therefore be a multiple of the 6x6 routing tiles in size.
