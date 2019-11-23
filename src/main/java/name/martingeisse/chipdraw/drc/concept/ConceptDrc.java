@@ -50,8 +50,12 @@ public class ConceptDrc {
 			new ActiveByWellOverlapRule(),
 
 			// 2.5 (Minimum spacing between non-abutting active of different implant: 4)
-			// new abs
-			// TODO spacing rule but we need to dynamically determine the width
+			new AbstractPerPixelRule(Technologies.Concept.PLANE_DIFF) {
+				@Override
+				protected boolean checkPixel() {
+					return !isMaterialNearby(getPivotPlane(), getPivotX(), getPivotY(), 4, getPivotMaterial().getOther());
+				}
+			},
 
 
 			//
