@@ -6,7 +6,8 @@ import java.io.Serializable;
 import java.util.Arrays;
 
 /**
- *
+ * TODO it is probably a good idea to make the ...Autoclip() methods the normal behavior and remove the others. They
+ * do not add a lot of safety against bugs and are mostly unused anyway.
  */
 public final class Plane implements Serializable, RectangularSize {
 
