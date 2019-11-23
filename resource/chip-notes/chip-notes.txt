@@ -1,0 +1,8 @@
+
+A NAND gate takes roughly 50λ x 50λ. For λ = 20µ, that is 1mm^2. At this size, a single small chip corresponds to
+multiple primitive gates, a single complex gate or maybe a 1-bit register. Large chips could contain multiple
+complex gates or e.g. a 4-bit register or shift-in register.
+
+For λ=10µ, this would scale up to a 16-bit register or shift-in register, or 8-bit accumulator.
+
+λ=5µ is roughly the process for the 4004, though that used a pMOS process, not CMOS.

@@ -44,7 +44,7 @@ public class MainWindow extends JFrame implements Editor.Ui {
     private final JButton drcButton;
     private final MaterialUiState materialUiState;
     private final Editor editor;
-    private final JLabel pointerDrcLine;
+    private final JLabel bottomLine;
 
     private boolean drawing, erasing, firstPixelOfStroke;
     private int pixelSize;
@@ -256,7 +256,7 @@ public class MainWindow extends JFrame implements Editor.Ui {
                     }
                     firstPixelOfStroke = false;
                 }
-                updatePointerDrcLine();
+                updateBottomLine();
             }
 
             @Override
@@ -406,8 +406,8 @@ public class MainWindow extends JFrame implements Editor.Ui {
             setJMenuBar(builder.build());
         }
 
-        pointerDrcLine = new JLabel(" ");
-        add(pointerDrcLine, BorderLayout.PAGE_END);
+        bottomLine = new JLabel(" ");
+        add(bottomLine, BorderLayout.PAGE_END);
 
         loadAndSaveDialogs = new LoadAndSaveDialogs(workbench.getTechnologyRepository());
         editor.restart(_design);
@@ -499,15 +499,20 @@ public class MainWindow extends JFrame implements Editor.Ui {
                     positionedDrcViolations.put(positionedViolation.getPoint(), positionedViolation.getMessage());
                 }
             }
-            updatePointerDrcLine();
+            updateBottomLine();
             repaint();
         }
 
     }
 
-    private void updatePointerDrcLine() {
+    private void updateBottomLine() {
         String message = positionedDrcViolations.get(new Point(mousePixelX, mousePixelY));
-        pointerDrcLine.setText(message == null ? " " : ("  " + message));
+        if (message == null) {
+            message = "";
+        } else {
+            message = " / " + message;
+        }
+        bottomLine.setText("  " + mousePixelX + ", " + mousePixelY + message);
     }
 
     private void run(UiRunnable runnable) {
