@@ -70,7 +70,7 @@ public class ConceptDrc {
 				@Override
 				protected boolean checkPixel() {
 					int x = getPivotX(), y = getPivotY();
-					if (getContext().getDesign().getPlane(Technologies.Concept.PLANE_DIFF).getPixel(x, y) != Material.NONE) {
+					if (getContext().getDesign().getPlane(Technologies.Concept.PLANE_DIFF).getPixelAutoclip(x, y) != Material.NONE) {
 						return hasMinimumExtensionWithAnyMaterial(getPivotPlane(), x, y, 2);
 					}
 					return true;
@@ -82,7 +82,7 @@ public class ConceptDrc {
 				@Override
 				protected boolean checkPixel() {
 					int x = getPivotX(), y = getPivotY();
-					if (getContext().getDesign().getPlane(Technologies.Concept.PLANE_POLY).getPixel(x, y) != Material.NONE) {
+					if (getContext().getDesign().getPlane(Technologies.Concept.PLANE_POLY).getPixelAutoclip(x, y) != Material.NONE) {
 						return hasMinimumExtensionWithMaterial(getPivotPlane(), x, y, 3, getPivotMaterial());
 					}
 					return true;
@@ -153,8 +153,8 @@ public class ConceptDrc {
 					int distance = 2;
 					for (int dx = -distance; dx <= distance; dx++) {
 						for (int dy = -distance; dy <= distance; dy++) {
-							if (diffPlane.getPixel(x + dx, y + dy) != Material.NONE &&
-								polyPlane.getPixel(x + dx, y + dy) != Material.NONE) {
+							if (diffPlane.getPixelAutoclip(x + dx, y + dy) != Material.NONE &&
+								polyPlane.getPixelAutoclip(x + dx, y + dy) != Material.NONE) {
 								return false;
 							}
 						}
