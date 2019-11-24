@@ -1,12 +1,12 @@
 package name.martingeisse.chipdraw.pnr;
 
 import com.google.common.collect.ImmutableList;
+import name.martingeisse.chipdraw.pnr.cell.CellLibrary;
 import name.martingeisse.chipdraw.pnr.design.Design;
-import name.martingeisse.chipdraw.pnr.operation.DesignOperation;
-import name.martingeisse.chipdraw.pnr.operation.UndoRedoOperationExecutor;
 import name.martingeisse.chipdraw.pnr.drc.DrcAgent;
 import name.martingeisse.chipdraw.pnr.drc.Violation;
-import name.martingeisse.chipdraw.pnr.design.Technologies;
+import name.martingeisse.chipdraw.pnr.operation.DesignOperation;
+import name.martingeisse.chipdraw.pnr.operation.UndoRedoOperationExecutor;
 import name.martingeisse.chipdraw.pnr.util.UserVisibleMessageException;
 
 /**
@@ -29,7 +29,7 @@ public class Editor {
         }
         this.ui = ui;
         this.drcAgent = new DrcAgent();
-        this.operationExecutor = new UndoRedoOperationExecutor(new Design(Technologies.Concept.TECHNOLOGY, 1, 1));
+        this.operationExecutor = new UndoRedoOperationExecutor(new Design(CellLibrary.EMPTY, 1, 1));
         drcAgent.addResultListener(this::consumeDrcResult);
     }
 

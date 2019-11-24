@@ -1,17 +1,17 @@
 package name.martingeisse.chipdraw.pnr;
 
-import name.martingeisse.chipdraw.pnr.design.TechnologyRepository;
+import name.martingeisse.chipdraw.pnr.cell.CellLibraryRepository;
 
 public final class Workbench {
 
-    private final TechnologyRepository technologyRepository;
+    private final CellLibraryRepository technologyRepository;
 
-    public Workbench(TechnologyRepository technologyRepository) {
+    public Workbench(CellLibraryRepository technologyRepository) {
         this.technologyRepository = technologyRepository;
     }
 
-    public TechnologyRepository getTechnologyRepository() {
+    public CellLibraryRepository getTechnologyRepository() {
         return technologyRepository;
     }
-
+    
 }

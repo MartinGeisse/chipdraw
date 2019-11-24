@@ -1,14 +1,14 @@
 package name.martingeisse.chipdraw.pnr.ui;
 
+import name.martingeisse.chipdraw.pnr.cell.CellLibraryRepository;
+import name.martingeisse.chipdraw.pnr.cell.NoSuchCellLibraryException;
 import name.martingeisse.chipdraw.pnr.design.Design;
 import name.martingeisse.chipdraw.pnr.design.DesignPersistence;
-import name.martingeisse.chipdraw.pnr.design.NoSuchTechnologyException;
-import name.martingeisse.chipdraw.pnr.design.TechnologyRepository;
 
 import javax.swing.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import java.awt.*;
-import java.io.*;
+import java.io.IOException;
 
 public final class LoadAndSaveDialogs {
 
@@ -18,8 +18,8 @@ public final class LoadAndSaveDialogs {
 
     private final DesignPersistence designPersistence;
 
-    public LoadAndSaveDialogs(TechnologyRepository technologyRepository) {
-        this.designPersistence = new DesignPersistence(technologyRepository);
+    public LoadAndSaveDialogs(CellLibraryRepository cellLibraryRepository) {
+        this.designPersistence = new DesignPersistence(cellLibraryRepository);
     }
 
     public void showSaveDialog(Component parent, Design design) {
@@ -34,7 +34,7 @@ public final class LoadAndSaveDialogs {
         }
     }
 
-    public Design showLoadDialog(Component parent) throws NoSuchTechnologyException {
+    public Design showLoadDialog(Component parent) throws NoSuchCellLibraryException {
         String path = chooseFile(parent, JFileChooser.OPEN_DIALOG);
         if (path == null) {
             return null;

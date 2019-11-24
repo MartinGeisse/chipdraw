@@ -14,4 +14,18 @@ public interface CellLibrary {
         return cell;
     }
 
+    CellLibrary EMPTY = new CellLibrary() {
+
+        @Override
+        public String getId() {
+            return "EMPTY";
+        }
+
+        @Override
+        public Cell getCellOrNull(String id) {
+            return null;
+        }
+
+    };
+
 }
