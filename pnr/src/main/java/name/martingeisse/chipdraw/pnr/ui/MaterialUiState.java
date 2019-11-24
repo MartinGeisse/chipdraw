@@ -7,6 +7,7 @@ import name.martingeisse.chipdraw.pnr.design.Technology;
 
 import javax.swing.table.AbstractTableModel;
 import javax.swing.table.TableModel;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -15,78 +16,69 @@ import java.util.Set;
  */
 public final class MaterialUiState {
 
-    private final SidebarTableModel sidebarTableModel = new SidebarTableModel();
-    private Technology technology;
-    private ImmutableList<Material> materials;
-    private Set<PlaneSchema> visiblePlanes;
-    private Material editingMaterial;
+    TODO REVIEW
 
-    public MaterialUiState(Technology technology) {
-        setTechnology(technology);
+    private final SidebarTableModel sidebarTableModel = new SidebarTableModel();
+    private int totalPlaneCount;
+    private boolean[] planeVisible;
+    private int editingPlane;
+
+    public MaterialUiState(int totalPlaneCount) {
+        setTotalPlaneCount(totalPlaneCount);
     }
 
-    public void setTechnology(Technology technology) {
-        this.technology = technology;
-        this.materials = technology.getFlattenedMaterialList();
-        this.visiblePlanes = new HashSet<>(technology.getPlaneSchemas());
-        this.editingMaterial = materials.get(0);
-        sidebarTableModel.fireTableDataChanged();
+    public int getTotalPlaneCount() {
+        return totalPlaneCount;
+    }
+
+    public void setTotalPlaneCount(int totalPlaneCount) {
+        if (totalPlaneCount <= 0) {
+            throw new IllegalArgumentException("total plane count must be positive");
+        }
+        this.totalPlaneCount = totalPlaneCount;
+        this.planeVisible = new boolean[totalPlaneCount];
+        Arrays.fill(planeVisible, true);
+        this.editingPlane = 0;
+    }
+
+    public boolean isPlaneIndexValid(int planeIndex) {
+        return planeIndex >= 0 && planeIndex < totalPlaneCount;
+    }
+
+    private void validatePlaneIndex(int planeIndex) {
+        if (!isPlaneIndexValid(planeIndex)) {
+            throw new IllegalArgumentException("invalid plane index: " + planeIndex);
+        }
+    }
+
+
+    public boolean isPlaneVisible(int planeIndex) {
+        validatePlaneIndex(planeIndex);
+        return planeVisible[planeIndex];
+    }
+
+    public void setPlaneVisible(int planeIndex, boolean visible) {
+        validatePlaneIndex(planeIndex);
+        planeVisible[planeIndex] = visible;
+    }
+
+    public void togglePlaneVisible(int planeIndex) {
+        validatePlaneIndex(planeIndex);
+        planeVisible[planeIndex] = !planeVisible[planeIndex];
+    }
+
+    public int getEditingPlane() {
+        return editingPlane;
+    }
+
+    public void setEditingPlane(int editingPlane) {
+        validatePlaneIndex(editingPlane);
+        this.editingPlane = editingPlane;
     }
 
     public TableModel getSidebarTableModel() {
         return sidebarTableModel;
     }
-
-//region plane-oriented visibility accessors
-
-    public boolean isPlaneVisible(PlaneSchema planeSchema) {
-        technology.validatePlaneSchema(planeSchema);
-        return visiblePlanes.contains(planeSchema);
-    }
-
-    public void setPlaneVisible(PlaneSchema planeSchema, boolean visible) {
-        technology.validatePlaneSchema(planeSchema);
-        if (visible) {
-            visiblePlanes.add(planeSchema);
-        } else {
-            visiblePlanes.remove(planeSchema);
-        }
-        sidebarTableModel.fireTableDataChanged();
-    }
-
-    public void togglePlaneVisible(PlaneSchema planeSchema) {
-        setPlaneVisible(planeSchema, !isPlaneVisible(planeSchema));
-    }
-
-//endregion
-
-//region material-oriented visibility accessors
-
-    public boolean isMaterialVisible(Material material) {
-        if (material == null) {
-            throw new IllegalArgumentException("material cannot be null");
-        }
-        material.validateNotNone();
-        return isPlaneVisible(material.getPlaneSchema());
-    }
-
-    public void setMaterialVisible(Material material, boolean visible) {
-        if (material == null) {
-            throw new IllegalArgumentException("material cannot be null");
-        }
-        material.validateNotNone();
-        setPlaneVisible(material.getPlaneSchema(), visible);
-    }
-
-    public void toggleMaterialVisible(Material material) {
-        if (material == null) {
-            throw new IllegalArgumentException("material cannot be null");
-        }
-        material.validateNotNone();
-        togglePlaneVisible(material.getPlaneSchema());
-    }
-
-//endregion
 
 //region visibility up/down
 
@@ -106,14 +98,15 @@ public final class MaterialUiState {
 
         /* TODO this will not work because the same plane schema can be part of multiple plane groups! */
         final int currentPlaneGroupIndex;
-        outer: {
+        outer:
+        {
             for (int i = 0; i < planeGroups.size(); i++) {
                 if (visiblePlanes.contains(planeGroups.get(i).get(0))) {
                     currentPlaneGroupIndex = i;
                     break outer;
                 }
             }
-            currentPlaneGroupIndex = - 1;
+            currentPlaneGroupIndex = -1;
         }
 
         final int newPlaneGroupIndex;
@@ -135,29 +128,11 @@ public final class MaterialUiState {
 
 //endregion
 
-//region current editing material
-
-    public Material getEditingMaterial() {
-        return editingMaterial;
-    }
-
-    public void setEditingMaterial(Material editingMaterial) {
-        if (editingMaterial == null) {
-            throw new IllegalArgumentException("editingMaterial cannot be null");
-        }
-        editingMaterial.validateNotNone();
-        technology.validatePlaneSchema(editingMaterial.getPlaneSchema());
-        this.editingMaterial = editingMaterial;
-        sidebarTableModel.fireTableDataChanged();
-    }
-
-//endregion
-
     private class SidebarTableModel extends AbstractTableModel {
 
         @Override
         public int getRowCount() {
-            return materials.size();
+            return totalPlaneCount;
         }
 
         @Override
@@ -191,19 +166,19 @@ public final class MaterialUiState {
 
         @Override
         public Object getValueAt(int rowIndex, int columnIndex) {
-            if (rowIndex < 0 || rowIndex >= materials.size()) {
+            if (!isPlaneIndexValid(rowIndex)) {
                 return null;
             }
             switch (columnIndex) {
 
                 case 0:
-                    return materials.get(rowIndex) == editingMaterial;
+                    return rowIndex == editingPlane;
 
                 case 1:
-                    return visiblePlanes.contains(materials.get(rowIndex).getPlaneSchema());
+                    return planeVisible[rowIndex];
 
                 case 2:
-                    return materials.get(rowIndex).getName();
+                    return "plane " + rowIndex;
 
                 default:
                     return null;
@@ -214,11 +189,11 @@ public final class MaterialUiState {
     }
 
     public void onClick(int rowIndex, int columnIndex) {
-        if (rowIndex >= 0 && rowIndex < materials.size()) {
+        if (isPlaneIndexValid(rowIndex)) {
             if (columnIndex == 1) {
-                toggleMaterialVisible(materials.get(rowIndex));
+                togglePlaneVisible(rowIndex);
             } else {
-                setEditingMaterial(materials.get(rowIndex));
+                setEditingPlane(rowIndex);
             }
         }
     }
