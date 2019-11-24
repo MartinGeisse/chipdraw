@@ -1,6 +1,9 @@
 package name.martingeisse.chipdraw.pnr.design;
 
 import com.google.common.collect.ImmutableList;
+import name.martingeisse.chipdraw.pnr.cell.CellLibrary;
+import name.martingeisse.chipdraw.pnr.cell.CellLibraryRepository;
+import name.martingeisse.chipdraw.pnr.cell.NoSuchCellLibraryException;
 import name.martingeisse.chipdraw.pnr.util.RectangularSize;
 
 import java.io.Serializable;
@@ -12,46 +15,43 @@ import java.util.List;
  */
 public final class Design implements Serializable, RectangularSize {
 
+    // TODO how do we deal with the number of planes?
+    public static final int NUMBER_OF_ROUTING_PLANES = 3;
+
     private static final long serialVersionUID = 1;
 
-    private final String technologyId;
-    private transient Technology technology;
+    private final String cellLibraryId;
+    private transient CellLibrary cellLibrary;
     private final int width;
     private final int height;
-    private final ImmutableList<Plane> planes;
+    private final ImmutableList<RoutingPlane> routingPlanes;
 
-    public Design(Technology technology, int width, int height) {
-        this.technologyId = technology.getId();
-        this.technology = technology;
+    public Design(CellLibrary cellLibrary, int width, int height) {
+        this.cellLibraryId = cellLibrary.getId();
+        this.cellLibrary = cellLibrary;
         this.width = width;
         this.height = height;
 
-        List<Plane> planes = new ArrayList<>();
-        for (PlaneSchema planeSchema : technology.getPlaneSchemas()) {
-            planes.add(new Plane(planeSchema, width, height));
+        List<RoutingPlane> routingPlanes = new ArrayList<>();
+        for (int i = 0; i < NUMBER_OF_ROUTING_PLANES; i++) {
+            routingPlanes.add(new RoutingPlane(width, height));
         }
-        this.planes = ImmutableList.copyOf(planes);
+        this.routingPlanes = ImmutableList.copyOf(routingPlanes);
     }
 
     public Design(Design original) {
-        this(original.getTechnology(), original.getWidth(), original.getHeight());
-        for (int i = 0; i < planes.size(); i++) {
-            planes.get(i).copyFrom(original.getPlanes().get(i));
+        this(original.getCellLibrary(), original.getWidth(), original.getHeight());
+        for (int i = 0; i < routingPlanes.size(); i++) {
+            routingPlanes.get(i).copyFrom(original.getRoutingPlanes().get(i));
         }
     }
 
-    void initializeAfterDeserialization(TechnologyRepository technologyRepository) throws NoSuchTechnologyException {
-        this.technology = technologyRepository.getTechnology(technologyId);
-        if (technology.getPlaneSchemas().size() != planes.size()) {
-            throw new RuntimeException("number of planes in this technology has changed");
-        }
-        for (int i = 0; i < planes.size(); i++) {
-            planes.get(i).initializeAfterDeserialization(technology.getPlaneSchemas().get(i));
-        }
+    void initializeAfterDeserialization(CellLibraryRepository cellLibraryRepository) throws NoSuchCellLibraryException {
+        this.cellLibrary = cellLibraryRepository.getCellLibrary(cellLibraryId);
     }
 
-    public Technology getTechnology() {
-        return technology;
+    public CellLibrary getCellLibrary() {
+        return cellLibrary;
     }
 
     public int getWidth() {
@@ -62,23 +62,16 @@ public final class Design implements Serializable, RectangularSize {
         return height;
     }
 
-    public ImmutableList<Plane> getPlanes() {
-        return planes;
-    }
-
-    public Plane getPlane(PlaneSchema schema) {
-        technology.validatePlaneSchema(schema);
-        return planes.get(schema.index);
+    public ImmutableList<RoutingPlane> getRoutingPlanes() {
+        return routingPlanes;
     }
 
     public void copyFrom(Design source, int sourceX, int sourceY, int destinationX, int destinationY, int rectangleWidth, int rectangleHeight) {
-        if (source.getTechnology() != getTechnology()) {
-            throw new IllegalArgumentException("cannot copy from design with different technology");
+        if (source.getCellLibrary() != getCellLibrary()) {
+            throw new IllegalArgumentException("cannot copy from design with different cell library");
         }
-        source.validateSubRectangle(sourceX, sourceY, rectangleWidth, rectangleHeight);
-        validateSubRectangle(destinationX, destinationY, rectangleWidth, rectangleHeight);
-        for (int i = 0; i < planes.size(); i++) {
-            planes.get(i).copyFrom(source.getPlanes().get(i), sourceX, sourceY, destinationX, destinationY, rectangleWidth, rectangleHeight);
+        for (int i = 0; i < routingPlanes.size(); i++) {
+            routingPlanes.get(i).copyFrom(source.getRoutingPlanes().get(i), sourceX, sourceY, destinationX, destinationY, rectangleWidth, rectangleHeight);
         }
     }
 

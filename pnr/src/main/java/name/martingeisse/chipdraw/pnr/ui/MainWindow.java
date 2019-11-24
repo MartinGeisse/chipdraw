@@ -5,8 +5,6 @@ import com.google.common.collect.ImmutableMap;
 import name.martingeisse.chipdraw.pnr.About;
 import name.martingeisse.chipdraw.pnr.Editor;
 import name.martingeisse.chipdraw.pnr.Workbench;
-import name.martingeisse.chipdraw.pnr.design.*;
-import name.martingeisse.chipdraw.pnr.design.*;
 import name.martingeisse.chipdraw.pnr.drc.PositionedViolation;
 import name.martingeisse.chipdraw.pnr.drc.Violation;
 import name.martingeisse.chipdraw.pnr.global_tools.Autocropper;
@@ -27,7 +25,7 @@ import name.martingeisse.chipdraw.pnr.util.Point;
 import name.martingeisse.chipdraw.pnr.util.UserVisibleMessageException;
 import name.martingeisse.chipdraw.pnr.ui.util.SingleIconBooleanCellRenderer;
 import name.martingeisse.chipdraw.pnr.design.Design;
-import name.martingeisse.chipdraw.pnr.design.Plane;
+import name.martingeisse.chipdraw.pnr.design.PixelPlane;
 
 import javax.swing.*;
 import java.awt.*;
@@ -158,7 +156,7 @@ public class MainWindow extends JFrame implements Editor.Ui {
         mainPanel = new DesignPixelPanel(this) {
 
             private Material getPixel(PlaneSchema planeSchema, int x, int y) {
-                Plane plane = editor.getDesign().getPlane(planeSchema);
+                PixelPlane plane = editor.getDesign().getPlane(planeSchema);
                 if (materialUiState.isPlaneVisible(plane.getSchema())) {
                     return plane.getPixel(x, y);
                 } else {

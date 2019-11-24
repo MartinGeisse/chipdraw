@@ -1,15 +1,17 @@
 package name.martingeisse.chipdraw.pnr.design;
 
 import com.google.common.collect.ImmutableList;
+import name.martingeisse.chipdraw.pnr.cell.CellLibraryRepository;
+import name.martingeisse.chipdraw.pnr.cell.NoSuchCellLibraryException;
 
 import java.io.*;
 
 public final class DesignPersistence {
 
-    private final TechnologyRepository technologyRepository;
+    private final CellLibraryRepository cellLibraryRepository;
 
-    public DesignPersistence(TechnologyRepository technologyRepository) {
-        this.technologyRepository = technologyRepository;
+    public DesignPersistence(CellLibraryRepository cellLibraryRepository) {
+        this.cellLibraryRepository = cellLibraryRepository;
     }
 
     public void save(Design design, String path) throws IOException {
@@ -21,13 +23,13 @@ public final class DesignPersistence {
         }
     }
 
-    public Design load(String path) throws IOException, NoSuchTechnologyException {
+    public Design load(String path) throws IOException, NoSuchCellLibraryException {
         try (FileInputStream fileInputStream = new FileInputStream(path)) {
             System.out.println("loading from: " + path);
             ObjectInputStream objectInputStream = new ObjectInputStream(fileInputStream);
             objectInputStream.setObjectInputFilter(this::filter);
             Design design = (Design) objectInputStream.readObject();
-            design.initializeAfterDeserialization(technologyRepository);
+            design.initializeAfterDeserialization(cellLibraryRepository);
             return design;
         } catch (ClassNotFoundException e) {
             throw new IOException("deserialization problem", e);
@@ -43,7 +45,7 @@ public final class DesignPersistence {
         }
 
         // application types
-        if (c == Design.class || c == Plane.class) {
+        if (c == Design.class || c == RoutingPlane.class) {
             return ObjectInputFilter.Status.ALLOWED;
         }
 
