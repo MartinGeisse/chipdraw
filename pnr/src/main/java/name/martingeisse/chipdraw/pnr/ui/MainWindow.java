@@ -5,6 +5,7 @@ import com.google.common.collect.ImmutableMap;
 import name.martingeisse.chipdraw.pnr.About;
 import name.martingeisse.chipdraw.pnr.Editor;
 import name.martingeisse.chipdraw.pnr.Workbench;
+import name.martingeisse.chipdraw.pnr.cell.NoSuchCellLibraryException;
 import name.martingeisse.chipdraw.pnr.drc.PositionedViolation;
 import name.martingeisse.chipdraw.pnr.drc.Violation;
 import name.martingeisse.chipdraw.pnr.global_tools.Autocropper;
@@ -49,7 +50,6 @@ public class MainWindow extends JFrame implements Editor.Ui {
 
     private boolean drawing, erasing, firstPixelOfStroke;
     private int pixelSize;
-    private int cursorSize = 1;
 
     private int mousePixelX, mousePixelY;
     private Map<name.martingeisse.chipdraw.pnr.util.Point, String> positionedDrcViolations = ImmutableMap.of();
@@ -110,23 +110,6 @@ public class MainWindow extends JFrame implements Editor.Ui {
                 MainWindow.this.repaint();
             });
         }
-        {
-            JPanel cursorSizeButtonPanel = new JPanel();
-            cursorSizeButtonPanel.setLayout(new BoxLayout(cursorSizeButtonPanel, BoxLayout.X_AXIS));
-            JButton button1x1 = new JButton(Icons.get("cursor_1x1.png"));
-            button1x1.setFocusable(false);
-            button1x1.addActionListener(event -> cursorSize = 1);
-            cursorSizeButtonPanel.add(button1x1);
-            JButton button2x2 = new JButton(Icons.get("cursor_2x2.png"));
-            button2x2.setFocusable(false);
-            button2x2.addActionListener(event -> cursorSize = 2);
-            cursorSizeButtonPanel.add(button2x2);
-            JButton button3x3 = new JButton(Icons.get("cursor_3x3.png"));
-            button3x3.setFocusable(false);
-            button3x3.addActionListener(event -> cursorSize = 3);
-            cursorSizeButtonPanel.add(button3x3);
-            sideBar.add(cursorSizeButtonPanel);
-        }
         sideBar.add(Box.createGlue());
         {
             drcButton = new JButton("DRC");
@@ -152,6 +135,8 @@ public class MainWindow extends JFrame implements Editor.Ui {
             drcButton.setAlignmentX(0.5f);
 
         }
+
+        // TODO from here
 
         mainPanel = new DesignPixelPanel(this) {
 
@@ -247,13 +232,11 @@ public class MainWindow extends JFrame implements Editor.Ui {
                 mousePixelX = event.getX() / pixelSize;
                 mousePixelY = event.getY() / pixelSize;
                 if (drawing || erasing) {
-                    int cursorSize = MainWindow.this.cursorSize;
-                    int offset = (cursorSize - 1) / 2;
                     Material material = planeUiState.getEditingMaterial();
                     if (MainWindow.this.drawing) {
-                        performOperation(new DrawPoints(mousePixelX - offset, mousePixelY - offset, cursorSize, cursorSize, material), !firstPixelOfStroke);
+                        performOperation(new DrawPoints(mousePixelX, mousePixelY, 1, 1, material), !firstPixelOfStroke);
                     } else {
-                        performOperation(new ErasePoints(mousePixelX - offset, mousePixelY - offset, cursorSize, cursorSize, material.getPlaneSchema()), !firstPixelOfStroke);
+                        performOperation(new ErasePoints(mousePixelX, mousePixelY, 1, 1, material.getPlaneSchema()), !firstPixelOfStroke);
                     }
                     firstPixelOfStroke = false;
                 }
@@ -266,6 +249,7 @@ public class MainWindow extends JFrame implements Editor.Ui {
             }
 
         };
+        // TODO till here
         mainPanel.addMouseListener(mouseAdapter);
         mainPanel.addMouseMotionListener(mouseAdapter);
         {
@@ -371,6 +355,7 @@ public class MainWindow extends JFrame implements Editor.Ui {
         add(mainPanelScrollPane);
         mainPanel.grabFocus();
 
+        // TODO from here
         {
             MenuBarBuilder builder = new MenuBarBuilder();
             builder.addMenu("File");
@@ -406,6 +391,7 @@ public class MainWindow extends JFrame implements Editor.Ui {
             builder.add("About", () -> JOptionPane.showMessageDialog(MainWindow.this, About.ABOUT_TEXT));
             setJMenuBar(builder.build());
         }
+        // TODO till here
 
         bottomLine = new JLabel(" ");
         add(bottomLine, BorderLayout.PAGE_END);
@@ -437,7 +423,7 @@ public class MainWindow extends JFrame implements Editor.Ui {
         Design design;
         try {
             design = loadAndSaveDialogs.showLoadDialog(this);
-        } catch (NoSuchTechnologyException exception) {
+        } catch (NoSuchCellLibraryException exception) {
             JOptionPane.showMessageDialog(this, exception.getMessage());
             return;
         }
@@ -458,6 +444,7 @@ public class MainWindow extends JFrame implements Editor.Ui {
         }
     }
 
+    // TODO from here
     @Override
     public void onRestart() {
         planeUiState.setTechnology(editor.getDesign().getTechnology());
@@ -473,6 +460,7 @@ public class MainWindow extends JFrame implements Editor.Ui {
         planeUiState.setTechnology(editor.getDesign().getTechnology());
         updateMainPanelSize();
     }
+    // TODO till here
 
     @Override
     public void onDesignModified() {
