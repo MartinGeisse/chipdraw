@@ -355,11 +355,10 @@ public class MainWindow extends JFrame implements Editor.Ui {
         add(mainPanelScrollPane);
         mainPanel.grabFocus();
 
-        // TODO from here
         {
             MenuBarBuilder builder = new MenuBarBuilder();
             builder.addMenu("File");
-            builder.add("New", () -> new MainWindow(workbench, new Design(editor.getDesign().getTechnology(), 200, 200)).setVisible(true));
+            builder.add("New", () -> new MainWindow(workbench, new Design(editor.getDesign().getCellLibrary(), 200, 200)).setVisible(true));
             builder.add("Load", this::showLoadDialog);
             builder.add("Save", this::showSaveDialog);
             builder.addSeparator();
@@ -371,27 +370,24 @@ public class MainWindow extends JFrame implements Editor.Ui {
             builder.add("Up", planeUiState::moveVisibilityUp);
             builder.add("Down", planeUiState::moveVisibilityDown);
             builder.addMenu("Test");
-            builder.add("Corner Stitching Extractor", () -> new CornerStitchingExtrator.Test().extract(editor.getDesign()));
-            builder.add("Connectivity Extractor", () -> new ConnectivityExtractor.Test().extract(editor.getDesign()));
-            builder.add("Magic Export", () -> MagicExportDialog.showExportDialog(this, editor.getDesign()));
-            builder.add("Enlarge", () -> performOperation(new OutOfPlaceDesignOperation() {
-                @Override
-                protected Design createNewDesign(Design oldDesign) throws UserVisibleMessageException {
-                    return new Enlarger(oldDesign).enlarge();
-                }
-            }));
-            builder.add("Autocrop", () -> performOperation(new OutOfPlaceDesignOperation() {
-                @Override
-                protected Design createNewDesign(Design oldDesign) throws UserVisibleMessageException {
-                    return new Autocropper(oldDesign).autocrop();
-                }
-            }));
+            // TODO re-add enlarge and autocrop
+//            builder.add("Enlarge", () -> performOperation(new OutOfPlaceDesignOperation() {
+//                @Override
+//                protected Design createNewDesign(Design oldDesign) throws UserVisibleMessageException {
+//                    return new Enlarger(oldDesign).enlarge();
+//                }
+//            }));
+//            builder.add("Autocrop", () -> performOperation(new OutOfPlaceDesignOperation() {
+//                @Override
+//                protected Design createNewDesign(Design oldDesign) throws UserVisibleMessageException {
+//                    return new Autocropper(oldDesign).autocrop();
+//                }
+//            }));
             builder.addMenu("Help");
             builder.addExternalLink("Contents", "https://github.com/MartinGeisse/chipdraw/blob/master/doc/index.md"); // TODO link to commit for this version
             builder.add("About", () -> JOptionPane.showMessageDialog(MainWindow.this, About.ABOUT_TEXT));
             setJMenuBar(builder.build());
         }
-        // TODO till here
 
         bottomLine = new JLabel(" ");
         add(bottomLine, BorderLayout.PAGE_END);
@@ -444,10 +440,9 @@ public class MainWindow extends JFrame implements Editor.Ui {
         }
     }
 
-    // TODO from here
     @Override
     public void onRestart() {
-        planeUiState.setTechnology(editor.getDesign().getTechnology());
+        planeUiState.setTotalPlaneCount(editor.getDesign().getRoutingPlanes().size());
         planeUiState.onClick(0, 0);
         drawing = false;
         erasing = false;
@@ -457,10 +452,9 @@ public class MainWindow extends JFrame implements Editor.Ui {
 
     @Override
     public void onDesignObjectReplaced() {
-        planeUiState.setTechnology(editor.getDesign().getTechnology());
+        planeUiState.setTotalPlaneCount(editor.getDesign().getRoutingPlanes().size());
         updateMainPanelSize();
     }
-    // TODO till here
 
     @Override
     public void onDesignModified() {
