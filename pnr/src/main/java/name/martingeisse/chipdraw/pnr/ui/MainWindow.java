@@ -43,7 +43,7 @@ public class MainWindow extends JFrame implements Editor.Ui {
     private final JPanel mainPanel;
     private final LoadAndSaveDialogs loadAndSaveDialogs;
     private final JButton drcButton;
-    private final MaterialUiState materialUiState;
+    private final PlaneUiState planeUiState;
     private final Editor editor;
     private final JLabel bottomLine;
 
@@ -57,7 +57,7 @@ public class MainWindow extends JFrame implements Editor.Ui {
     public MainWindow(Workbench _workbench, Design _design) {
         super("Chipdraw");
         this.workbench = _workbench;
-        this.materialUiState = new MaterialUiState(_design.getTechnology());
+        this.planeUiState = new PlaneUiState(_design.getTechnology());
         this.editor = new Editor(this);
 
         setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
@@ -76,7 +76,7 @@ public class MainWindow extends JFrame implements Editor.Ui {
         sideBar.setPreferredSize(new Dimension(150, 0));
         add(sideBar, BorderLayout.LINE_START);
         {
-            JTable table = new JTable(materialUiState.getSidebarTableModel()) {
+            JTable table = new JTable(planeUiState.getSidebarTableModel()) {
                 @Override
                 protected void configureEnclosingScrollPane() {
                 }
@@ -96,7 +96,7 @@ public class MainWindow extends JFrame implements Editor.Ui {
                     }
                     int rowIndex = table.rowAtPoint(e.getPoint());
                     int columnIndex = table.columnAtPoint(e.getPoint());
-                    materialUiState.onClick(rowIndex, columnIndex);
+                    planeUiState.onClick(rowIndex, columnIndex);
                     table.repaint();
                 }
             });
@@ -106,7 +106,7 @@ public class MainWindow extends JFrame implements Editor.Ui {
             JScrollPane scrollPane = new JScrollPane(table);
             sideBar.add(scrollPane);
 
-            materialUiState.getSidebarTableModel().addTableModelListener(event -> {
+            planeUiState.getSidebarTableModel().addTableModelListener(event -> {
                 MainWindow.this.repaint();
             });
         }
@@ -157,7 +157,7 @@ public class MainWindow extends JFrame implements Editor.Ui {
 
             private Material getPixel(PlaneSchema planeSchema, int x, int y) {
                 PixelPlane plane = editor.getDesign().getPlane(planeSchema);
-                if (materialUiState.isPlaneVisible(plane.getSchema())) {
+                if (planeUiState.isPlaneVisible(plane.getSchema())) {
                     return plane.getPixel(x, y);
                 } else {
                     return Material.NONE;
@@ -184,7 +184,7 @@ public class MainWindow extends JFrame implements Editor.Ui {
                     g.fillRect(screenX, screenY, screenSize, screenSize);
                 }
                 if (polyPlane != Material.NONE) {
-                    if (materialUiState.isPlaneVisible(Technologies.Concept.PLANE_METAL1)) {
+                    if (planeUiState.isPlaneVisible(Technologies.Concept.PLANE_METAL1)) {
                         g.setPaint(new Color(0, 128, 0));
                     } else {
                         g.setPaint(getHatching(0x008000, 2, true));
@@ -194,7 +194,7 @@ public class MainWindow extends JFrame implements Editor.Ui {
                 if (metal1Plane != Material.NONE) {
                     if (metal1Plane == Technologies.Concept.MATERIAL_CONTACT) {
                         g.setPaint(Color.GRAY);
-                    } else if (materialUiState.isPlaneVisible(Technologies.Concept.PLANE_METAL2)) {
+                    } else if (planeUiState.isPlaneVisible(Technologies.Concept.PLANE_METAL2)) {
                         g.setPaint(Color.LIGHT_GRAY);
                     } else {
                         g.setPaint(getHatching(0xc0c0c0, 4));
@@ -204,7 +204,7 @@ public class MainWindow extends JFrame implements Editor.Ui {
                 if (metal2Plane != Material.NONE) {
                     if (metal2Plane == Technologies.Concept.MATERIAL_VIA12) {
                         g.setPaint(new Color(0x008080));
-                    } else if (materialUiState.isPlaneVisible(Technologies.Concept.PLANE_PAD)) {
+                    } else if (planeUiState.isPlaneVisible(Technologies.Concept.PLANE_PAD)) {
                         g.setPaint(new Color(0x00c0c0));
                     } else {
                         g.setPaint(getHatching(0x00c0c0, 0, true));
@@ -249,7 +249,7 @@ public class MainWindow extends JFrame implements Editor.Ui {
                 if (drawing || erasing) {
                     int cursorSize = MainWindow.this.cursorSize;
                     int offset = (cursorSize - 1) / 2;
-                    Material material = materialUiState.getEditingMaterial();
+                    Material material = planeUiState.getEditingMaterial();
                     if (MainWindow.this.drawing) {
                         performOperation(new DrawPoints(mousePixelX - offset, mousePixelY - offset, cursorSize, cursorSize, material), !firstPixelOfStroke);
                     } else {
@@ -293,14 +293,14 @@ public class MainWindow extends JFrame implements Editor.Ui {
         mainPanel.getActionMap().put(ActionName.VISIBILITY_UP, new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                run(materialUiState::moveVisibilityUp);
+                run(planeUiState::moveVisibilityUp);
                 repaint();
             }
         });
         mainPanel.getActionMap().put(ActionName.VISIBILITY_DOWN, new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                run(materialUiState::moveVisibilityDown);
+                run(planeUiState::moveVisibilityDown);
                 repaint();
             }
         });
@@ -319,11 +319,11 @@ public class MainWindow extends JFrame implements Editor.Ui {
                     case '7':
                     case '8':
                     case '9':
-                        materialUiState.onClick(event.getKeyChar() - '1', 0);
+                        planeUiState.onClick(event.getKeyChar() - '1', 0);
                         break;
 
                     case '0':
-                        materialUiState.onClick(9, 0);
+                        planeUiState.onClick(9, 0);
                         break;
 
                     case '+':
@@ -383,8 +383,8 @@ public class MainWindow extends JFrame implements Editor.Ui {
             builder.add("Undo", editor::undo);
             builder.add("Redo", editor::redo);
             builder.addMenu("View");
-            builder.add("Up", materialUiState::moveVisibilityUp);
-            builder.add("Down", materialUiState::moveVisibilityDown);
+            builder.add("Up", planeUiState::moveVisibilityUp);
+            builder.add("Down", planeUiState::moveVisibilityDown);
             builder.addMenu("Test");
             builder.add("Corner Stitching Extractor", () -> new CornerStitchingExtrator.Test().extract(editor.getDesign()));
             builder.add("Connectivity Extractor", () -> new ConnectivityExtractor.Test().extract(editor.getDesign()));
@@ -460,8 +460,8 @@ public class MainWindow extends JFrame implements Editor.Ui {
 
     @Override
     public void onRestart() {
-        materialUiState.setTechnology(editor.getDesign().getTechnology());
-        materialUiState.onClick(0, 0);
+        planeUiState.setTechnology(editor.getDesign().getTechnology());
+        planeUiState.onClick(0, 0);
         drawing = false;
         erasing = false;
         pixelSize = 16;
@@ -470,7 +470,7 @@ public class MainWindow extends JFrame implements Editor.Ui {
 
     @Override
     public void onDesignObjectReplaced() {
-        materialUiState.setTechnology(editor.getDesign().getTechnology());
+        planeUiState.setTechnology(editor.getDesign().getTechnology());
         updateMainPanelSize();
     }
 

@@ -1,29 +1,20 @@
 package name.martingeisse.chipdraw.pnr.ui;
 
-import com.google.common.collect.ImmutableList;
-import name.martingeisse.chipdraw.pnr.design.Material;
-import name.martingeisse.chipdraw.pnr.design.PlaneSchema;
-import name.martingeisse.chipdraw.pnr.design.Technology;
-
 import javax.swing.table.AbstractTableModel;
 import javax.swing.table.TableModel;
 import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Set;
 
 /**
  *
  */
-public final class MaterialUiState {
-
-    TODO REVIEW
+public final class PlaneUiState {
 
     private final SidebarTableModel sidebarTableModel = new SidebarTableModel();
     private int totalPlaneCount;
     private boolean[] planeVisible;
     private int editingPlane;
 
-    public MaterialUiState(int totalPlaneCount) {
+    public PlaneUiState(int totalPlaneCount) {
         setTotalPlaneCount(totalPlaneCount);
     }
 
@@ -50,7 +41,6 @@ public final class MaterialUiState {
             throw new IllegalArgumentException("invalid plane index: " + planeIndex);
         }
     }
-
 
     public boolean isPlaneVisible(int planeIndex) {
         validatePlaneIndex(planeIndex);
@@ -91,39 +81,7 @@ public final class MaterialUiState {
     }
 
     private void shiftVisibility(int delta) {
-        ImmutableList<ImmutableList<PlaneSchema>> planeGroups = technology.getBehavior().getPlaneGroups();
-        if (planeGroups.isEmpty()) {
-            return;
-        }
-
-        /* TODO this will not work because the same plane schema can be part of multiple plane groups! */
-        final int currentPlaneGroupIndex;
-        outer:
-        {
-            for (int i = 0; i < planeGroups.size(); i++) {
-                if (visiblePlanes.contains(planeGroups.get(i).get(0))) {
-                    currentPlaneGroupIndex = i;
-                    break outer;
-                }
-            }
-            currentPlaneGroupIndex = -1;
-        }
-
-        final int newPlaneGroupIndex;
-        if (currentPlaneGroupIndex < 0) {
-            if (delta < 0) {
-                newPlaneGroupIndex = 0;
-            } else {
-                newPlaneGroupIndex = planeGroups.size() - 1;
-            }
-        } else if (delta < 0) {
-            newPlaneGroupIndex = Math.max(currentPlaneGroupIndex + delta, 0);
-        } else {
-            newPlaneGroupIndex = Math.min(currentPlaneGroupIndex + delta, planeGroups.size() - 1);
-        }
-
-        visiblePlanes.clear();
-        visiblePlanes.addAll(planeGroups.get(newPlaneGroupIndex));
+        // TODO does this have any meaning in the routing editor?
     }
 
 //endregion
