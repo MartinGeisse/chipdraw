@@ -6,27 +6,20 @@ import name.martingeisse.chipdraw.pnr.About;
 import name.martingeisse.chipdraw.pnr.Editor;
 import name.martingeisse.chipdraw.pnr.Workbench;
 import name.martingeisse.chipdraw.pnr.cell.NoSuchCellLibraryException;
+import name.martingeisse.chipdraw.pnr.design.Design;
+import name.martingeisse.chipdraw.pnr.design.PixelPlane;
 import name.martingeisse.chipdraw.pnr.drc.PositionedViolation;
 import name.martingeisse.chipdraw.pnr.drc.Violation;
-import name.martingeisse.chipdraw.pnr.global_tools.Autocropper;
-import name.martingeisse.chipdraw.pnr.global_tools.ConnectivityExtractor;
-import name.martingeisse.chipdraw.pnr.global_tools.CornerStitchingExtrator;
-import name.martingeisse.chipdraw.pnr.global_tools.Enlarger;
-import name.martingeisse.chipdraw.pnr.global_tools.magic.MagicExportDialog;
 import name.martingeisse.chipdraw.pnr.icons.Icons;
 import name.martingeisse.chipdraw.pnr.operation.DesignOperation;
-import name.martingeisse.chipdraw.pnr.operation.OutOfPlaceDesignOperation;
 import name.martingeisse.chipdraw.pnr.operation.library.DrawPoints;
 import name.martingeisse.chipdraw.pnr.operation.library.ErasePoints;
-import name.martingeisse.chipdraw.pnr.design.NoSuchTechnologyException;
 import name.martingeisse.chipdraw.pnr.ui.util.DesignPixelPanel;
 import name.martingeisse.chipdraw.pnr.ui.util.MenuBarBuilder;
+import name.martingeisse.chipdraw.pnr.ui.util.SingleIconBooleanCellRenderer;
 import name.martingeisse.chipdraw.pnr.ui.util.UiRunnable;
 import name.martingeisse.chipdraw.pnr.util.Point;
 import name.martingeisse.chipdraw.pnr.util.UserVisibleMessageException;
-import name.martingeisse.chipdraw.pnr.ui.util.SingleIconBooleanCellRenderer;
-import name.martingeisse.chipdraw.pnr.design.Design;
-import name.martingeisse.chipdraw.pnr.design.PixelPlane;
 
 import javax.swing.*;
 import java.awt.*;
@@ -57,7 +50,7 @@ public class MainWindow extends JFrame implements Editor.Ui {
     public MainWindow(Workbench _workbench, Design _design) {
         super("Chipdraw");
         this.workbench = _workbench;
-        this.planeUiState = new PlaneUiState(_design.getTechnology());
+        this.planeUiState = new PlaneUiState(_design.getRoutingPlanes().size());
         this.editor = new Editor(this);
 
         setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
