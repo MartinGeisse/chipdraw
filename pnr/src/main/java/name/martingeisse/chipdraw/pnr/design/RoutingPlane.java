@@ -54,6 +54,30 @@ public final class RoutingPlane {
         }
     }
 
+    public void setEast(int x, int y, boolean connected) {
+        int index = getIndex(x, y);
+        if (index >= 0) {
+            RoutingTile oldTile = RoutingTile.getForCode(tileCodes[index]);
+            tileCodes[index] = oldTile.getWithEast(connected).getCode();
+        }
+    }
+
+    public void setSouth(int x, int y, boolean connected) {
+        int index = getIndex(x, y);
+        if (index >= 0) {
+            RoutingTile oldTile = RoutingTile.getForCode(tileCodes[index]);
+            tileCodes[index] = oldTile.getWithSouth(connected).getCode();
+        }
+    }
+
+    public void setDown(int x, int y, boolean connected) {
+        int index = getIndex(x, y);
+        if (index >= 0) {
+            RoutingTile oldTile = RoutingTile.getForCode(tileCodes[index]);
+            tileCodes[index] = oldTile.getWithDown(connected).getCode();
+        }
+    }
+
     public boolean isEmpty() {
         for (byte tileCode : tileCodes) {
             if (tileCode != RoutingTile.NONE.getCode()) {

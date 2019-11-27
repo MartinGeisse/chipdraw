@@ -7,16 +7,12 @@ import name.martingeisse.chipdraw.pnr.Editor;
 import name.martingeisse.chipdraw.pnr.Workbench;
 import name.martingeisse.chipdraw.pnr.cell.NoSuchCellLibraryException;
 import name.martingeisse.chipdraw.pnr.design.Design;
-import name.martingeisse.chipdraw.pnr.design.PixelPlane;
 import name.martingeisse.chipdraw.pnr.design.RoutingPlane;
 import name.martingeisse.chipdraw.pnr.design.RoutingTile;
 import name.martingeisse.chipdraw.pnr.drc.PositionedViolation;
 import name.martingeisse.chipdraw.pnr.drc.Violation;
 import name.martingeisse.chipdraw.pnr.icons.Icons;
 import name.martingeisse.chipdraw.pnr.operation.DesignOperation;
-import name.martingeisse.chipdraw.pnr.operation.library.DrawPoints;
-import name.martingeisse.chipdraw.pnr.operation.library.ErasePoints;
-import name.martingeisse.chipdraw.pnr.ui.util.DesignPixelPanel;
 import name.martingeisse.chipdraw.pnr.ui.util.MenuBarBuilder;
 import name.martingeisse.chipdraw.pnr.ui.util.SingleIconBooleanCellRenderer;
 import name.martingeisse.chipdraw.pnr.ui.util.UiRunnable;
@@ -47,6 +43,7 @@ public class MainWindow extends JFrame implements Editor.Ui {
     private int pixelSize;
 
     private int mousePixelX, mousePixelY;
+    private int previousMousePixelX, previousMousePixelY;
     private Map<name.martingeisse.chipdraw.pnr.util.Point, String> positionedDrcViolations = ImmutableMap.of();
 
     public MainWindow(Workbench _workbench, Design _design) {
@@ -169,9 +166,6 @@ public class MainWindow extends JFrame implements Editor.Ui {
                 }
             }
         };
-
-        // TODO from here
-
         MouseAdapter mouseAdapter = new MouseAdapter() {
 
             @Override
@@ -189,16 +183,38 @@ public class MainWindow extends JFrame implements Editor.Ui {
 
             @Override
             public void mouseMoved(MouseEvent event) {
+            	previousMousePixelX = mousePixelX;
+            	previousMousePixelY = mousePixelY;
                 mousePixelX = event.getX() / pixelSize;
                 mousePixelY = event.getY() / pixelSize;
-                if (drawing || erasing) {
-                    Material material = planeUiState.getEditingMaterial();
-                    if (MainWindow.this.drawing) {
-                        performOperation(new DrawPoints(mousePixelX, mousePixelY, 1, 1, material), !firstPixelOfStroke);
-                    } else {
-                        performOperation(new ErasePoints(mousePixelX, mousePixelY, 1, 1, material.getPlaneSchema()), !firstPixelOfStroke);
-                    }
-                    firstPixelOfStroke = false;
+                if ((drawing || erasing) && (mousePixelX != previousMousePixelX || mousePixelY != previousMousePixelY)) {
+                	RoutingPlane plane = getCurrentDesign().getRoutingPlanes().get(planeUiState.getEditingPlane());
+                	if (mousePixelX == previousMousePixelX - 1 && mousePixelY == previousMousePixelY) {
+						plane.setEast(mousePixelX, mousePixelY, drawing);
+						firstPixelOfStroke = false;
+					}
+                	if (mousePixelX == previousMousePixelX + 1 && mousePixelY == previousMousePixelY) {
+						plane.setEast(previousMousePixelX, mousePixelY, drawing);
+						firstPixelOfStroke = false;
+					}
+					if (mousePixelX == previousMousePixelX && mousePixelY == previousMousePixelY - 1) {
+						plane.setSouth(mousePixelX, mousePixelY, drawing);
+						firstPixelOfStroke = false;
+					}
+					if (mousePixelX == previousMousePixelX && mousePixelY == previousMousePixelY + 1) {
+						plane.setSouth(mousePixelX, previousMousePixelY, drawing);
+						firstPixelOfStroke = false;
+					}
+
+					/*
+					TODO wrap in operation
+					Material material = planeUiState.getEditingMaterial();
+					if (MainWindow.this.drawing) {
+						performOperation(new DrawPoints(mousePixelX, mousePixelY, 1, 1, material), !firstPixelOfStroke);
+					} else {
+						performOperation(new ErasePoints(mousePixelX, mousePixelY, 1, 1, material.getPlaneSchema()), !firstPixelOfStroke);
+					}
+					 */
                 }
                 updateBottomLine();
             }
@@ -209,9 +225,6 @@ public class MainWindow extends JFrame implements Editor.Ui {
             }
 
         };
-
-        // TODO till here
-
         mainPanel.addMouseListener(mouseAdapter);
         mainPanel.addMouseMotionListener(mouseAdapter);
         {

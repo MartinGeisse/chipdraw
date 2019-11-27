@@ -61,4 +61,25 @@ public enum RoutingTile {
         return values()[code];
     }
 
+    public static RoutingTile getWithConnections(boolean east, boolean south, boolean down) {
+        for (RoutingTile tile : values()) {
+            if (tile.isEastConnected() == east && tile.isSouthConnected() == south && tile.isDownConnected() == down) {
+                return tile;
+            }
+        }
+        throw new RuntimeException("this cannot happen");
+    }
+
+    public RoutingTile getWithEast(boolean connected) {
+        return getWithConnections(connected, southConnected, downConnected);
+    }
+
+    public RoutingTile getWithSouth(boolean connected) {
+        return getWithConnections(eastConnected, connected, downConnected);
+    }
+
+    public RoutingTile getWithDown(boolean connected) {
+        return getWithConnections(eastConnected, southConnected, connected);
+    }
+
 }
