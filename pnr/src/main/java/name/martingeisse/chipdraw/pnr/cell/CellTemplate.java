@@ -1,10 +1,10 @@
 package name.martingeisse.chipdraw.pnr.cell;
 
-public final class Cell {
+public final class CellTemplate {
 
     private final String id;
 
-    public Cell(String id) {
+    public CellTemplate(String id) {
         this.id = id;
     }
 

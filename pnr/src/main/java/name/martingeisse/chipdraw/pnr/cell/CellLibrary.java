@@ -4,14 +4,14 @@ public interface CellLibrary {
 
     String getId();
 
-    Cell getCellOrNull(String id);
+    CellTemplate getCellTemplateOrNull(String id);
 
-    default Cell getCell(String id) throws NoSuchCellException {
-        Cell cell = getCellOrNull(id);
-        if (cell == null) {
+    default CellTemplate getCellTemplate(String id) throws NoSuchCellException {
+        CellTemplate cellTemplate = getCellTemplateOrNull(id);
+        if (cellTemplate == null) {
             throw new NoSuchCellException(id);
         }
-        return cell;
+        return cellTemplate;
     }
 
     CellLibrary EMPTY = new CellLibrary() {
@@ -22,7 +22,7 @@ public interface CellLibrary {
         }
 
         @Override
-        public Cell getCellOrNull(String id) {
+        public CellTemplate getCellTemplateOrNull(String id) {
             return null;
         }
 
