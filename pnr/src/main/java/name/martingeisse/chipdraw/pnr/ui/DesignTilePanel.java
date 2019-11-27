@@ -45,15 +45,17 @@ public abstract class DesignTilePanel extends JPanel {
 			g.drawLine(0, y * pixelSize, design.getWidth() * pixelSize, y * pixelSize);
 		}
 
-		// draw pixels
+		// TODO draw cells
+
+		// draw tiles
 		for (int x = 0; x < design.getWidth(); x++) {
 			for (int y = 0; y < design.getHeight(); y++) {
-				drawPixel(g, x, y, x * pixelSize, y * pixelSize, pixelSize);
+				drawTile(g, x, y, x * pixelSize, y * pixelSize, pixelSize);
 			}
 		}
 
 	}
 
-	protected abstract void drawPixel(Graphics2D g, int pixelX, int pixelY, int screenX, int screenY, int screenSize);
+	protected abstract void drawTile(Graphics2D g, int pixelX, int pixelY, int screenX, int screenY, int screenSize);
 
 }

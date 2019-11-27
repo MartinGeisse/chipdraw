@@ -22,6 +22,8 @@ public final class PlaneUiState {
         return totalPlaneCount;
     }
 
+    TODO routing planes
+
     public void setTotalPlaneCount(int totalPlaneCount) {
         if (totalPlaneCount <= 0) {
             throw new IllegalArgumentException("total plane count must be positive");

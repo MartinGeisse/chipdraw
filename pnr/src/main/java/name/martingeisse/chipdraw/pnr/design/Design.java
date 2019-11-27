@@ -25,6 +25,7 @@ public final class Design implements Serializable, RectangularSize {
     private final int width;
     private final int height;
     private final ImmutableList<RoutingPlane> routingPlanes;
+    private final CellPlane cellPlane;
 
     public Design(CellLibrary cellLibrary, int width, int height) {
         this.cellLibraryId = cellLibrary.getId();
@@ -37,6 +38,7 @@ public final class Design implements Serializable, RectangularSize {
             routingPlanes.add(new RoutingPlane(width, height));
         }
         this.routingPlanes = ImmutableList.copyOf(routingPlanes);
+        this.cellPlane = new CellPlane(width, height);
     }
 
     public Design(Design original) {
@@ -44,6 +46,7 @@ public final class Design implements Serializable, RectangularSize {
         for (int i = 0; i < routingPlanes.size(); i++) {
             routingPlanes.get(i).copyFrom(original.getRoutingPlanes().get(i));
         }
+        // TODO copy cell plane
     }
 
     void initializeAfterDeserialization(CellLibraryRepository cellLibraryRepository) throws NoSuchCellLibraryException {
@@ -66,6 +69,10 @@ public final class Design implements Serializable, RectangularSize {
         return routingPlanes;
     }
 
+    public CellPlane getCellPlane() {
+        return cellPlane;
+    }
+
     public void copyFrom(Design source, int sourceX, int sourceY, int destinationX, int destinationY, int rectangleWidth, int rectangleHeight) {
         if (source.getCellLibrary() != getCellLibrary()) {
             throw new IllegalArgumentException("cannot copy from design with different cell library");
@@ -73,6 +80,7 @@ public final class Design implements Serializable, RectangularSize {
         for (int i = 0; i < routingPlanes.size(); i++) {
             routingPlanes.get(i).copyFrom(source.getRoutingPlanes().get(i), sourceX, sourceY, destinationX, destinationY, rectangleWidth, rectangleHeight);
         }
+        // TODO copy cell plane
     }
 
 }

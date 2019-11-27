@@ -27,6 +27,8 @@ import java.util.Map;
 
 public class MainWindow extends JFrame implements Editor.Ui {
 
+    TODO routing planes
+
     public static final int MIN_PIXEL_SIZE = 2;
     public static final int MAX_PIXEL_SIZE = 32;
 
@@ -152,7 +154,7 @@ public class MainWindow extends JFrame implements Editor.Ui {
             }
 
             @Override
-            protected void drawPixel(Graphics2D g, int pixelX, int pixelY, int screenX, int screenY, int screenSize) {
+            protected void drawTile(Graphics2D g, int pixelX, int pixelY, int screenX, int screenY, int screenSize) {
                 drawPlane(g, 0, pixelX, pixelY, screenX, screenY, screenSize, Color.RED);
                 drawPlane(g, 1, pixelX, pixelY, screenX, screenY, screenSize, Color.GREEN);
                 drawPlane(g, 2, pixelX, pixelY, screenX, screenY, screenSize, Color.BLUE);
