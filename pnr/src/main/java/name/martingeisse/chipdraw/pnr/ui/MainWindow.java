@@ -89,7 +89,7 @@ public class MainWindow extends JFrame implements Editor.Ui {
                     int rowIndex = table.rowAtPoint(e.getPoint());
                     int columnIndex = table.columnAtPoint(e.getPoint());
                     planeUiState.onClick(rowIndex, columnIndex);
-                    table.repaint();
+                    MainWindow.this.repaint();
                 }
             });
             table.setRowSelectionAllowed(false);
@@ -205,6 +205,7 @@ public class MainWindow extends JFrame implements Editor.Ui {
 						plane.setSouth(mousePixelX, previousMousePixelY, drawing);
 						firstPixelOfStroke = false;
 					}
+					repaint();
 
 					/*
 					TODO wrap in operation

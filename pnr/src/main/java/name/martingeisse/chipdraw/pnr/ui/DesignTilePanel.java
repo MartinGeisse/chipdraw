@@ -36,20 +36,20 @@ public abstract class DesignTilePanel extends JPanel {
 		g.setColor(Color.BLACK);
 		g.fillRect(0, 0, designDisplayWidth, designDisplayHeight);
 
-		// draw pixels
-		for (int x = 0; x < design.getWidth(); x++) {
-			for (int y = 0; y < design.getHeight(); y++) {
-				drawPixel(g, x, y, x * pixelSize, y * pixelSize, pixelSize);
-			}
-		}
-
 		// draw grid
-		g.setColor(Color.DARK_GRAY);
+		g.setColor(new Color(32, 32, 32));
 		for (int x = 1; x < design.getWidth(); x++) {
 			g.drawLine(x * pixelSize, 0, x * pixelSize, design.getHeight() * pixelSize);
 		}
 		for (int y = 1; y < design.getHeight(); y++) {
 			g.drawLine(0, y * pixelSize, design.getWidth() * pixelSize, y * pixelSize);
+		}
+
+		// draw pixels
+		for (int x = 0; x < design.getWidth(); x++) {
+			for (int y = 0; y < design.getHeight(); y++) {
+				drawPixel(g, x, y, x * pixelSize, y * pixelSize, pixelSize);
+			}
 		}
 
 	}
