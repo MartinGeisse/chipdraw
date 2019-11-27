@@ -1,8 +1,11 @@
 package name.martingeisse.chipdraw.pnr.design;
 
+import name.martingeisse.chipdraw.pnr.util.RectangularSize;
+
+import java.io.Serializable;
 import java.util.Arrays;
 
-public final class RoutingPlane {
+public final class RoutingPlane implements Serializable, RectangularSize {
 
     private final int width, height;
     private final byte[] tileCodes;
