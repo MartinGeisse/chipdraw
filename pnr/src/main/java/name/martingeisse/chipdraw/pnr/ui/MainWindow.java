@@ -8,6 +8,8 @@ import name.martingeisse.chipdraw.pnr.Workbench;
 import name.martingeisse.chipdraw.pnr.cell.NoSuchCellLibraryException;
 import name.martingeisse.chipdraw.pnr.design.Design;
 import name.martingeisse.chipdraw.pnr.design.PixelPlane;
+import name.martingeisse.chipdraw.pnr.design.RoutingPlane;
+import name.martingeisse.chipdraw.pnr.design.RoutingTile;
 import name.martingeisse.chipdraw.pnr.drc.PositionedViolation;
 import name.martingeisse.chipdraw.pnr.drc.Violation;
 import name.martingeisse.chipdraw.pnr.icons.Icons;
@@ -129,71 +131,34 @@ public class MainWindow extends JFrame implements Editor.Ui {
 
         }
 
-        // TODO from here
+        mainPanel = new DesignTilePanel(this) {
 
-        mainPanel = new DesignPixelPanel(this) {
-
-            private Material getPixel(PlaneSchema planeSchema, int x, int y) {
-                PixelPlane plane = editor.getDesign().getPlane(planeSchema);
-                if (planeUiState.isPlaneVisible(plane.getSchema())) {
-                    return plane.getPixel(x, y);
-                } else {
-                    return Material.NONE;
+            private void drawPlane(Graphics2D g, int planeIndex, int pixelX, int pixelY, int screenX, int screenY, int screenSize, Color color) {
+                RoutingPlane plane = editor.getDesign().getRoutingPlanes().get(planeIndex);
+                if (!planeUiState.isPlaneVisible(planeIndex)) {
+                    return;
                 }
+                RoutingTile tile = plane.getTile(pixelX, pixelY);
+                g.setPaint(color);
+                int centerX = screenX + screenSize / 2;
+                int centerY = screenY + screenSize / 2;
+                if (tile.isEastConnected()) {
+                    g.drawLine(centerX, centerY, centerX + screenSize, centerY);
+                }
+                if (tile.isSouthConnected()) {
+                    g.drawLine(centerX, centerY, centerX, centerY + screenSize);
+                }
+                if (tile.isDownConnected()) {
+                    g.drawLine(centerX, centerY, centerX - 3, centerY - 3);
+                }
+
             }
 
             @Override
             protected void drawPixel(Graphics2D g, int pixelX, int pixelY, int screenX, int screenY, int screenSize) {
-
-                // read pixel per plane
-                Material wellPlane = getPixel(Technologies.Concept.PLANE_WELL, pixelX, pixelY);
-                Material diffPlane = getPixel(Technologies.Concept.PLANE_DIFF, pixelX, pixelY);
-                Material polyPlane = getPixel(Technologies.Concept.PLANE_POLY, pixelX, pixelY);
-                Material metal1Plane = getPixel(Technologies.Concept.PLANE_METAL1, pixelX, pixelY);
-                Material metal2Plane = getPixel(Technologies.Concept.PLANE_METAL2, pixelX, pixelY);
-                Material padPlane = getPixel(Technologies.Concept.PLANE_PAD, pixelX, pixelY);
-
-                if (wellPlane != Material.NONE) {
-                    g.setPaint(wellPlane == Technologies.Concept.MATERIAL_NWELL ? getHatching(0x0000ff, 0) : getHatching(0xff0000, 0));
-                    g.fillRect(screenX, screenY, screenSize, screenSize);
-                }
-                if (diffPlane != Material.NONE) {
-                    g.setPaint(diffPlane == Technologies.Concept.MATERIAL_NDIFF ? new Color(0x0000ff) : new Color(0xff0000));
-                    g.fillRect(screenX, screenY, screenSize, screenSize);
-                }
-                if (polyPlane != Material.NONE) {
-                    if (planeUiState.isPlaneVisible(Technologies.Concept.PLANE_METAL1)) {
-                        g.setPaint(new Color(0, 128, 0));
-                    } else {
-                        g.setPaint(getHatching(0x008000, 2, true));
-                    }
-                    g.fillRect(screenX, screenY, screenSize, screenSize);
-                }
-                if (metal1Plane != Material.NONE) {
-                    if (metal1Plane == Technologies.Concept.MATERIAL_CONTACT) {
-                        g.setPaint(Color.GRAY);
-                    } else if (planeUiState.isPlaneVisible(Technologies.Concept.PLANE_METAL2)) {
-                        g.setPaint(Color.LIGHT_GRAY);
-                    } else {
-                        g.setPaint(getHatching(0xc0c0c0, 4));
-                    }
-                    g.fillRect(screenX, screenY, screenSize, screenSize);
-                }
-                if (metal2Plane != Material.NONE) {
-                    if (metal2Plane == Technologies.Concept.MATERIAL_VIA12) {
-                        g.setPaint(new Color(0x008080));
-                    } else if (planeUiState.isPlaneVisible(Technologies.Concept.PLANE_PAD)) {
-                        g.setPaint(new Color(0x00c0c0));
-                    } else {
-                        g.setPaint(getHatching(0x00c0c0, 0, true));
-                    }
-                    g.fillRect(screenX, screenY, screenSize, screenSize);
-                }
-                if (padPlane != Material.NONE) {
-                    g.setPaint(new Color(0xff00ff));
-                    g.fillRect(screenX, screenY, screenSize, screenSize);
-                }
-
+                drawPlane(g, 0, pixelX, pixelY, screenX, screenY, screenSize, Color.RED);
+                drawPlane(g, 1, pixelX, pixelY, screenX, screenY, screenSize, Color.GREEN);
+                drawPlane(g, 2, pixelX, pixelY, screenX, screenY, screenSize, Color.BLUE);
                 if (positionedDrcViolations.get(new name.martingeisse.chipdraw.pnr.util.Point(pixelX, pixelY)) != null) {
                     int centerX = screenX + screenSize / 2 - 2;
                     int centerY = screenY + screenSize / 2 - 2;
@@ -202,9 +167,11 @@ public class MainWindow extends JFrame implements Editor.Ui {
                     g.setColor(Color.BLACK);
                     g.drawOval(centerX, centerY, 4, 4);
                 }
-
             }
         };
+
+        // TODO from here
+
         MouseAdapter mouseAdapter = new MouseAdapter() {
 
             @Override
@@ -242,7 +209,9 @@ public class MainWindow extends JFrame implements Editor.Ui {
             }
 
         };
+
         // TODO till here
+
         mainPanel.addMouseListener(mouseAdapter);
         mainPanel.addMouseMotionListener(mouseAdapter);
         {
