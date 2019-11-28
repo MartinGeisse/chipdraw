@@ -5,7 +5,10 @@ import com.google.common.collect.ImmutableMap;
 import name.martingeisse.chipdraw.pnr.About;
 import name.martingeisse.chipdraw.pnr.Editor;
 import name.martingeisse.chipdraw.pnr.Workbench;
+import name.martingeisse.chipdraw.pnr.cell.CellSymbol;
+import name.martingeisse.chipdraw.pnr.cell.CellTemplate;
 import name.martingeisse.chipdraw.pnr.cell.NoSuchCellLibraryException;
+import name.martingeisse.chipdraw.pnr.design.CellInstance;
 import name.martingeisse.chipdraw.pnr.design.Design;
 import name.martingeisse.chipdraw.pnr.design.RoutingPlane;
 import name.martingeisse.chipdraw.pnr.design.RoutingTile;
@@ -168,7 +171,46 @@ public class MainWindow extends JFrame implements Editor.Ui {
 
             @Override
             protected void drawCells(Graphics2D g, int pixelSize) {
-                // TODO
+                if (planeUiState.isPlaneVisible(getCurrentDesign().getTotalPlaneCount() - 1)) {
+                    // TODO
+                    g.setColor(Color.WHITE);
+                    g.fillRect(2 * pixelSize, 1 * pixelSize, pixelSize, pixelSize);
+                    g.setColor(Color.DARK_GRAY);
+                    g.fillRect(2 * pixelSize, 1 * pixelSize, pixelSize - 1, pixelSize - 1);
+                    CellTemplate template = getCurrentDesign().getCellLibrary().getCellTemplateOrNull("not");
+                    drawCell(g, pixelSize, new CellInstance(template, 2, 1));
+                }
+            }
+
+            private void drawCell(Graphics2D g, int pixelSize, CellInstance instance) {
+                int x0 = instance.getX() * pixelSize;
+                int y0 = instance.getY() * pixelSize;
+                instance.getTemplate().getSymbol().draw(new CellSymbol.DrawContext() {
+
+                    private int transformX(int x) {
+                        // TODO using 100x100 coordinates for symbols does not match non-square cells and
+                        // it also doesn't allow to place ports in a useful way. Better use a fixed size per
+                        // pixel, not per cell! Alternatively, stretch the symbol and disconnect it from ports.
+                        return x0 + x * pixelSize / 10;
+                    }
+
+                    private int transformY(int y) {
+                        return y0 + y * pixelSize / 10;
+                    }
+
+                    @Override
+                    public void drawLine(int x1, int y1, int x2, int y2) {
+                        g.drawLine(transformX(x1), transformY(y1), transformX(x2), transformY(y2));
+                    }
+
+                    @Override
+                    public void drawCircle(int x, int y, int radius) {
+                        int size = radius * pixelSize / 10;
+                        g.drawOval(transformX(x) - size / 2, transformY(y) - size / 2, size, size);
+                    }
+
+                });
+
             }
 
         };
