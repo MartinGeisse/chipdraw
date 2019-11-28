@@ -27,8 +27,6 @@ import java.util.Map;
 
 public class MainWindow extends JFrame implements Editor.Ui {
 
-    TODO routing planes
-
     public static final int MIN_PIXEL_SIZE = 2;
     public static final int MAX_PIXEL_SIZE = 32;
 
@@ -178,52 +176,64 @@ public class MainWindow extends JFrame implements Editor.Ui {
 
             @Override
             public void mousePressed(MouseEvent e) {
-                drawing = (e.getButton() == MouseEvent.BUTTON1);
-                erasing = (e.getButton() == MouseEvent.BUTTON3);
-                firstPixelOfStroke = true;
-                mouseMoved(e);
+                if (planeUiState.isEditingCellPlane()) {
+                    // TODO
+                } else {
+                    drawing = (e.getButton() == MouseEvent.BUTTON1);
+                    erasing = (e.getButton() == MouseEvent.BUTTON3);
+                    firstPixelOfStroke = true;
+                    mouseMoved(e);
+                }
             }
 
             @Override
             public void mouseReleased(MouseEvent e) {
-                drawing = erasing = false;
+                if (planeUiState.isEditingCellPlane()) {
+                    // TODO
+                } else {
+                    drawing = erasing = false;
+                }
             }
 
             @Override
             public void mouseMoved(MouseEvent event) {
-            	previousMousePixelX = mousePixelX;
-            	previousMousePixelY = mousePixelY;
+                previousMousePixelX = mousePixelX;
+                previousMousePixelY = mousePixelY;
                 mousePixelX = event.getX() / pixelSize;
                 mousePixelY = event.getY() / pixelSize;
-                if ((drawing || erasing) && (mousePixelX != previousMousePixelX || mousePixelY != previousMousePixelY)) {
-                	RoutingPlane plane = getCurrentDesign().getRoutingPlanes().get(planeUiState.getEditingPlane());
-                	if (mousePixelX == previousMousePixelX - 1 && mousePixelY == previousMousePixelY) {
-						plane.setEast(mousePixelX, mousePixelY, drawing);
-						firstPixelOfStroke = false;
-					}
-                	if (mousePixelX == previousMousePixelX + 1 && mousePixelY == previousMousePixelY) {
-						plane.setEast(previousMousePixelX, mousePixelY, drawing);
-						firstPixelOfStroke = false;
-					}
-					if (mousePixelX == previousMousePixelX && mousePixelY == previousMousePixelY - 1) {
-						plane.setSouth(mousePixelX, mousePixelY, drawing);
-						firstPixelOfStroke = false;
-					}
-					if (mousePixelX == previousMousePixelX && mousePixelY == previousMousePixelY + 1) {
-						plane.setSouth(mousePixelX, previousMousePixelY, drawing);
-						firstPixelOfStroke = false;
-					}
-					repaint();
+                if (planeUiState.isEditingCellPlane()) {
+                    // TODO
+                } else {
+                    if ((drawing || erasing) && (mousePixelX != previousMousePixelX || mousePixelY != previousMousePixelY)) {
+                        RoutingPlane plane = getCurrentDesign().getRoutingPlanes().get(planeUiState.getEditingPlane());
+                        if (mousePixelX == previousMousePixelX - 1 && mousePixelY == previousMousePixelY) {
+                            plane.setEast(mousePixelX, mousePixelY, drawing);
+                            firstPixelOfStroke = false;
+                        }
+                        if (mousePixelX == previousMousePixelX + 1 && mousePixelY == previousMousePixelY) {
+                            plane.setEast(previousMousePixelX, mousePixelY, drawing);
+                            firstPixelOfStroke = false;
+                        }
+                        if (mousePixelX == previousMousePixelX && mousePixelY == previousMousePixelY - 1) {
+                            plane.setSouth(mousePixelX, mousePixelY, drawing);
+                            firstPixelOfStroke = false;
+                        }
+                        if (mousePixelX == previousMousePixelX && mousePixelY == previousMousePixelY + 1) {
+                            plane.setSouth(mousePixelX, previousMousePixelY, drawing);
+                            firstPixelOfStroke = false;
+                        }
+                        repaint();
 
-					/*
-					TODO wrap in operation
-					Material material = planeUiState.getEditingMaterial();
-					if (MainWindow.this.drawing) {
-						performOperation(new DrawPoints(mousePixelX, mousePixelY, 1, 1, material), !firstPixelOfStroke);
-					} else {
-						performOperation(new ErasePoints(mousePixelX, mousePixelY, 1, 1, material.getPlaneSchema()), !firstPixelOfStroke);
-					}
-					 */
+                        /*
+                        TODO wrap in operation
+                        Material material = planeUiState.getEditingMaterial();
+                        if (MainWindow.this.drawing) {
+                            performOperation(new DrawPoints(mousePixelX, mousePixelY, 1, 1, material), !firstPixelOfStroke);
+                        } else {
+                            performOperation(new ErasePoints(mousePixelX, mousePixelY, 1, 1, material.getPlaneSchema()), !firstPixelOfStroke);
+                        }
+                         */
+                    }
                 }
                 updateBottomLine();
             }

@@ -11,13 +11,13 @@ public class Main {
     public static void main(String[] args) {
 
         SimpleCellLibrary cellLibrary = new SimpleCellLibrary("test");
-        cellLibrary.add(new CellTemplate("not", context -> {
+        cellLibrary.add(new CellTemplate("not", 6, 10,  context -> {
             context.drawLine(30, 30, 60, 50);
             context.drawLine(30, 70, 60, 50);
             context.drawLine(30, 30, 30, 70);
             context.drawCircle(60, 55, 5);
         }));
-        cellLibrary.add(new CellTemplate("nand", context -> {
+        cellLibrary.add(new CellTemplate("nand", 10, 10, context -> {
             context.drawLine(30, 30, 30, 70);
             context.drawLine(30, 30, 60, 30);
             context.drawLine(60, 30, 70, 40);
@@ -26,7 +26,7 @@ public class Main {
             context.drawLine(70, 40, 70, 60);
             context.drawCircle(75, 50, 5);
         }));
-        cellLibrary.add(new CellTemplate("nor", context -> {
+        cellLibrary.add(new CellTemplate("nor", 10, 10, context -> {
             context.drawLine(30, 30, 40, 40);
             context.drawLine(30, 70, 40, 60);
             context.drawLine(40, 40, 40, 60);

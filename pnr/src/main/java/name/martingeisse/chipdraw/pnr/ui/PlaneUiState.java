@@ -61,6 +61,10 @@ public final class PlaneUiState {
         return editingPlane;
     }
 
+    public boolean isEditingCellPlane() {
+        return editingPlane == totalPlaneCount - 1;
+    }
+
     public void setEditingPlane(int editingPlane) {
         validatePlaneIndex(editingPlane);
         this.editingPlane = editingPlane;
