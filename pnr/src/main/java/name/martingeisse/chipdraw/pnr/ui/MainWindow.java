@@ -51,7 +51,7 @@ public class MainWindow extends JFrame implements Editor.Ui {
     public MainWindow(Workbench _workbench, Design _design) {
         super("Chipdraw");
         this.workbench = _workbench;
-        this.planeUiState = new PlaneUiState(_design.getRoutingPlanes().size());
+        this.planeUiState = new PlaneUiState(_design.getTotalPlaneCount());
         this.editor = new Editor(this);
 
         setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
@@ -167,6 +167,12 @@ public class MainWindow extends JFrame implements Editor.Ui {
                     g.drawOval(centerX, centerY, 4, 4);
                 }
             }
+
+            @Override
+            protected void drawCells(Graphics2D g, int pixelSize) {
+                // TODO
+            }
+
         };
         MouseAdapter mouseAdapter = new MouseAdapter() {
 
@@ -420,7 +426,7 @@ public class MainWindow extends JFrame implements Editor.Ui {
 
     @Override
     public void onRestart() {
-        planeUiState.setTotalPlaneCount(editor.getDesign().getRoutingPlanes().size());
+        planeUiState.setTotalPlaneCount(editor.getDesign().getTotalPlaneCount());
         planeUiState.onClick(0, 0);
         drawing = false;
         erasing = false;
@@ -430,7 +436,7 @@ public class MainWindow extends JFrame implements Editor.Ui {
 
     @Override
     public void onDesignObjectReplaced() {
-        planeUiState.setTotalPlaneCount(editor.getDesign().getRoutingPlanes().size());
+        planeUiState.setTotalPlaneCount(editor.getDesign().getTotalPlaneCount());
         updateMainPanelSize();
     }
 

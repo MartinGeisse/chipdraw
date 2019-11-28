@@ -22,8 +22,6 @@ public final class PlaneUiState {
         return totalPlaneCount;
     }
 
-    TODO routing planes
-
     public void setTotalPlaneCount(int totalPlaneCount) {
         if (totalPlaneCount <= 0) {
             throw new IllegalArgumentException("total plane count must be positive");
@@ -138,7 +136,11 @@ public final class PlaneUiState {
                     return planeVisible[rowIndex];
 
                 case 2:
-                    return "plane " + rowIndex;
+                    if (rowIndex == totalPlaneCount - 1) {
+                        return "cell plane";
+                    } else {
+                        return "routing plane " + rowIndex;
+                    }
 
                 default:
                     return null;

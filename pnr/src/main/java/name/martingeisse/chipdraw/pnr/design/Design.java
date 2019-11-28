@@ -69,6 +69,14 @@ public final class Design implements Serializable, RectangularSize {
         return routingPlanes;
     }
 
+    public int getRoutingPlaneCount() {
+        return routingPlanes.size();
+    }
+
+    public int getTotalPlaneCount() {
+        return getRoutingPlaneCount() + 1;
+    }
+
     public CellPlane getCellPlane() {
         return cellPlane;
     }
