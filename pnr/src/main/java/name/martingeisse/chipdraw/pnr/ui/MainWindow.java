@@ -173,29 +173,58 @@ public class MainWindow extends JFrame implements Editor.Ui {
             protected void drawCells(Graphics2D g, int pixelSize) {
                 if (planeUiState.isPlaneVisible(getCurrentDesign().getTotalPlaneCount() - 1)) {
                     // TODO
-                    g.setColor(Color.WHITE);
-                    g.fillRect(2 * pixelSize, 1 * pixelSize, pixelSize, pixelSize);
-                    g.setColor(Color.DARK_GRAY);
-                    g.fillRect(2 * pixelSize, 1 * pixelSize, pixelSize - 1, pixelSize - 1);
                     CellTemplate template = getCurrentDesign().getCellLibrary().getCellTemplateOrNull("not");
-                    drawCell(g, pixelSize, new CellInstance(template, 2, 1));
+                    CellInstance instance = new CellInstance(template, 2, 1);
+                    drawCell(g, pixelSize, instance);
                 }
             }
 
             private void drawCell(Graphics2D g, int pixelSize, CellInstance instance) {
-                int x0 = instance.getX() * pixelSize;
-                int y0 = instance.getY() * pixelSize;
-                instance.getTemplate().getSymbol().draw(new CellSymbol.DrawContext() {
+
+                // determine cell extents on screen
+                CellTemplate template = instance.getTemplate();
+                int cellScreenX = instance.getX() * pixelSize;
+                int cellScreenY = instance.getY() * pixelSize;
+                int cellScreenWidth = template.getWidth() * pixelSize;
+                int cellScreenHeight = template.getHeight() * pixelSize;
+
+                // determine symbol extends on screen
+                int symbolScreenSize, symbolScreenX, symbolScreenY;
+                if (cellScreenWidth < cellScreenHeight) {
+                    symbolScreenSize = cellScreenWidth;
+                    symbolScreenX = cellScreenX;
+                    symbolScreenY = cellScreenY + (cellScreenHeight - symbolScreenSize) / 2;
+                } else {
+                    symbolScreenSize = cellScreenHeight;
+                    symbolScreenX = cellScreenX + (cellScreenWidth - symbolScreenSize) / 2;
+                    symbolScreenY = cellScreenY;
+                }
+
+                // draw background
+                g.setColor(Color.LIGHT_GRAY);
+                g.fillRect(cellScreenX, cellScreenY, cellScreenWidth, cellScreenHeight);
+                g.setColor(Color.DARK_GRAY);
+                g.drawRect(cellScreenX, cellScreenY, cellScreenWidth - 1, cellScreenHeight - 1);
+
+                // draw symbol
+                template.getSymbol().draw(new CellSymbol.DrawContext() {
+
+                    /*
+                        This draws each symbol in a 100x100 coordinate system, then scales it uniformly to fit the cell.
+                        The downside is that it is near impossible to have the symbol match the location of the ports.
+                        For now, we just accept that and we draw symbols that don't try to match the ports.
+                     */
 
                     private int transformX(int x) {
-                        // TODO using 100x100 coordinates for symbols does not match non-square cells and
-                        // it also doesn't allow to place ports in a useful way. Better use a fixed size per
-                        // pixel, not per cell! Alternatively, stretch the symbol and disconnect it from ports.
-                        return x0 + x * pixelSize / 10;
+                        return symbolScreenX + x * symbolScreenSize / 100;
                     }
 
                     private int transformY(int y) {
-                        return y0 + y * pixelSize / 10;
+                        return symbolScreenY + y * symbolScreenSize / 100;
+                    }
+
+                    private int transformDelta(int delta) {
+                        return delta * symbolScreenSize / 100;
                     }
 
                     @Override
@@ -205,8 +234,8 @@ public class MainWindow extends JFrame implements Editor.Ui {
 
                     @Override
                     public void drawCircle(int x, int y, int radius) {
-                        int size = radius * pixelSize / 10;
-                        g.drawOval(transformX(x) - size / 2, transformY(y) - size / 2, size, size);
+                        int size = transformDelta(2 * radius);
+                        g.drawOval(transformX(x - radius), transformY(y - radius), size, size);
                     }
 
                 });

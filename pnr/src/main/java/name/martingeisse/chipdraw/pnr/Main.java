@@ -15,7 +15,7 @@ public class Main {
             context.drawLine(30, 30, 60, 50);
             context.drawLine(30, 70, 60, 50);
             context.drawLine(30, 30, 30, 70);
-            context.drawCircle(60, 55, 5);
+            context.drawCircle(64, 50, 4);
         }));
         cellLibrary.add(new CellTemplate("nand", 10, 10, context -> {
             context.drawLine(30, 30, 30, 70);
