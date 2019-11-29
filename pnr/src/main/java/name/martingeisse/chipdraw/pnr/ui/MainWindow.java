@@ -44,7 +44,7 @@ public class MainWindow extends JFrame implements Editor.Ui {
 
     private boolean drawing, erasing, firstPixelOfStroke;
     private CellInstance pickedUpCellInstance;
-    private boolean pickedUpCellInstanceHasSpace;
+    private boolean pickedUpCellInstanceCollides;
     private int pixelSize;
 
     private int mousePixelX, mousePixelY;
@@ -209,7 +209,7 @@ public class MainWindow extends JFrame implements Editor.Ui {
 
                 // draw background
                 if (isPickedUp) {
-                    g.setColor(pickedUpCellInstanceHasSpace ? Color.GREEN : Color.RED);
+                    g.setColor(pickedUpCellInstanceCollides ? Color.RED : Color.GREEN);
                 } else {
                     g.setColor(Color.LIGHT_GRAY);
                     g.fillRect(cellScreenX, cellScreenY, cellScreenWidth, cellScreenHeight);
@@ -491,7 +491,7 @@ public class MainWindow extends JFrame implements Editor.Ui {
         int x = mousePixelX - template.getWidth() / 2;
         int y = mousePixelY - template.getHeight() / 2;
         pickedUpCellInstance = new CellInstance(template, x, y);
-        pickedUpCellInstanceHasSpace = true; // TODO
+        pickedUpCellInstanceCollides = getCurrentDesign().getCellPlane().collides(pickedUpCellInstance);
     }
 
     private void updateMainPanelSize() {

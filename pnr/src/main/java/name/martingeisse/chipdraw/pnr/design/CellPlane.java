@@ -28,4 +28,13 @@ public final class CellPlane implements Serializable, RectangularSize {
         return height;
     }
 
+    public boolean collides(CellInstance testInstance) {
+        for (CellInstance otherInstance : cellInstances) {
+            if (otherInstance.overlaps(testInstance) && testInstance != otherInstance) {
+                return true;
+            }
+        }
+        return false;
+    }
+
 }
