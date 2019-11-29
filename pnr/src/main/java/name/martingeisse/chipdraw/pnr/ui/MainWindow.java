@@ -174,12 +174,9 @@ public class MainWindow extends JFrame implements Editor.Ui {
             @Override
             protected void drawCells(Graphics2D g, int pixelSize) {
                 if (planeUiState.isPlaneVisible(getCurrentDesign().getTotalPlaneCount() - 1)) {
-
-                    // TODO
-                    CellTemplate template = getCurrentDesign().getCellLibrary().getCellTemplateOrNull("not");
-                    CellInstance instance = new CellInstance(template, 2, 1);
-                    drawCell(g, pixelSize, instance, false);
-
+                    for (CellInstance instance : getCurrentDesign().getCellPlane().getCellInstances()) {
+                        drawCell(g, pixelSize, instance, false);
+                    }
                     if (pickedUpCellInstance != null) {
                         drawCell(g, pixelSize, pickedUpCellInstance, true);
                     }
@@ -214,8 +211,8 @@ public class MainWindow extends JFrame implements Editor.Ui {
                     g.setColor(Color.LIGHT_GRAY);
                     g.fillRect(cellScreenX, cellScreenY, cellScreenWidth, cellScreenHeight);
                     g.setColor(Color.DARK_GRAY);
-                    g.drawRect(cellScreenX, cellScreenY, cellScreenWidth - 1, cellScreenHeight - 1);
                 }
+                g.drawRect(cellScreenX, cellScreenY, cellScreenWidth - 1, cellScreenHeight - 1);
 
                 // draw symbol
                 template.getSymbol().draw(new CellSymbol.DrawContext() {
@@ -273,7 +270,7 @@ public class MainWindow extends JFrame implements Editor.Ui {
                     } else {
                         pickedUpCellInstance = null;
                     }
-
+                    repaint();
                 } else {
                     drawing = (e.getButton() == MouseEvent.BUTTON1);
                     erasing = (e.getButton() == MouseEvent.BUTTON3);
@@ -295,7 +292,9 @@ public class MainWindow extends JFrame implements Editor.Ui {
                 previousMousePixelY = mousePixelY;
                 mousePixelX = event.getX() / pixelSize;
                 mousePixelY = event.getY() / pixelSize;
-                if (!planeUiState.isEditingCellPlane()) {
+                if (planeUiState.isEditingCellPlane()) {
+                    updatePickedUpCellInstancePosition();
+                } else {
                     if ((drawing || erasing) && (mousePixelX != previousMousePixelX || mousePixelY != previousMousePixelY)) {
                         RoutingPlane plane = getCurrentDesign().getRoutingPlanes().get(planeUiState.getEditingPlane());
                         if (mousePixelX == previousMousePixelX - 1 && mousePixelY == previousMousePixelY) {
@@ -435,8 +434,10 @@ public class MainWindow extends JFrame implements Editor.Ui {
 
                     case 'n':
                         // TODO test remove
-                        pickedUpCellInstance = new CellInstance(getCurrentDesign().getCellLibrary().getCellTemplateOrNull("not"), 0, 0);
-                        updatePickedUpCellInstancePosition();
+                        if (planeUiState.isEditingCellPlane()) {
+                            pickedUpCellInstance = new CellInstance(getCurrentDesign().getCellLibrary().getCellTemplateOrNull("not"), -1, -1);
+                            updatePickedUpCellInstancePosition();
+                        }
                         break;
 
                 }
@@ -497,11 +498,16 @@ public class MainWindow extends JFrame implements Editor.Ui {
     }
 
     private void updatePickedUpCellInstancePosition() {
-        CellTemplate template = pickedUpCellInstance.getTemplate();
-        int x = mousePixelX - template.getWidth() / 2;
-        int y = mousePixelY - template.getHeight() / 2;
-        pickedUpCellInstance = new CellInstance(template, x, y);
-        pickedUpCellInstanceCollides = getCurrentDesign().getCellPlane().collides(pickedUpCellInstance);
+        if (pickedUpCellInstance != null) {
+            CellTemplate template = pickedUpCellInstance.getTemplate();
+            int x = mousePixelX - template.getWidth() / 2;
+            int y = mousePixelY - template.getHeight() / 2;
+            if (x != pickedUpCellInstance.getX() || y != pickedUpCellInstance.getY()) {
+                pickedUpCellInstance = new CellInstance(template, x, y);
+                pickedUpCellInstanceCollides = getCurrentDesign().getCellPlane().collides(pickedUpCellInstance);
+                repaint();
+            }
+        }
     }
 
     private void updateMainPanelSize() {
