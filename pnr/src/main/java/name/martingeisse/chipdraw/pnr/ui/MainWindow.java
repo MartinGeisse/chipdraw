@@ -43,6 +43,8 @@ public class MainWindow extends JFrame implements Editor.Ui {
     private final JLabel bottomLine;
 
     private boolean drawing, erasing, firstPixelOfStroke;
+    private CellInstance pickedUpCellInstance;
+    private boolean pickedUpCellInstanceHasSpace;
     private int pixelSize;
 
     private int mousePixelX, mousePixelY;
@@ -172,19 +174,24 @@ public class MainWindow extends JFrame implements Editor.Ui {
             @Override
             protected void drawCells(Graphics2D g, int pixelSize) {
                 if (planeUiState.isPlaneVisible(getCurrentDesign().getTotalPlaneCount() - 1)) {
+
                     // TODO
                     CellTemplate template = getCurrentDesign().getCellLibrary().getCellTemplateOrNull("not");
                     CellInstance instance = new CellInstance(template, 2, 1);
-                    drawCell(g, pixelSize, instance);
+                    drawCell(g, pixelSize, instance, false);
+
+                    if (pickedUpCellInstance != null) {
+                        drawCell(g, pixelSize, pickedUpCellInstance, true);
+                    }
                 }
             }
 
-            private void drawCell(Graphics2D g, int pixelSize, CellInstance instance) {
+            private void drawCell(Graphics2D g, int pixelSize, CellInstance cellInstance, boolean isPickedUp) {
 
                 // determine cell extents on screen
-                CellTemplate template = instance.getTemplate();
-                int cellScreenX = instance.getX() * pixelSize;
-                int cellScreenY = instance.getY() * pixelSize;
+                CellTemplate template = cellInstance.getTemplate();
+                int cellScreenX = cellInstance.getX() * pixelSize;
+                int cellScreenY = cellInstance.getY() * pixelSize;
                 int cellScreenWidth = template.getWidth() * pixelSize;
                 int cellScreenHeight = template.getHeight() * pixelSize;
 
@@ -201,10 +208,14 @@ public class MainWindow extends JFrame implements Editor.Ui {
                 }
 
                 // draw background
-                g.setColor(Color.LIGHT_GRAY);
-                g.fillRect(cellScreenX, cellScreenY, cellScreenWidth, cellScreenHeight);
-                g.setColor(Color.DARK_GRAY);
-                g.drawRect(cellScreenX, cellScreenY, cellScreenWidth - 1, cellScreenHeight - 1);
+                if (isPickedUp) {
+                    g.setColor(pickedUpCellInstanceHasSpace ? Color.GREEN : Color.RED);
+                } else {
+                    g.setColor(Color.LIGHT_GRAY);
+                    g.fillRect(cellScreenX, cellScreenY, cellScreenWidth, cellScreenHeight);
+                    g.setColor(Color.DARK_GRAY);
+                    g.drawRect(cellScreenX, cellScreenY, cellScreenWidth - 1, cellScreenHeight - 1);
+                }
 
                 // draw symbol
                 template.getSymbol().draw(new CellSymbol.DrawContext() {
@@ -412,6 +423,12 @@ public class MainWindow extends JFrame implements Editor.Ui {
                         }
                         break;
 
+                    case 'n':
+                        // TODO test remove
+                        pickedUpCellInstance = new CellInstance(getCurrentDesign().getCellLibrary().getCellTemplateOrNull("not"), 0, 0);
+                        updatePickedUpCellInstancePosition();
+                        break;
+
                 }
             }
         });
@@ -467,6 +484,14 @@ public class MainWindow extends JFrame implements Editor.Ui {
 
     public int getCurrentPixelSize() {
         return pixelSize;
+    }
+
+    private void updatePickedUpCellInstancePosition() {
+        CellTemplate template = pickedUpCellInstance.getTemplate();
+        int x = mousePixelX - template.getWidth() / 2;
+        int y = mousePixelY - template.getHeight() / 2;
+        pickedUpCellInstance = new CellInstance(template, x, y);
+        pickedUpCellInstanceHasSpace = true; // TODO
     }
 
     private void updateMainPanelSize() {
