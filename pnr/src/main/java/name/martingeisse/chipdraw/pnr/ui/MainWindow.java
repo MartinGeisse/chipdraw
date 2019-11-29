@@ -260,7 +260,10 @@ public class MainWindow extends JFrame implements Editor.Ui {
                     if (e.getButton() == MouseEvent.BUTTON1) {
                         // TODO wrap in operation
                         if (pickedUpCellInstance == null) {
-                            // TODO pick up
+                            pickedUpCellInstance = getCurrentDesign().getCellPlane().findAndRemoveInstanceForPosition(mousePixelX, mousePixelY);
+                            if (pickedUpCellInstance != null) {
+                                updatePickedUpCellInstancePosition();
+                            }
                         } else {
                             if (!pickedUpCellInstanceCollides) {
                                 getCurrentDesign().getCellPlane().add(pickedUpCellInstance);

@@ -54,4 +54,21 @@ public final class CellPlane implements Serializable, RectangularSize {
         return false;
     }
 
+    public CellInstance findInstanceForPosition(int x, int y) {
+        for (CellInstance instance : cellInstances) {
+            if (instance.overlaps(x, y)) {
+                return instance;
+            }
+        }
+        return null;
+    }
+
+    public CellInstance findAndRemoveInstanceForPosition(int x, int y) {
+        CellInstance instance = findInstanceForPosition(x, y);
+        if (instance != null) {
+            remove(instance);
+        }
+        return instance;
+    }
+
 }
