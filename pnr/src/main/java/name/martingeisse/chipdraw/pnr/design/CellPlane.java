@@ -1,5 +1,6 @@
 package name.martingeisse.chipdraw.pnr.design;
 
+import com.google.common.collect.ImmutableList;
 import name.martingeisse.chipdraw.pnr.util.RectangularSize;
 
 import java.io.Serializable;
@@ -26,6 +27,22 @@ public final class CellPlane implements Serializable, RectangularSize {
 
     public int getHeight() {
         return height;
+    }
+
+    public void add(CellInstance cellInstance) {
+        cellInstances.add(cellInstance);
+    }
+
+    public void remove(CellInstance cellInstance) {
+        cellInstances.remove(cellInstance);
+    }
+
+    public Iterable<CellInstance> getCellInstances() {
+        return cellInstances;
+    }
+
+    public ImmutableList<CellInstance> getCellInstancesAsList() {
+        return ImmutableList.copyOf(cellInstances);
     }
 
     public boolean collides(CellInstance testInstance) {

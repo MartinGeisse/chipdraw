@@ -259,7 +259,21 @@ public class MainWindow extends JFrame implements Editor.Ui {
             @Override
             public void mousePressed(MouseEvent e) {
                 if (planeUiState.isEditingCellPlane()) {
-                    // TODO
+
+                    if (e.getButton() == MouseEvent.BUTTON1) {
+                        // TODO wrap in operation
+                        if (pickedUpCellInstance == null) {
+                            // TODO pick up
+                        } else {
+                            if (!pickedUpCellInstanceCollides) {
+                                getCurrentDesign().getCellPlane().add(pickedUpCellInstance);
+                                pickedUpCellInstance = null;
+                            }
+                        }
+                    } else {
+                        pickedUpCellInstance = null;
+                    }
+
                 } else {
                     drawing = (e.getButton() == MouseEvent.BUTTON1);
                     erasing = (e.getButton() == MouseEvent.BUTTON3);
@@ -270,9 +284,7 @@ public class MainWindow extends JFrame implements Editor.Ui {
 
             @Override
             public void mouseReleased(MouseEvent e) {
-                if (planeUiState.isEditingCellPlane()) {
-                    // TODO
-                } else {
+                if (!planeUiState.isEditingCellPlane()) {
                     drawing = erasing = false;
                 }
             }
@@ -283,9 +295,7 @@ public class MainWindow extends JFrame implements Editor.Ui {
                 previousMousePixelY = mousePixelY;
                 mousePixelX = event.getX() / pixelSize;
                 mousePixelY = event.getY() / pixelSize;
-                if (planeUiState.isEditingCellPlane()) {
-                    // TODO
-                } else {
+                if (!planeUiState.isEditingCellPlane()) {
                     if ((drawing || erasing) && (mousePixelX != previousMousePixelX || mousePixelY != previousMousePixelY)) {
                         RoutingPlane plane = getCurrentDesign().getRoutingPlanes().get(planeUiState.getEditingPlane());
                         if (mousePixelX == previousMousePixelX - 1 && mousePixelY == previousMousePixelY) {
