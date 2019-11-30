@@ -1,6 +1,10 @@
 package name.martingeisse.chipdraw.pnr.cell;
 
+import com.google.common.collect.ImmutableList;
+
 public interface CellLibrary {
+
+    ImmutableList<String> getAllIds();
 
     String getId();
 
@@ -15,6 +19,11 @@ public interface CellLibrary {
     }
 
     CellLibrary EMPTY = new CellLibrary() {
+
+        @Override
+        public ImmutableList<String> getAllIds() {
+            return ImmutableList.of();
+        }
 
         @Override
         public String getId() {

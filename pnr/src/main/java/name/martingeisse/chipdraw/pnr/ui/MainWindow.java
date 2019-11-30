@@ -7,6 +7,7 @@ import name.martingeisse.chipdraw.pnr.Editor;
 import name.martingeisse.chipdraw.pnr.Workbench;
 import name.martingeisse.chipdraw.pnr.cell.CellSymbol;
 import name.martingeisse.chipdraw.pnr.cell.CellTemplate;
+import name.martingeisse.chipdraw.pnr.cell.NoSuchCellException;
 import name.martingeisse.chipdraw.pnr.cell.NoSuchCellLibraryException;
 import name.martingeisse.chipdraw.pnr.design.CellInstance;
 import name.martingeisse.chipdraw.pnr.design.Design;
@@ -41,6 +42,7 @@ public class MainWindow extends JFrame implements Editor.Ui {
     private final PlaneUiState planeUiState;
     private final Editor editor;
     private final JLabel bottomLine;
+    private final JList<String> cellTemplateList;
 
     private boolean drawing, erasing, firstPixelOfStroke;
     private CellInstance pickedUpCellInstance;
@@ -54,7 +56,7 @@ public class MainWindow extends JFrame implements Editor.Ui {
     public MainWindow(Workbench _workbench, Design _design) {
         super("Chipdraw");
         this.workbench = _workbench;
-        this.planeUiState = new PlaneUiState(_design.getTotalPlaneCount());
+        this.planeUiState = new PlaneUiState(1); // dummy value, will be replaced later
         this.editor = new Editor(this);
 
         setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
@@ -106,11 +108,11 @@ public class MainWindow extends JFrame implements Editor.Ui {
         }
         sideBar.add(Box.createVerticalStrut(30));
         {
-            JList list = new JList(new String[] {"foo", "bar", "baz"});
-            list.setFocusable(false);
-            list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-            list.setSelectedIndex(0);
-            JScrollPane scrollPane = new JScrollPane(list);
+            cellTemplateList = new JList<>();
+            cellTemplateList.setFocusable(false);
+            cellTemplateList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+            cellTemplateList.setSelectedIndex(0);
+            JScrollPane scrollPane = new JScrollPane(cellTemplateList);
             scrollPane.setPreferredSize(new Dimension(0, 1_000_000));
             sideBar.add(scrollPane);
         }
@@ -449,6 +451,21 @@ public class MainWindow extends JFrame implements Editor.Ui {
                         }
                         break;
 
+                    case ' ':
+                        if (planeUiState.isEditingCellPlane() && pickedUpCellInstance == null) {
+                            int index = cellTemplateList.getMinSelectionIndex();
+                            if (index != -1) {
+                                String id = cellTemplateList.getModel().getElementAt(index);
+                                try {
+                                    pickedUpCellInstance = new CellInstance(getCurrentDesign().getCellLibrary().getCellTemplate(id), -1, -1);
+                                    updatePickedUpCellInstancePosition();
+                                } catch (NoSuchCellException e) {
+                                    JOptionPane.showMessageDialog(MainWindow.this, e.getMessage());
+                                }
+                            }
+                        }
+                        break;
+
                 }
             }
         });
@@ -559,6 +576,8 @@ public class MainWindow extends JFrame implements Editor.Ui {
     public void onRestart() {
         planeUiState.setTotalPlaneCount(editor.getDesign().getTotalPlaneCount());
         planeUiState.onClick(0, 0);
+        cellTemplateList.setListData(editor.getDesign().getCellLibrary().getAllIds().toArray(new String[0]));
+        cellTemplateList.setSelectedIndex(0);
         drawing = false;
         erasing = false;
         pixelSize = 16;
@@ -568,6 +587,9 @@ public class MainWindow extends JFrame implements Editor.Ui {
     @Override
     public void onDesignObjectReplaced() {
         planeUiState.setTotalPlaneCount(editor.getDesign().getTotalPlaneCount());
+        planeUiState.onClick(0, 0);
+        cellTemplateList.setListData(editor.getDesign().getCellLibrary().getAllIds().toArray(new String[0]));
+        cellTemplateList.setSelectedIndex(0);
         updateMainPanelSize();
     }
 
