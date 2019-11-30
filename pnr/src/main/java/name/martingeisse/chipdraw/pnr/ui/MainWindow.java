@@ -102,10 +102,17 @@ public class MainWindow extends JFrame implements Editor.Ui {
             table.setFocusable(false);
             JScrollPane scrollPane = new JScrollPane(table);
             sideBar.add(scrollPane);
-
             planeUiState.getSidebarTableModel().addTableModelListener(event -> {
                 MainWindow.this.repaint();
             });
+        }
+        {
+            JList list = new JList(new String[] {"foo", "bar", "baz"});
+            list.setFocusable(false);
+            list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+            list.setSelectedIndex(0);
+            JScrollPane scrollPane = new JScrollPane(list);
+            sideBar.add(scrollPane);
         }
         sideBar.add(Box.createGlue());
         {
