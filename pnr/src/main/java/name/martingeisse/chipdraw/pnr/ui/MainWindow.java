@@ -98,23 +98,22 @@ public class MainWindow extends JFrame implements Editor.Ui {
                 }
             });
             table.setRowSelectionAllowed(false);
-            table.setFillsViewportHeight(true);
             table.setFocusable(false);
-            JScrollPane scrollPane = new JScrollPane(table);
-            sideBar.add(scrollPane);
+            sideBar.add(table);
             planeUiState.getSidebarTableModel().addTableModelListener(event -> {
                 MainWindow.this.repaint();
             });
         }
+        sideBar.add(Box.createVerticalStrut(30));
         {
             JList list = new JList(new String[] {"foo", "bar", "baz"});
             list.setFocusable(false);
             list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
             list.setSelectedIndex(0);
             JScrollPane scrollPane = new JScrollPane(list);
+            scrollPane.setPreferredSize(new Dimension(0, 1_000_000));
             sideBar.add(scrollPane);
         }
-        sideBar.add(Box.createGlue());
         {
             drcButton = new JButton("DRC");
             drcButton.setFocusable(false);
