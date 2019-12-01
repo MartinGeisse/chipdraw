@@ -443,14 +443,6 @@ public class MainWindow extends JFrame implements Editor.Ui {
                         }
                         break;
 
-                    case 'n':
-                        // TODO test remove
-                        if (planeUiState.isEditingCellPlane()) {
-                            pickedUpCellInstance = new CellInstance(getCurrentDesign().getCellLibrary().getCellTemplateOrNull("not"), -1, -1);
-                            updatePickedUpCellInstancePosition();
-                        }
-                        break;
-
                     case ' ':
                         if (planeUiState.isEditingCellPlane() && pickedUpCellInstance == null) {
                             int index = cellTemplateList.getMinSelectionIndex();
