@@ -5,10 +5,7 @@ import com.google.common.collect.ImmutableMap;
 import name.martingeisse.chipdraw.pnr.About;
 import name.martingeisse.chipdraw.pnr.Editor;
 import name.martingeisse.chipdraw.pnr.Workbench;
-import name.martingeisse.chipdraw.pnr.cell.CellSymbol;
-import name.martingeisse.chipdraw.pnr.cell.CellTemplate;
-import name.martingeisse.chipdraw.pnr.cell.NoSuchCellException;
-import name.martingeisse.chipdraw.pnr.cell.NoSuchCellLibraryException;
+import name.martingeisse.chipdraw.pnr.cell.*;
 import name.martingeisse.chipdraw.pnr.design.CellInstance;
 import name.martingeisse.chipdraw.pnr.design.Design;
 import name.martingeisse.chipdraw.pnr.design.RoutingPlane;
@@ -255,6 +252,16 @@ public class MainWindow extends JFrame implements Editor.Ui {
                     }
 
                 });
+
+                // draw ports
+                for (Port port : template.getPorts()) {
+                    g.fillRect(
+                            // draw the port slightly towards the bottom left from the center
+                            cellScreenX + port.getX() * pixelSize + pixelSize / 4,
+                            cellScreenY + port.getY() * pixelSize + pixelSize / 2,
+                            pixelSize / 4,
+                            pixelSize / 4);
+                }
 
             }
 

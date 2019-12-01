@@ -19,8 +19,8 @@ public class Main {
             context.drawLine(30, 30, 30, 70);
             context.drawCircle(64, 50, 4);
         }, ImmutableList.of(
-                new Port(1, 5, "in", Port.MeaningCategory.IN),
-                new Port(6, 5, "out", Port.MeaningCategory.IN)
+                new Port(0, 5, "in", Port.MeaningCategory.IN),
+                new Port(5, 5, "out", Port.MeaningCategory.IN)
         )));
         cellLibrary.add(new CellTemplate("nand", 10, 10, context -> {
             context.drawLine(30, 30, 30, 70);
@@ -31,9 +31,9 @@ public class Main {
             context.drawLine(70, 40, 70, 60);
             context.drawCircle(75, 50, 5);
         }, ImmutableList.of(
-                new Port(1, 4, "x", Port.MeaningCategory.IN),
-                new Port(1, 5, "y", Port.MeaningCategory.IN),
-                new Port(6, 5, "out", Port.MeaningCategory.IN)
+                new Port(0, 4, "x", Port.MeaningCategory.IN),
+                new Port(0, 5, "y", Port.MeaningCategory.IN),
+                new Port(9, 5, "out", Port.MeaningCategory.IN)
         )));
         cellLibrary.add(new CellTemplate("nor", 10, 10, context -> {
             context.drawLine(30, 30, 40, 40);
@@ -46,9 +46,9 @@ public class Main {
             context.drawLine(70, 40, 70, 60);
             context.drawCircle(75, 50, 5);
         }, ImmutableList.of(
-                new Port(1, 4, "x", Port.MeaningCategory.IN),
-                new Port(1, 5, "y", Port.MeaningCategory.IN),
-                new Port(6, 5, "out", Port.MeaningCategory.IN)
+                new Port(0, 4, "x", Port.MeaningCategory.IN),
+                new Port(0, 5, "y", Port.MeaningCategory.IN),
+                new Port(9, 5, "out", Port.MeaningCategory.IN)
         )));
 
         SimpleCellLibraryRepository cellLibraryRepository = new SimpleCellLibraryRepository();
