@@ -310,11 +310,10 @@ public class MainWindow extends JFrame implements Editor.Ui {
             public void mouseReleased(MouseEvent e) {
                 if (!planeUiState.isEditingCellPlane()) {
                     if (placingVia) {
+                        RoutingPlane plane = getCurrentDesign().getRoutingPlanes().get(planeUiState.getEditingPlane());
                         if (e.getY() < placingViaOriginalScreenY - PLACING_VIA_MINIMUM_MOUSE_DISTANCE) {
-                            RoutingPlane plane = TODO;
-                            plane.setDown(placingViaOriginalPixelX, placingViaOriginalPixelY, TODO);
+                            plane.getRoutingPlaneAbove().setDown(placingViaOriginalPixelX, placingViaOriginalPixelY, TODO);
                         } else if (e.getY() > placingViaOriginalScreenY + PLACING_VIA_MINIMUM_MOUSE_DISTANCE) {
-                            RoutingPlane plane = getCurrentDesign().getRoutingPlanes().get(planeUiState.getEditingPlane());
                             plane.setDown(placingViaOriginalPixelX, placingViaOriginalPixelY, TODO);
                         }
                     }
