@@ -1,5 +1,7 @@
 package name.martingeisse.chipdraw.unspice.netlist;
 
+import com.google.common.collect.ImmutableList;
+
 /**
  *
  */
@@ -37,6 +39,11 @@ public final class Fet implements Component {
 
 	public String getTerminal3() {
 		return terminal3;
+	}
+
+	@Override
+	public ImmutableList<String> getConnectedNets() {
+		return ImmutableList.of(terminal0, terminal1, terminal2, terminal3);
 	}
 
 	@Override

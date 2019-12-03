@@ -13,7 +13,7 @@ public class Main {
 
 	private static final String MAIN_SPICE_FILE = "resource/unspice/nand.spice";
 
-	public static void main(String[] args) {
+	public static void main(String[] args) throws Exception {
 		File mainFile = new File(MAIN_SPICE_FILE);
 		Netlist netlist = new SpiceLoader(mainFile).load();
 		new Mapper(netlist).map();
