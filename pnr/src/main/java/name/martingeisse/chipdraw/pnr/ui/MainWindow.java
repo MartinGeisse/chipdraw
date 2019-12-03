@@ -43,7 +43,7 @@ public class MainWindow extends JFrame implements Editor.Ui {
     private final JLabel bottomLine;
     private final JList<String> cellTemplateList;
 
-    private boolean drawing, erasing, firstPixelOfStroke, placingVia;
+    private boolean drawing, erasing, firstPixelOfStroke, placingVia, removingVia;
     private int placingViaOriginalScreenY, placingViaOriginalPixelX, placingViaOriginalPixelY;
     private CellInstance pickedUpCellInstance;
     private boolean pickedUpCellInstanceCollides;
@@ -294,11 +294,12 @@ public class MainWindow extends JFrame implements Editor.Ui {
                     repaint();
                 } else {
                     drawing = (e.getButton() == MouseEvent.BUTTON1 && (e.getModifiersEx() & InputEvent.SHIFT_DOWN_MASK) == 0);
-                    erasing = (e.getButton() == MouseEvent.BUTTON3);
+                    erasing = (e.getButton() == MouseEvent.BUTTON3 && (e.getModifiersEx() & InputEvent.SHIFT_DOWN_MASK) == 0);
                     placingVia = (e.getButton() == MouseEvent.BUTTON1 && (e.getModifiersEx() & InputEvent.SHIFT_DOWN_MASK) != 0);
+                    removingVia = (e.getButton() == MouseEvent.BUTTON3 && (e.getModifiersEx() & InputEvent.SHIFT_DOWN_MASK) != 0);
                     firstPixelOfStroke = true;
                     mouseMoved(e);
-                    if (placingVia) {
+                    if (placingVia || removingVia) {
                         placingViaOriginalScreenY = e.getY();
                         placingViaOriginalPixelX = mousePixelX;
                         placingViaOriginalPixelY = mousePixelY;
@@ -309,15 +310,15 @@ public class MainWindow extends JFrame implements Editor.Ui {
             @Override
             public void mouseReleased(MouseEvent e) {
                 if (!planeUiState.isEditingCellPlane()) {
-                    if (placingVia) {
+                    if (placingVia || removingVia) {
                         RoutingPlane plane = getCurrentDesign().getRoutingPlanes().get(planeUiState.getEditingPlane());
                         if (e.getY() < placingViaOriginalScreenY - PLACING_VIA_MINIMUM_MOUSE_DISTANCE) {
-                            plane.getRoutingPlaneAbove().setDown(placingViaOriginalPixelX, placingViaOriginalPixelY, TODO);
+                            plane.getRoutingPlaneAbove().setDown(placingViaOriginalPixelX, placingViaOriginalPixelY, placingVia);
                         } else if (e.getY() > placingViaOriginalScreenY + PLACING_VIA_MINIMUM_MOUSE_DISTANCE) {
-                            plane.setDown(placingViaOriginalPixelX, placingViaOriginalPixelY, TODO);
+                            plane.setDown(placingViaOriginalPixelX, placingViaOriginalPixelY, placingVia);
                         }
                     }
-                    drawing = erasing = placingVia = false;
+                    drawing = erasing = placingVia = removingVia = false;
                 }
             }
 
@@ -597,6 +598,7 @@ public class MainWindow extends JFrame implements Editor.Ui {
         drawing = false;
         erasing = false;
         placingVia = false;
+        removingVia = false;
         pixelSize = 16;
         updateMainPanelSize();
     }
