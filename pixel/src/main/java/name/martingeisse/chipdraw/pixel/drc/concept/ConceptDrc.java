@@ -8,7 +8,7 @@ import name.martingeisse.chipdraw.pixel.drc.DrcContext;
 import name.martingeisse.chipdraw.pixel.drc.rule.*;
 
 /**
- * Note: Rules have been checked manually for correctness and any deviation has been marked with a TODO marker (TODO: via1).
+ * Note: Rules have been checked manually for correctness and any deviation has been marked with a TODO marker (TODO: via1, rules 8.4 and 8.5).
  * For metal and via, only metal1 and via12 have been checked; higher layers use the same logic but different numbers,
  * so they should be easy to add once the number of layers and exact pixel numbers are known.
  */
@@ -206,7 +206,7 @@ public class ConceptDrc {
 				protected boolean affects(int x, int y, Material material) {
 					return material == Technologies.Concept.MATERIAL_VIA12;
 				}
-			}.setErrorMessage("Minimum via12 spacing: 3"),
+			}.setErrorMessage("Minimum via12 spacing: 3"), // TODO this error message is not used; uses built-in default messsage of that rule instead
 
 			// 8.3 (Minimum overlap [of via12] by metal1: 1)
 			// includes 9.3 (Minimum overlap of via12 [by metal2]: 1)
