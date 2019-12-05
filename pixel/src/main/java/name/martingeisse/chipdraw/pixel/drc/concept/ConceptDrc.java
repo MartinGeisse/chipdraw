@@ -28,7 +28,7 @@ public class ConceptDrc {
 			new MinimumSelfSpacingRule(Technologies.Concept.PLANE_WELL, MinimumSelfSpacingRule.MaterialMode.IGNORE_OTHER_MATERIALS, 6),
 
 			// 1.4 (Minimum spacing between wells of different type) is implicitly true because they are represented as
-			// different materials on the same plane.
+			// different materials on the same plane -- so they cannot overlap -- and the minimum spacing is 0.
 
 
 			//
