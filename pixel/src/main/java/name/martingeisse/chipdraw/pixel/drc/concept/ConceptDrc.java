@@ -131,7 +131,7 @@ public class ConceptDrc {
 				protected boolean affects(int x, int y, Material material) {
 					return material == Technologies.Concept.MATERIAL_CONTACT;
 				}
-			}.setErrorMessage("Minimum contact spacing: 2"),
+			}.setErrorMessage("Minimum contact spacing: 2"), // TODO this error message is not used; uses built-in default messsage of that rule instead
 
 			// 5.4 and 6.4 (Minimum spacing to gate of transistor: 2)
 			new AbstractPerPixelRule(Technologies.Concept.PLANE_METAL1) {
