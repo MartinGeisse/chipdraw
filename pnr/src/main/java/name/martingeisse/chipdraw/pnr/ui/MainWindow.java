@@ -159,9 +159,12 @@ public class MainWindow extends JFrame implements Editor.Ui {
                     g.drawLine(centerX, centerY, centerX, centerY + screenSize);
                 }
                 if (tile.isDownConnected()) {
-                    g.drawLine(centerX, centerY, centerX - 3, centerY - 3);
+                    g.drawLine(centerX, centerY, centerX - 3, centerY + 3);
                 }
-
+                RoutingPlane planeAbove = plane.getRoutingPlaneAbove();
+                if (planeAbove != null && planeAbove.getTile(pixelX, pixelY).isDownConnected()) {
+                    g.drawLine(centerX, centerY, centerX + 3, centerY - 3);
+                }
             }
 
             @Override
@@ -310,14 +313,6 @@ public class MainWindow extends JFrame implements Editor.Ui {
             @Override
             public void mouseReleased(MouseEvent e) {
                 if (!planeUiState.isEditingCellPlane()) {
-                    if (placingVia || removingVia) {
-                        RoutingPlane plane = getCurrentDesign().getRoutingPlanes().get(planeUiState.getEditingPlane());
-                        if (e.getY() < placingViaOriginalScreenY - PLACING_VIA_MINIMUM_MOUSE_DISTANCE) {
-                            plane.getRoutingPlaneAbove().setDown(placingViaOriginalPixelX, placingViaOriginalPixelY, placingVia);
-                        } else if (e.getY() > placingViaOriginalScreenY + PLACING_VIA_MINIMUM_MOUSE_DISTANCE) {
-                            plane.setDown(placingViaOriginalPixelX, placingViaOriginalPixelY, placingVia);
-                        }
-                    }
                     drawing = erasing = placingVia = removingVia = false;
                 }
             }
@@ -360,6 +355,19 @@ public class MainWindow extends JFrame implements Editor.Ui {
                             performOperation(new ErasePoints(mousePixelX, mousePixelY, 1, 1, material.getPlaneSchema()), !firstPixelOfStroke);
                         }
                          */
+                    }
+                    if (placingVia || removingVia) {
+                        RoutingPlane plane = getCurrentDesign().getRoutingPlanes().get(planeUiState.getEditingPlane());
+                        if (event.getY() < placingViaOriginalScreenY - PLACING_VIA_MINIMUM_MOUSE_DISTANCE) {
+                            RoutingPlane planeAbove = plane.getRoutingPlaneAbove();
+                            if (planeAbove != null) {
+                                planeAbove.setDown(placingViaOriginalPixelX, placingViaOriginalPixelY, placingVia);
+                                repaint();
+                            }
+                        } else if (event.getY() > placingViaOriginalScreenY + PLACING_VIA_MINIMUM_MOUSE_DISTANCE) {
+                            plane.setDown(placingViaOriginalPixelX, placingViaOriginalPixelY, placingVia);
+                            repaint();
+                        }
                     }
                 }
                 updateBottomLine();
