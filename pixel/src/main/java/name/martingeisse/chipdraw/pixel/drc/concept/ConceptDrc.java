@@ -89,7 +89,7 @@ public class ConceptDrc {
 				}
 			}.setErrorMessage("Minimum active extension over poly: 3"),
 
-			// 3.5 (Minimum field poly [spacing] to active: 1) TODO has a bug for a horizontal 3-pixel channel, recognizes corners as faulty
+			// 3.5 (Minimum field poly [spacing] to active: 1)
 			new MinimumFieldPolyOverActiveRule(),
 
 

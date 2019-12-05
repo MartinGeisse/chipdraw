@@ -54,7 +54,7 @@ public class MinimumFieldPolyOverActiveRule extends AbstractPerPixelRule {
             return true;
         }
         Material diff = diffPlane.getPixelAutoclip(x, y);
-        return (diffPlane.getPixelAutoclip(getPivotX(), y) == diff || diffPlane.getPixelAutoclip(y, getPivotY()) == diff);
+        return (diffPlane.getPixelAutoclip(getPivotX(), y) == diff || diffPlane.getPixelAutoclip(x, getPivotY()) == diff);
     }
 
 }
