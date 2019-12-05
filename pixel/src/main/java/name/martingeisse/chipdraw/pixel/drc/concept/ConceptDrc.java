@@ -8,7 +8,9 @@ import name.martingeisse.chipdraw.pixel.drc.DrcContext;
 import name.martingeisse.chipdraw.pixel.drc.rule.*;
 
 /**
- *
+ * Note: Rules have been checked manually for correctness and any deviation has been marked with a TODO marker (TODO: via1).
+ * For metal and via, only metal1 and via12 have been checked; higher layers use the same logic but different numbers,
+ * so they should be easy to add once the number of layers and exact pixel numbers are known.
  */
 public class ConceptDrc {
 
