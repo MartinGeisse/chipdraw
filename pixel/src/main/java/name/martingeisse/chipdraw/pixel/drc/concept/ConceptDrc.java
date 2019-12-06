@@ -11,6 +11,10 @@ import name.martingeisse.chipdraw.pixel.drc.rule.*;
  * Note: Rules have been checked manually for correctness and any deviation has been marked with a TODO marker (TODO: via1, rules 8.4 and 8.5).
  * For metal and via, only metal1 and via12 have been checked; higher layers use the same logic but different numbers,
  * so they should be easy to add once the number of layers and exact pixel numbers are known.
+ *
+ * Note that pad / overglass rules are not implemented here because they are expressed in terms of microns, not lambda,
+ * and we only know lambdas (i.e. we don't know how many pixels a micron is, so we cannot check those rules). For a
+ * specific technology node, pad rules should be added.
  */
 public class ConceptDrc {
 
@@ -242,8 +246,6 @@ public class ConceptDrc {
 
 			// 9.4 (Minimum spacing when either metal line is wider than 10 lambda: 6)
 			// TODO
-
-			// TODO pad rules, especially "Minimum pad spacing to active, poly or poly2: 15µ"
 
     );
 
