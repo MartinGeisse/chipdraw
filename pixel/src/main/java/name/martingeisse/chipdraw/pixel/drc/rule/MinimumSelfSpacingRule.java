@@ -19,17 +19,17 @@ public class MinimumSelfSpacingRule extends AbstractMinimumSelfSpacingRule {
 	}
 
 	@Override
+	protected String getImplicitErrorMessage() {
+		return "plane " + getPlaneSchema() + " violates minimum spacing of " + spacing;
+	}
+
+	@Override
 	protected final int determineSpacing(int x, int y, Material material) {
 		return affects(x, y, material) ? spacing : -1;
 	}
 
 	protected boolean affects(int x, int y, Material material) {
 		return true;
-	}
-
-	@Override
-	protected final String buildErrorMessage(int x, int y, Material material) {
-		return "plane " + getPlaneSchema() + " violates minimum spacing of " + spacing;
 	}
 
 }

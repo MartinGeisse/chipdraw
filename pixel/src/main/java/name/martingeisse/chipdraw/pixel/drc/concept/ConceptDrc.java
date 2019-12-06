@@ -133,7 +133,7 @@ public class ConceptDrc {
 				protected boolean affects(int x, int y, Material material) {
 					return material == Technologies.Concept.MATERIAL_CONTACT;
 				}
-			}.setErrorMessageOverride("Minimum contact spacing: 2"), // TODO this error message is not used; uses built-in default messsage of that rule instead
+			}.setErrorMessageOverride("Minimum contact spacing: 2"),
 
 			// 5.4 and 6.4 (Minimum spacing to gate of transistor: 2)
 			new AbstractPerPixelRule(Technologies.Concept.PLANE_METAL1) {
@@ -206,7 +206,7 @@ public class ConceptDrc {
 				protected boolean affects(int x, int y, Material material) {
 					return material == Technologies.Concept.MATERIAL_VIA12;
 				}
-			}.setErrorMessageOverride("Minimum via12 spacing: 3"), // TODO this error message is not used; uses built-in default messsage of that rule instead
+			}.setErrorMessageOverride("Minimum via12 spacing: 3"),
 
 			// 8.3 (Minimum overlap [of via12] by metal1: 1)
 			// includes 9.3 (Minimum overlap of via12 [by metal2]: 1)
