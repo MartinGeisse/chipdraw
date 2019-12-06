@@ -4,6 +4,8 @@ import name.martingeisse.chipdraw.pixel.design.Design;
 import name.martingeisse.chipdraw.pixel.design.Material;
 import name.martingeisse.chipdraw.pixel.design.Plane;
 import name.martingeisse.chipdraw.pixel.global_tools.CornerStitchingExtrator;
+import name.martingeisse.chipdraw.pixel.util.UserVisibleMessageException;
+import org.apache.commons.lang3.mutable.MutableInt;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
@@ -12,7 +14,12 @@ import java.util.Date;
 /**
  *
  */
-public class MagicFileIo {
+public final class MagicFileIo {
+
+	private MagicFileIo() {
+	}
+
+	//region writing
 
 	public static void write(Design design, File file, String techSpecifier) throws IOException {
 		try (FileOutputStream fileOutputStream = new FileOutputStream(file)) {
@@ -43,5 +50,35 @@ public class MagicFileIo {
 			}
 		}
 	}
+
+	//endregion
+
+	//region reading
+
+	public static Design read(File file) throws IOException, UserVisibleMessageException {
+
+		// determine bounds
+		MutableInt minX = new MutableInt(Integer.MAX_VALUE);
+		MutableInt minY = new MutableInt(Integer.MAX_VALUE);
+		MutableInt maxX = new MutableInt(Integer.MIN_VALUE);
+		MutableInt maxY = new MutableInt(Integer.MIN_VALUE);
+		new MagicFileReadHelper(file) {
+			@Override
+			protected void handleRectLine(int x1, int y1, int x2, int y2) {
+				minX.setValue(Math.min(minX.getValue(), x1));
+				minY.setValue(Math.min(minY.getValue(), y1));
+				maxX.setValue(Math.max(maxX.getValue(), x2));
+				maxY.setValue(Math.max(maxY.getValue(), y2));
+			}
+		}.read();
+		if (minX.getValue() >= maxX.getValue() || minY.getValue() >= maxY.getValue()) {
+			throw new UserVisibleMessageException("design is empty");
+		}
+
+		// TODO
+
+	}
+
+	//endregion
 
 }
