@@ -5,28 +5,28 @@ import name.martingeisse.chipdraw.pixel.design.Plane;
 
 public abstract class AbstractRule implements Rule {
 
-    private String errorMessage;
+    private String errorMessageOverride;
 
-    public final Rule setErrorMessage(String errorMessage) {
-        if (errorMessage != null) {
-            errorMessage = errorMessage.trim();
-            if (errorMessage.isEmpty()) {
+    public final Rule setErrorMessageOverride(String errorMessageOverride) {
+        if (errorMessageOverride != null) {
+            errorMessageOverride = errorMessageOverride.trim();
+            if (errorMessageOverride.isEmpty()) {
                 throw new IllegalArgumentException("Error message cannot be empty. Pass null to use the default message.");
             }
         }
-        this.errorMessage = errorMessage;
+        this.errorMessageOverride = errorMessageOverride;
         return this;
     }
 
-    public final String getErrorMessage() {
-        return errorMessage;
+    public String getErrorMessageOverride() {
+        return errorMessageOverride;
     }
 
-    protected String getEffectiveErrorMessage() {
-        return errorMessage != null ? errorMessage : getDefaultErrorMessage();
+    protected final String getErrorMessage() {
+        return errorMessageOverride == null ? getImplicitErrorMessage() : errorMessageOverride;
     }
 
-    private String getDefaultErrorMessage() {
+    protected String getImplicitErrorMessage() {
         String message = getClass().getSimpleName();
         if (message != null) {
             message = message.trim();

@@ -28,7 +28,11 @@ public final class MinimumRectangularWidthRule extends AbstractPerPixelRule {
         super(pivotPlaneSchema);
         this.size = size;
         this.separateMaterials = separateMaterials;
-        setErrorMessage("minimum width " + size + " in plane " + pivotPlaneSchema);
+    }
+
+    @Override
+    public String getImplicitErrorMessage() {
+        return "minimum width " + size + " in plane " + getPivotPlaneSchema();
     }
 
     @Override
