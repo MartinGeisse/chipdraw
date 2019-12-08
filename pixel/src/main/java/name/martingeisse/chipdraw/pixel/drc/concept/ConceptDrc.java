@@ -92,7 +92,7 @@ public class ConceptDrc {
                 @Override
                 protected boolean checkPixel() {
                     int x = getPivotX(), y = getPivotY();
-                    if (getContext().getDesign().getPlane(Technologies.Concept.PLANE_DIFF).getPixelAutoclip(x, y) != Material.NONE) {
+                    if (isTransistorPixel(getContext().getDesign(), x, y)) {
                         return hasMinimumExtensionWithAnyMaterial(getPivotPlane(), x, y, 2);
                     }
                     return true;
