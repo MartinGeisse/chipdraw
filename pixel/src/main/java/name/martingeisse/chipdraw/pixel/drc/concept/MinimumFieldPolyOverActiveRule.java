@@ -12,7 +12,11 @@ public class MinimumFieldPolyOverActiveRule extends AbstractPerPixelRule {
 
     public MinimumFieldPolyOverActiveRule() {
         super(Technologies.Concept.PLANE_POLY);
-        setErrorMessage("minimum spacing between field poly and active");
+    }
+
+    @Override
+    public String getImplicitErrorMessage() {
+        return "minimum spacing between field poly and active";
     }
 
     @Override
@@ -54,7 +58,7 @@ public class MinimumFieldPolyOverActiveRule extends AbstractPerPixelRule {
             return true;
         }
         Material diff = diffPlane.getPixelAutoclip(x, y);
-        return (diffPlane.getPixelAutoclip(getPivotX(), y) == diff || diffPlane.getPixelAutoclip(y, getPivotY()) == diff);
+        return (diffPlane.getPixelAutoclip(getPivotX(), y) == diff || diffPlane.getPixelAutoclip(x, getPivotY()) == diff);
     }
 
 }

@@ -42,8 +42,6 @@ public final class SpiceLineReader implements Closeable {
 			}
 		}
 
-		// TODO look for include directives
-
 		// look for continuations
 		String line = lookahead;
 		lookahead = null;
@@ -53,7 +51,7 @@ public final class SpiceLineReader implements Closeable {
 				break;
 			}
 			if (anotherLine.startsWith("+")) {
-				line = line + ' ' + anotherLine;
+				line = line + ' ' + anotherLine.substring(1);
 			} else {
 				lookahead = anotherLine;
 				break;

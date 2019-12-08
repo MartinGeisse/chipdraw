@@ -27,16 +27,28 @@ public final class SpiceLoader {
 				if (line == null) {
 					break;
 				}
-				line = line.trim();
-				if (!line.isEmpty()) {
-					consumeLine(line);
-				}
+				consumeLine(line.trim());
 			}
 		}
 		return netlist;
 	}
 
 	private void consumeLine(String line) {
+
+		// ignore empty lines
+		if (line.isEmpty()) {
+			return;
+		}
+
+		// ignore comments
+		if (line.startsWith("*")) {
+			return;
+		}
+
+		// ignore scale specifications
+		if (line.startsWith(".option scale=")) {
+			return;
+		}
 
 		// ignore capacitance for now
 		if (line.startsWith("C")) {
@@ -57,7 +69,7 @@ public final class SpiceLoader {
 	private void consumeTransistor(String line) {
 		String[] segments = StringUtils.split(line);
 		if (segments.length != 12) {
-			throw new RuntimeException("unexpected number of line segments for transistor: " + segments.length);
+			throw new RuntimeException("unexpected number of line segments for transistor: " + segments.length + " / " + StringUtils.join(segments, ' '));
 		}
 		Fet.Dopant dopant;
 		if (segments[5].equals("nfet")) {

@@ -8,7 +8,13 @@ import name.martingeisse.chipdraw.pixel.drc.DrcContext;
 import name.martingeisse.chipdraw.pixel.drc.rule.*;
 
 /**
+ * Note: Rules have been checked manually for correctness and any deviation has been marked with a TODO marker (TODO: via1, rules 8.4 and 8.5).
+ * For metal and via, only metal1 and via12 have been checked; higher layers use the same logic but different numbers,
+ * so they should be easy to add once the number of layers and exact pixel numbers are known.
  *
+ * Note that pad / overglass rules are not implemented here because they are expressed in terms of microns, not lambda,
+ * and we only know lambdas (i.e. we don't know how many pixels a micron is, so we cannot check those rules). For a
+ * specific technology node, pad rules should be added.
  */
 public class ConceptDrc {
 
@@ -28,7 +34,7 @@ public class ConceptDrc {
 			new MinimumSelfSpacingRule(Technologies.Concept.PLANE_WELL, MinimumSelfSpacingRule.MaterialMode.IGNORE_OTHER_MATERIALS, 6),
 
 			// 1.4 (Minimum spacing between wells of different type) is implicitly true because they are represented as
-			// different materials on the same plane.
+			// different materials on the same plane -- so they cannot overlap -- and the minimum spacing is 0.
 
 
 			//
@@ -51,7 +57,7 @@ public class ConceptDrc {
 				protected boolean checkPixel() {
 					return !isMaterialNearby(getPivotPlane(), getPivotX(), getPivotY(), 4, getPivotMaterial().getOther());
 				}
-			}.setErrorMessage("Minimum spacing between non-abutting active of different implant: 4"),
+			}.setErrorMessageOverride("Minimum spacing between non-abutting active of different implant: 4"),
 
 
 			//
@@ -75,7 +81,7 @@ public class ConceptDrc {
 					}
 					return true;
 				}
-			}.setErrorMessage("Minimum gate extension over active: 2"),
+			}.setErrorMessageOverride("Minimum gate extension over active: 2"),
 
 			// 3.4 (Minimum active extension of [over] poly: 3)
 			new AbstractPerPixelRule(Technologies.Concept.PLANE_DIFF) {
@@ -87,7 +93,7 @@ public class ConceptDrc {
 					}
 					return true;
 				}
-			}.setErrorMessage("Minimum active extension over poly: 3"),
+			}.setErrorMessageOverride("Minimum active extension over poly: 3"),
 
 			// 3.5 (Minimum field poly [spacing] to active: 1)
 			new MinimumFieldPolyOverActiveRule(),
@@ -99,16 +105,17 @@ public class ConceptDrc {
 
 			// 4.1 (Minimum select spacing to channel of transistor to ensure adequate source/drain width: 3)
 			// Along Manhattan directions, this is already checked by 3.4 (minimum active extension of poly). I'm
-			// no sure the rule applies todiagonal directions since it says "to ensure adequate source/drain width" --
-			// seems to apply to abutting implant regions instead. A rule that also checks diagonally would probably
-			// complain about nearby well taps unnecessarily.
+			// not sure if the rule applies to diagonal directions since it says "to ensure adequate source/drain
+			// width" -- seems to apply to abutting implant regions instead. A rule that also checks diagonally would
+			// probably complain about nearby well taps unnecessarily.
 			// TODO ask
 
 			// 4.2 (Minimum select overlap of active)
 			// is implicitly obeyed since we derive the select mask automatically
 
 			// 4.3 (Minimum select overlap of contact: 1)
-			// is implicitly obeyed since we derive the select mask automatically
+			// is implicitly obeyed since we derive the select mask automatically and because of minimum active overlap
+			// of contact
 
 			// 4.4 (Minimum select width and spacing (Note: P-select and N-select may be coincident, but must not overlap))
 			// is implicitly obeyed since we derive the select mask automatically
@@ -130,7 +137,7 @@ public class ConceptDrc {
 				protected boolean affects(int x, int y, Material material) {
 					return material == Technologies.Concept.MATERIAL_CONTACT;
 				}
-			}.setErrorMessage("Minimum contact spacing: 2"),
+			}.setErrorMessageOverride("Minimum contact spacing: 2"),
 
 			// 5.4 and 6.4 (Minimum spacing to gate of transistor: 2)
 			new AbstractPerPixelRule(Technologies.Concept.PLANE_METAL1) {
@@ -161,7 +168,7 @@ public class ConceptDrc {
 					}
 					return true;
 				}
-			}.setErrorMessage("Minimum spacing of contact to gate of transistor: 2"),
+			}.setErrorMessageOverride("Minimum spacing of contact to gate of transistor: 2"),
 
 
 			//
@@ -184,7 +191,7 @@ public class ConceptDrc {
 					int x = getPivotX(), y = getPivotY();
 					return isSurroundedByAnyMaterial(getPivotPlane(), x, y, 1);
 				}
-			}.setErrorMessage("Minimum overlap of contact with metal1: 1"),
+			}.setErrorMessageOverride("Minimum overlap of contact with metal1: 1"),
 
 			// 7.4 (Minimum spacing when either metal line is wider than 10 lambda: 4)
 			// TODO
@@ -203,7 +210,7 @@ public class ConceptDrc {
 				protected boolean affects(int x, int y, Material material) {
 					return material == Technologies.Concept.MATERIAL_VIA12;
 				}
-			}.setErrorMessage("Minimum via12 spacing: 3"),
+			}.setErrorMessageOverride("Minimum via12 spacing: 3"),
 
 			// 8.3 (Minimum overlap [of via12] by metal1: 1)
 			// includes 9.3 (Minimum overlap of via12 [by metal2]: 1)
@@ -218,7 +225,7 @@ public class ConceptDrc {
 					int x = getPivotX(), y = getPivotY();
 					return isSurroundedByAnyMaterial(metal1, x, y, 1) && isSurroundedByAnyMaterial(metal2, x, y, 1);
 				}
-			}.setErrorMessage("Minimum overlap of via12 by metal1 and metal2: 1"),
+			}.setErrorMessageOverride("Minimum overlap of via12 by metal1 and metal2: 1"),
 
 			// 8.4 TODO -- are stacked vias allowed?
 
@@ -239,8 +246,6 @@ public class ConceptDrc {
 
 			// 9.4 (Minimum spacing when either metal line is wider than 10 lambda: 6)
 			// TODO
-
-			// TODO pad rules, especially "Minimum pad spacing to active, poly or poly2: 15µ"
 
     );
 

@@ -58,6 +58,13 @@ public abstract class DesignPixelPanel extends JPanel {
 		for (int y = 1; y < design.getHeight(); y++) {
 			g.drawLine(0, y * pixelSize, design.getWidth() * pixelSize, y * pixelSize);
 		}
+		g.setColor(Color.GRAY);
+		for (int x = 6; x < design.getWidth(); x+=6) {
+			g.drawLine(x * pixelSize, 0, x * pixelSize, design.getHeight() * pixelSize);
+		}
+		for (int y = 6; y < design.getHeight(); y+=6) {
+			g.drawLine(0, y * pixelSize, design.getWidth() * pixelSize, y * pixelSize);
+		}
 
 	}
 

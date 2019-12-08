@@ -7,6 +7,17 @@ import name.martingeisse.chipdraw.pixel.design.PlaneSchema;
  * <p>
  * If separateMaterials is true, then that square must be filled with pixels of the same material. If separateMaterials
  * is false, then it is sufficient for the square to be filled with any nonempty pixels in the same plane.
+ * <p>
+ * TODO: This rule cannot properly detect when two sufficiently wide areas are connected through a small path that
+ * is too narrow IF each pixel of that path is part of one of the large areas, like this:
+ *
+ * ...####
+ * ...####
+ * ...####
+ * #######
+ * ####...
+ * ####...
+ * ####...
  */
 public final class MinimumRectangularWidthRule extends AbstractPerPixelRule {
 
@@ -17,7 +28,11 @@ public final class MinimumRectangularWidthRule extends AbstractPerPixelRule {
         super(pivotPlaneSchema);
         this.size = size;
         this.separateMaterials = separateMaterials;
-        setErrorMessage("minimum width " + size + " in plane " + pivotPlaneSchema);
+    }
+
+    @Override
+    public String getImplicitErrorMessage() {
+        return "minimum width " + size + " in plane " + getPivotPlaneSchema();
     }
 
     @Override

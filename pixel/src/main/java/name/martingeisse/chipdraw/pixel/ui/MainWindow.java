@@ -13,6 +13,7 @@ import name.martingeisse.chipdraw.pixel.global_tools.Autocropper;
 import name.martingeisse.chipdraw.pixel.global_tools.ConnectivityExtractor;
 import name.martingeisse.chipdraw.pixel.global_tools.CornerStitchingExtrator;
 import name.martingeisse.chipdraw.pixel.global_tools.Enlarger;
+import name.martingeisse.chipdraw.pixel.global_tools.longcell.LongCellGenerator;
 import name.martingeisse.chipdraw.pixel.global_tools.magic.MagicExportDialog;
 import name.martingeisse.chipdraw.pixel.icons.Icons;
 import name.martingeisse.chipdraw.pixel.operation.DesignOperation;
@@ -401,6 +402,7 @@ public class MainWindow extends JFrame implements Editor.Ui {
                     return new Autocropper(oldDesign).autocrop();
                 }
             }));
+            builder.add("LongCell", () -> LongCellGenerator.generate(JOptionPane.showInputDialog("Please enter a boolean term.")));
             builder.addMenu("Help");
             builder.addExternalLink("Contents", "https://github.com/MartinGeisse/chipdraw/blob/master/doc/index.md"); // TODO link to commit for this version
             builder.add("About", () -> JOptionPane.showMessageDialog(MainWindow.this, About.ABOUT_TEXT));

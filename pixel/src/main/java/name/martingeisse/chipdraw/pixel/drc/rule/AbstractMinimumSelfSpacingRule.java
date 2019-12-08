@@ -43,8 +43,6 @@ public abstract class AbstractMinimumSelfSpacingRule extends AbstractRule {
 
     protected abstract int determineSpacing(int x, int y, Material material);
 
-    protected abstract String buildErrorMessage(int x, int y, Material material);
-
     private class MyConnectivityExtractor extends ConnectivityExtractor {
 
         private final Set<Point> points = new HashSet<>();
@@ -85,7 +83,7 @@ public abstract class AbstractMinimumSelfSpacingRule extends AbstractRule {
                         Material otherMaterial = plane.getPixelAutoclip(xdx, ydy);
                         if (otherMaterial != Material.NONE && !points.contains(otherPoint)) {
                             if (otherMaterial == material || materialMode != MaterialMode.IGNORE_OTHER_MATERIALS) {
-                                context.report(x, y, buildErrorMessage(x, y, material));
+                                context.report(x, y, getErrorMessage());
                             }
                         }
                     }

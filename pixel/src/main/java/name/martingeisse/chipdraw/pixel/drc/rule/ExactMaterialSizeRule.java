@@ -35,7 +35,7 @@ public final class ExactMaterialSizeRule extends AbstractRule {
     private void checkShape(Set<Point> points) {
         if (!hasCorrectShape(points)) {
             Point point = points.iterator().next();
-            context.report(point.getX(), point.getY(), getEffectiveErrorMessage());
+            context.report(point.getX(), point.getY(), getErrorMessage());
         }
     }
 

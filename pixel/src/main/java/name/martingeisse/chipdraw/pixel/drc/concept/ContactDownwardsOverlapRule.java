@@ -20,7 +20,11 @@ public class ContactDownwardsOverlapRule extends AbstractPerPixelRule {
 
     public ContactDownwardsOverlapRule() {
         super(Technologies.Concept.PLANE_METAL1);
-        setErrorMessage("minimum overlap of contact with diffusion or poly: 2");
+    }
+
+    @Override
+    public String getImplicitErrorMessage() {
+        return "minimum overlap of contact with diffusion or poly: 2";
     }
 
     @Override

@@ -39,6 +39,7 @@ public final class Design implements Serializable, RectangularSize {
         }
         this.routingPlanes = ImmutableList.copyOf(routingPlanes);
         this.cellPlane = new CellPlane(width, height);
+        linkRoutingPlanes();
     }
 
     public Design(Design original) {
@@ -47,6 +48,15 @@ public final class Design implements Serializable, RectangularSize {
             routingPlanes.get(i).copyFrom(original.getRoutingPlanes().get(i));
         }
         // TODO copy cell plane
+        linkRoutingPlanes();
+    }
+
+    private void linkRoutingPlanes() {
+        for (int i = 0; i < routingPlanes.size(); i++) {
+            RoutingPlane routingPlane = routingPlanes.get(i);
+            routingPlane.design = this;
+            routingPlane.index = i;
+        }
     }
 
     void initializeAfterDeserialization(CellLibraryRepository cellLibraryRepository) throws NoSuchCellLibraryException {

@@ -1,47 +1,54 @@
 package name.martingeisse.chipdraw.unspice.netlist;
 
+import com.google.common.collect.ImmutableList;
+
 /**
  *
  */
 public final class Fet implements Component {
 
 	private final Dopant dopant;
-	private final String terminal0;
-	private final String terminal1;
-	private final String terminal2;
-	private final String terminal3;
+	private final String drain;
+	private final String gate;
+	private final String source;
+	private final String bulk;
 
-	public Fet(Dopant dopant, String terminal0, String terminal1, String terminal2, String terminal3) {
+	public Fet(Dopant dopant, String drain, String gate, String source, String bulk) {
 		this.dopant = dopant;
-		this.terminal0 = terminal0;
-		this.terminal1 = terminal1;
-		this.terminal2 = terminal2;
-		this.terminal3 = terminal3;
+		this.drain = drain;
+		this.gate = gate;
+		this.source = source;
+		this.bulk = bulk;
 	}
 
 	public Dopant getDopant() {
 		return dopant;
 	}
 
-	public String getTerminal0() {
-		return terminal0;
+	public String getDrain() {
+		return drain;
 	}
 
-	public String getTerminal1() {
-		return terminal1;
+	public String getGate() {
+		return gate;
 	}
 
-	public String getTerminal2() {
-		return terminal2;
+	public String getSource() {
+		return source;
 	}
 
-	public String getTerminal3() {
-		return terminal3;
+	public String getBulk() {
+		return bulk;
+	}
+
+	@Override
+	public ImmutableList<String> getConnectedNets() {
+		return ImmutableList.of(drain, gate, source, bulk);
 	}
 
 	@Override
 	public void dump() {
-		System.out.println(dopant.name() + "-FET: " + terminal0 + ", " + terminal1 + ", " + terminal2 + ", " + terminal3);
+		System.out.println(dopant.name() + "-FET: drain = " + drain + ", gate = " + gate + ", source = " + source + ", bulk = " + bulk);
 	}
 
 	public enum Dopant {

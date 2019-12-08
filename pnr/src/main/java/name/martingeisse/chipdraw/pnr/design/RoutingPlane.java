@@ -1,5 +1,6 @@
 package name.martingeisse.chipdraw.pnr.design;
 
+import com.google.common.collect.ImmutableList;
 import name.martingeisse.chipdraw.pnr.util.RectangularSize;
 
 import java.io.Serializable;
@@ -9,6 +10,8 @@ public final class RoutingPlane implements Serializable, RectangularSize {
 
     private final int width, height;
     private final byte[] tileCodes;
+    Design design;
+    int index;
 
     private RoutingPlane(int width, int height, byte[] dataSource) {
         this.width = width;
@@ -35,6 +38,22 @@ public final class RoutingPlane implements Serializable, RectangularSize {
 
     public int getHeight() {
         return height;
+    }
+
+    public Design getDesign() {
+        return design;
+    }
+
+    public int getIndex() {
+        return index;
+    }
+
+    public RoutingPlane getRoutingPlaneAbove() {
+        return (index == 0) ? null : design.getRoutingPlanes().get(index - 1);
+    }
+
+    public RoutingPlane getRoutingPlaneBelow() {
+        return (index == design.getRoutingPlaneCount() - 1) ? null : design.getRoutingPlanes().get(index + 1);
     }
 
     public boolean isValidPosition(int x, int y) {

@@ -28,6 +28,8 @@ import java.util.Map;
 
 public class MainWindow extends JFrame implements Editor.Ui {
 
+    public static final int PLACING_VIA_MINIMUM_MOUSE_DISTANCE = 10;
+
     public static final int MIN_PIXEL_SIZE = 2;
     public static final int MAX_PIXEL_SIZE = 32;
 
@@ -41,7 +43,8 @@ public class MainWindow extends JFrame implements Editor.Ui {
     private final JLabel bottomLine;
     private final JList<String> cellTemplateList;
 
-    private boolean drawing, erasing, firstPixelOfStroke;
+    private boolean drawing, erasing, firstPixelOfStroke, placingVia, removingVia;
+    private int placingViaOriginalScreenY, placingViaOriginalPixelX, placingViaOriginalPixelY;
     private CellInstance pickedUpCellInstance;
     private boolean pickedUpCellInstanceCollides;
     private int pixelSize;
@@ -156,9 +159,12 @@ public class MainWindow extends JFrame implements Editor.Ui {
                     g.drawLine(centerX, centerY, centerX, centerY + screenSize);
                 }
                 if (tile.isDownConnected()) {
-                    g.drawLine(centerX, centerY, centerX - 3, centerY - 3);
+                    g.drawLine(centerX, centerY, centerX - 3, centerY + 3);
                 }
-
+                RoutingPlane planeAbove = plane.getRoutingPlaneAbove();
+                if (planeAbove != null && planeAbove.getTile(pixelX, pixelY).isDownConnected()) {
+                    g.drawLine(centerX, centerY, centerX + 3, centerY - 3);
+                }
             }
 
             @Override
@@ -290,17 +296,24 @@ public class MainWindow extends JFrame implements Editor.Ui {
                     }
                     repaint();
                 } else {
-                    drawing = (e.getButton() == MouseEvent.BUTTON1);
-                    erasing = (e.getButton() == MouseEvent.BUTTON3);
+                    drawing = (e.getButton() == MouseEvent.BUTTON1 && (e.getModifiersEx() & InputEvent.SHIFT_DOWN_MASK) == 0);
+                    erasing = (e.getButton() == MouseEvent.BUTTON3 && (e.getModifiersEx() & InputEvent.SHIFT_DOWN_MASK) == 0);
+                    placingVia = (e.getButton() == MouseEvent.BUTTON1 && (e.getModifiersEx() & InputEvent.SHIFT_DOWN_MASK) != 0);
+                    removingVia = (e.getButton() == MouseEvent.BUTTON3 && (e.getModifiersEx() & InputEvent.SHIFT_DOWN_MASK) != 0);
                     firstPixelOfStroke = true;
                     mouseMoved(e);
+                    if (placingVia || removingVia) {
+                        placingViaOriginalScreenY = e.getY();
+                        placingViaOriginalPixelX = mousePixelX;
+                        placingViaOriginalPixelY = mousePixelY;
+                    }
                 }
             }
 
             @Override
             public void mouseReleased(MouseEvent e) {
                 if (!planeUiState.isEditingCellPlane()) {
-                    drawing = erasing = false;
+                    drawing = erasing = placingVia = removingVia = false;
                 }
             }
 
@@ -342,6 +355,19 @@ public class MainWindow extends JFrame implements Editor.Ui {
                             performOperation(new ErasePoints(mousePixelX, mousePixelY, 1, 1, material.getPlaneSchema()), !firstPixelOfStroke);
                         }
                          */
+                    }
+                    if (placingVia || removingVia) {
+                        RoutingPlane plane = getCurrentDesign().getRoutingPlanes().get(planeUiState.getEditingPlane());
+                        if (event.getY() < placingViaOriginalScreenY - PLACING_VIA_MINIMUM_MOUSE_DISTANCE) {
+                            RoutingPlane planeAbove = plane.getRoutingPlaneAbove();
+                            if (planeAbove != null) {
+                                planeAbove.setDown(placingViaOriginalPixelX, placingViaOriginalPixelY, placingVia);
+                                repaint();
+                            }
+                        } else if (event.getY() > placingViaOriginalScreenY + PLACING_VIA_MINIMUM_MOUSE_DISTANCE) {
+                            plane.setDown(placingViaOriginalPixelX, placingViaOriginalPixelY, placingVia);
+                            repaint();
+                        }
                     }
                 }
                 updateBottomLine();
@@ -579,6 +605,8 @@ public class MainWindow extends JFrame implements Editor.Ui {
         cellTemplateList.setSelectedIndex(0);
         drawing = false;
         erasing = false;
+        placingVia = false;
+        removingVia = false;
         pixelSize = 16;
         updateMainPanelSize();
     }
