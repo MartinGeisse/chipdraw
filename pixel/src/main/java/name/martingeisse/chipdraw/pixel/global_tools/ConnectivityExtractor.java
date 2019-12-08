@@ -10,7 +10,10 @@ import name.martingeisse.chipdraw.pixel.design.Plane;
 public abstract class ConnectivityExtractor extends AbstractPerPlaneExtractor {
 
     private final boolean mergeMaterials;
-    private Material material = null;
+    private Plane planeCopy;
+    private Material patchMaterial;
+    private int[] todoX = new int[100], todoY = new int[100];
+    private int todoCount;
 
     public ConnectivityExtractor(boolean mergeMaterials) {
         this.mergeMaterials = mergeMaterials;
@@ -18,29 +21,53 @@ public abstract class ConnectivityExtractor extends AbstractPerPlaneExtractor {
 
     @Override
     protected void handlePlane(Plane plane) {
-        Plane copy = new Plane(plane);
-        for (int y = 0; y < copy.getHeight(); y++) {
-            for (int x = 0; x < copy.getWidth(); x++) {
-                material = copy.getPixel(x, y);
-                if (material != Material.NONE) {
-                    beginPatch(mergeMaterials ? null : material);
-                    clear(copy, x, y);
+        planeCopy = new Plane(plane);
+        for (int y = 0; y < planeCopy.getHeight(); y++) {
+            for (int x = 0; x < planeCopy.getWidth(); x++) {
+                patchMaterial = planeCopy.getPixel(x, y);
+                if (patchMaterial != Material.NONE) {
+                    beginPatch(mergeMaterials ? null : patchMaterial);
+                    todoX[0] = x;
+                    todoY[0] = y;
+                    todoCount = 1;
+                    clearPatch();
                     finishPatch();
                 }
             }
         }
     }
 
-    private void clear(Plane copy, int x, int y) {
-        Material material = copy.getPixelAutoclip(x, y);
-        if (mergeMaterials ? (material != Material.NONE) : (material == this.material)) {
+    private void clearPatch() {
+        while (todoCount > 0) {
+            todoCount--;
+            int x = todoX[todoCount];
+            int y = todoY[todoCount];
             handlePixel(x, y);
-            copy.setPixel(x, y, Material.NONE);
-            clear(copy, x - 1, y);
-            clear(copy, x + 1, y);
-            clear(copy, x, y - 1);
-            clear(copy, x, y + 1);
+            planeCopy.setPixel(x, y, Material.NONE);
+            checkPixel(x - 1, y);
+            checkPixel(x + 1, y);
+            checkPixel(x, y - 1);
+            checkPixel(x, y + 1);
         }
+    }
+
+    private void checkPixel(int x, int y) {
+        Material pixelMaterial = planeCopy.getPixel(x, y);
+        if (mergeMaterials ? (pixelMaterial != Material.NONE) : (pixelMaterial == patchMaterial)) {
+            if (todoCount == todoX.length) {
+                todoX = grow(todoX);
+                todoY = grow(todoY);
+            }
+            todoX[todoCount] = x;
+            todoY[todoCount] = y;
+            todoCount++;
+        }
+    }
+
+    private static int[] grow(int[] a) {
+        int[] b = new int[2 * a.length];
+        System.arraycopy(a, 0, b, 0, a.length);
+        return b;
     }
 
     protected void beginPatch(Material material) {
