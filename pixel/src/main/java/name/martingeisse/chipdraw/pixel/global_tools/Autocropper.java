@@ -27,9 +27,7 @@ public final class Autocropper {
         int bottom = getFirstFalse(n -> isRowEmpty(design.getHeight() - 1 - n));
         int left = getFirstFalse(this::isColumnEmpty);
         int right = getFirstFalse(n -> isColumnEmpty(design.getWidth() - 1 - n));
-        Design result = new Design(design.getTechnology(), design.getWidth() - left - right, design.getHeight() - top - bottom);
-        result.copyFrom(design, left, top, 0, 0, result.getWidth(), result.getHeight());
-        return result;
+        return design.createCopyOfRectangle(left, top, design.getWidth() - left - right, design.getHeight() - top - bottom);
     }
 
     private boolean isDesignEmpty() {

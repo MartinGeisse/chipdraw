@@ -82,4 +82,10 @@ public final class Design implements Serializable, RectangularSize {
         }
     }
 
+    public Design createCopyOfRectangle(int x, int y, int width, int height) {
+        Design copy = new Design(technology, width, height);
+        copy.copyFrom(this, x, y, 0, 0, width, height);
+        return copy;
+    }
+
 }
