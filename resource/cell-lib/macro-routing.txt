@@ -36,3 +36,27 @@ whole design by 1 (invalidates it), needs many special rules, and so on. Better:
 routing in terms of "pixels" which contain a routing micro-tile, not just a color.
 
 The standard cells must therefore be a multiple of the 6x6 routing tiles in size.
+
+----------
+
+Problem: SCMOS says that metal2 has minimum spacing 3, so a via with 1 pixel of overlap (total size 4) plus 3 pixels
+of spacing don't fit. We either have to route metal2 in a different way, or increase the routing tile size to 7.
+
+BUT: There is another problem. We are using metal1 extensively in building the standard cells, so we cannot use
+it for routing anyway. If we start with metal2, the 7-sized tiles have to be used anyway.
+
+-> minimum size for the routing tiles: 7x7.
+
+Next problem: metal3 is even wider, and has incompatible sizes again. Metal3 demands minimum size 10x10, but this time
+a via doesn't increase the size (it already fits in 10x10). So we now have these possibilities:
+- ignore the problem and hope that 7x7 works for metal3 in practice (or that metal3 is not needed, or that metal3 can
+    be routed manually afterwards)
+- use 10x10 even for metal2
+
+The cell design is only minimally affected by all this -- only the placement of the vias would change slightly to align
+with either a 7x7 or 10x10 grid. So I'll go on with the cells and decide afterwards. For now, my intuition says that
+10x10 is not a huge downgrade for routing, and these huge sizes are only useful for experimentation anyway. For a real
+process, the first steps would be to find more accurate design rules and define the design process around them. Even
+now, we changed the 1.5 overlap to 2 for simplicity, so we could gain another 1 lambda just be properly dealing with
+that.
+
