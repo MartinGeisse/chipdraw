@@ -1,6 +1,7 @@
 package name.martingeisse.chipdraw.pixel.global_tools.stdcell;
 
 import name.martingeisse.chipdraw.pixel.design.Design;
+import name.martingeisse.chipdraw.pixel.design.Material;
 import name.martingeisse.chipdraw.pixel.design.Plane;
 import name.martingeisse.chipdraw.pixel.design.Technologies;
 
@@ -13,27 +14,26 @@ public class StandardCellTemplateGeneratorBase {
 //region fields
 
     // general
-    private final int width = 140;
-    private final int height = 70;
+    private int width = 140;
+    private int height = 70;
 
     // wells
-    private final int topWellMargin = 1;
-    private final int bottomWellMargin = 1;
-    private final int leftNwellMargin = 2;
-    private final int rightNwellMargin = 2;
-    private final int leftPwellMargin = 2;
-    private final int rightPwellMargin = 2;
-    private final int wellGap = 2;
+    private int topWellMargin = 1;
+    private int bottomWellMargin = 1;
+    private int leftWellMargin = 2;
+    private int rightWellMargin = 2;
+    private int wellGap = 2;
 
     // power rails
-    private final int powerRailWidthInTiles = 11;
-    private final int powerRailTopMargin = 1;
-    private final int powerRailBottomMargin = 2;
+    private int powerRailHeight = 11;
+    private int powerRailTopMargin = 1;
+    private int powerRailBottomMargin = 2;
 
     // well taps
-    private final int wellTapLeftMargin = 5;
-    private final int wellTapSize = 2;
-    private final int wellTapSpacing = 3;
+    private int wellTapMargin = 5;
+    private int wellTapSize = 2;
+    private int wellTapSpacing = 3;
+    private int overlapByDiffusion = 2;
 
 //endregion
 
@@ -43,60 +43,104 @@ public class StandardCellTemplateGeneratorBase {
         return width;
     }
 
+    public void setWidth(int width) {
+        this.width = width;
+    }
+
     public int getHeight() {
         return height;
+    }
+
+    public void setHeight(int height) {
+        this.height = height;
     }
 
     public int getTopWellMargin() {
         return topWellMargin;
     }
 
+    public void setTopWellMargin(int topWellMargin) {
+        this.topWellMargin = topWellMargin;
+    }
+
     public int getBottomWellMargin() {
         return bottomWellMargin;
     }
 
-    public int getLeftNwellMargin() {
-        return leftNwellMargin;
+    public void setBottomWellMargin(int bottomWellMargin) {
+        this.bottomWellMargin = bottomWellMargin;
     }
 
-    public int getRightNwellMargin() {
-        return rightNwellMargin;
+    public int getLeftWellMargin() {
+        return leftWellMargin;
     }
 
-    public int getLeftPwellMargin() {
-        return leftPwellMargin;
+    public void setLeftWellMargin(int leftWellMargin) {
+        this.leftWellMargin = leftWellMargin;
     }
 
-    public int getRightPwellMargin() {
-        return rightPwellMargin;
+    public int getRightWellMargin() {
+        return rightWellMargin;
+    }
+
+    public void setRightWellMargin(int rightWellMargin) {
+        this.rightWellMargin = rightWellMargin;
     }
 
     public int getWellGap() {
         return wellGap;
     }
 
-    public int getPowerRailWidthInTiles() {
-        return powerRailWidthInTiles;
+    public void setWellGap(int wellGap) {
+        this.wellGap = wellGap;
+    }
+
+    public int getPowerRailHeight() {
+        return powerRailHeight;
+    }
+
+    public void setPowerRailHeight(int powerRailHeight) {
+        this.powerRailHeight = powerRailHeight;
     }
 
     public int getPowerRailTopMargin() {
         return powerRailTopMargin;
     }
 
+    public void setPowerRailTopMargin(int powerRailTopMargin) {
+        this.powerRailTopMargin = powerRailTopMargin;
+    }
+
     public int getPowerRailBottomMargin() {
         return powerRailBottomMargin;
     }
 
-    public int getWellTapLeftMargin() {
-        return wellTapLeftMargin;
+    public void setPowerRailBottomMargin(int powerRailBottomMargin) {
+        this.powerRailBottomMargin = powerRailBottomMargin;
+    }
+
+    public int getWellTapMargin() {
+        return wellTapMargin;
+    }
+
+    public void setWellTapMargin(int wellTapMargin) {
+        this.wellTapMargin = wellTapMargin;
     }
 
     public int getWellTapSize() {
         return wellTapSize;
     }
 
+    public void setWellTapSize(int wellTapSize) {
+        this.wellTapSize = wellTapSize;
+    }
+
     public int getWellTapSpacing() {
         return wellTapSpacing;
+    }
+
+    public void setWellTapSpacing(int wellTapSpacing) {
+        this.wellTapSpacing = wellTapSpacing;
     }
 
 //endregion
@@ -108,24 +152,46 @@ public class StandardCellTemplateGeneratorBase {
         Plane metalPlane = design.getPlane(Technologies.Concept.PLANE_METAL1);
 
         // wells
-        int nwellWidth = width - leftNwellMargin - rightNwellMargin;
-        int pwellWidth = width - leftPwellMargin - rightPwellMargin;
-        int combinedWellHeight = height - topWellMargin - bottomWellMargin - wellGap;
-        int pwellHeight = combinedWellHeight / 3;
-        int nwellHeight = combinedWellHeight - pwellHeight;
-        wellPlane.drawRectangleAutoclip(leftNwellMargin, topWellMargin, nwellWidth, nwellHeight, Technologies.Concept.MATERIAL_NWELL);
-        wellPlane.drawRectangleAutoclip(leftPwellMargin, height - bottomWellMargin - pwellHeight, pwellWidth, pwellHeight, Technologies.Concept.MATERIAL_PWELL);
-
-        // p-well (lower well)
-        // TODO
+        {
+            int wellWidth = width - leftWellMargin - rightWellMargin;
+            int combinedWellHeight = height - topWellMargin - bottomWellMargin - wellGap;
+            int pwellHeight = combinedWellHeight / 3;
+            int nwellHeight = combinedWellHeight - pwellHeight;
+            wellPlane.drawRectangle(leftWellMargin, topWellMargin, wellWidth, nwellHeight, Technologies.Concept.MATERIAL_NWELL);
+            wellPlane.drawRectangle(leftWellMargin, height - bottomWellMargin - pwellHeight, wellWidth, pwellHeight, Technologies.Concept.MATERIAL_PWELL);
+        }
 
         // power rails
-        // TODO
+        metalPlane.drawRectangle(0, powerRailTopMargin, width, powerRailHeight, Technologies.Concept.MATERIAL_METAL1);
+        metalPlane.drawRectangle(0, height - powerRailBottomMargin - powerRailHeight, width, powerRailHeight, Technologies.Concept.MATERIAL_METAL1);
 
         // well taps
-        // TODO
+        {
+
+            // diffusion
+            int nwellY = topWellMargin + wellTapMargin;
+            int pwellY = height - bottomWellMargin - wellTapMargin - wellTapSize;
+            drawDiffusionForWellTaps(diffusionPlane, Technologies.Concept.MATERIAL_NDIFF, nwellY);
+            drawDiffusionForWellTaps(diffusionPlane, Technologies.Concept.MATERIAL_PDIFF, pwellY);
+
+            // contacts
+            int x = leftWellMargin + wellTapMargin;
+            while (x < width - rightWellMargin - wellTapMargin - wellTapSize) {
+                metalPlane.drawRectangle(x, nwellY, 2, 2, Technologies.Concept.MATERIAL_CONTACT);
+                metalPlane.drawRectangle(x, pwellY, 2, 2, Technologies.Concept.MATERIAL_CONTACT);
+                x = x + wellTapSize + wellTapSpacing;
+            }
+
+        }
 
         return design;
+    }
+
+    private void drawDiffusionForWellTaps(Plane diffusionPlane, Material material, int tapY) {
+        int x = leftWellMargin + wellTapMargin - overlapByDiffusion;
+        int diffusionWidth = width - leftWellMargin - rightWellMargin - 2 * (wellTapMargin - overlapByDiffusion);
+        int diffusionHeight = 2 * overlapByDiffusion + wellTapSize;
+        diffusionPlane.drawRectangle(x, tapY - overlapByDiffusion, diffusionWidth, diffusionHeight, material);
     }
 
 }
