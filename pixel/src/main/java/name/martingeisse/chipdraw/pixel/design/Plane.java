@@ -346,4 +346,19 @@ public final class Plane implements Serializable, RectangularSize {
 		}
 	}
 
+	public static boolean rectangleEquals(Plane plane1, Plane plane2, int x, int y, int width, int height) {
+		if (plane1.getSchema() != plane2.getSchema()) {
+			throw new IllegalArgumentException("planes use different schemas");
+		}
+		for (int dx = 0; dx < width; dx++) {
+			for (int dy = 0; dy < height; dy++) {
+				int x2 = x + dx, y2 = y + dy;
+				if (plane1.getPixelAutoclip(x2, y2) != plane2.getPixelAutoclip(x2, y2)) {
+					return false;
+				}
+			}
+		}
+		return true;
+	}
+
 }

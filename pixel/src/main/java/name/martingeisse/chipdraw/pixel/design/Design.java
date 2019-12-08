@@ -88,4 +88,28 @@ public final class Design implements Serializable, RectangularSize {
         return copy;
     }
 
+    public static boolean pixelEquals(Design design1, Design design2, int x, int y) {
+        if (design1.getTechnology() != design2.getTechnology()) {
+            throw new IllegalArgumentException("designs use different technologies");
+        }
+        for (int i = 0; i < design1.getPlanes().size(); i++) {
+            if (design1.getPlanes().get(i).getPixelAutoclip(x, y) != design2.getPlanes().get(i).getPixelAutoclip(x, y)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    public static boolean rectangleEquals(Design design1, Design design2, int x, int y, int width, int height) {
+        if (design1.getTechnology() != design2.getTechnology()) {
+            throw new IllegalArgumentException("designs use different technologies");
+        }
+        for (int i = 0; i < design1.getPlanes().size(); i++) {
+            if (!Plane.rectangleEquals(design1.getPlanes().get(i), design2.getPlanes().get(i), x, y, width, height)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
 }
