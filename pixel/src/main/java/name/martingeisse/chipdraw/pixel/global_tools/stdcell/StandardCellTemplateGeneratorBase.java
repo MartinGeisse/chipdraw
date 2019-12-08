@@ -143,7 +143,15 @@ public class StandardCellTemplateGeneratorBase {
         this.wellTapSpacing = wellTapSpacing;
     }
 
-//endregion
+    public int getOverlapByDiffusion() {
+        return overlapByDiffusion;
+    }
+
+    public void setOverlapByDiffusion(int overlapByDiffusion) {
+        this.overlapByDiffusion = overlapByDiffusion;
+    }
+
+    //endregion
 
     public Design generate() {
         Design design = new Design(Technologies.Concept.TECHNOLOGY, width, height);
