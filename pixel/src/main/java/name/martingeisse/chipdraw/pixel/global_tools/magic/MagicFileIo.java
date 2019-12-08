@@ -77,6 +77,7 @@ public final class MagicFileIo {
 
 		// TODO
 
+		throw new UnsupportedOperationException();
 	}
 
 	//endregion
