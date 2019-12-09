@@ -128,6 +128,12 @@ public class MainWindow extends JFrame implements Editor.Ui {
             button3x3.setFocusable(false);
             button3x3.addActionListener(event -> cursorSize = 3);
             cursorSizeButtonPanel.add(button3x3);
+
+            JButton rowButton = new JButton(Icons.get("row.png"));
+            rowButton.setFocusable(false);
+            rowButton.addActionListener(event -> {});
+            cursorSizeButtonPanel.add(rowButton);
+
             sideBar.add(cursorSizeButtonPanel);
         }
         sideBar.add(Box.createGlue());
