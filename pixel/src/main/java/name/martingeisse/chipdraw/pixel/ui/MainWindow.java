@@ -247,12 +247,12 @@ public class MainWindow extends JFrame implements Editor.Ui {
                     button = MouseTool.MouseButton.MIDDLE;
                 }
                 boolean shift = (event.getModifiersEx() & KeyEvent.SHIFT_DOWN_MASK) != 0;
-                handle(event, () -> mouseTool.onMousePressed(mousePixelX, mousePixelY, button, shift));
+                handle(event, () -> mouseTool.onMousePressed(getCurrentDesign(), mousePixelX, mousePixelY, button, shift));
             }
 
             @Override
             public void mouseReleased(MouseEvent event) {
-                handle(event, () -> mouseTool.onMouseReleased());
+                handle(event, () -> mouseTool.onMouseReleased(getCurrentDesign()));
             }
 
             @Override
@@ -261,7 +261,7 @@ public class MainWindow extends JFrame implements Editor.Ui {
                 int oldMousePixelY = mousePixelY;
                 handle(event, () -> {
                     if (mousePixelX != oldMousePixelX || mousePixelY != oldMousePixelY) {
-                        return mouseTool.onMouseMoved(mousePixelX, mousePixelY);
+                        return mouseTool.onMouseMoved(getCurrentDesign(), mousePixelX, mousePixelY);
                     } else {
                         return null;
                     }

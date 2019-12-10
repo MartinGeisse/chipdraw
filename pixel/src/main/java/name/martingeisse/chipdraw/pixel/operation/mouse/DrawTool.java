@@ -1,5 +1,6 @@
 package name.martingeisse.chipdraw.pixel.operation.mouse;
 
+import name.martingeisse.chipdraw.pixel.design.Design;
 import name.martingeisse.chipdraw.pixel.design.Material;
 import name.martingeisse.chipdraw.pixel.operation.DesignOperation;
 import name.martingeisse.chipdraw.pixel.operation.library.DrawPoints;
@@ -22,15 +23,15 @@ public final class DrawTool implements MouseTool {
 	}
 
 	@Override
-	public Result onMousePressed(int x, int y, MouseButton button, boolean shift) {
+	public Result onMousePressed(Design design, int x, int y, MouseButton button, boolean shift) {
 		drawing = (button == MouseButton.LEFT);
 		erasing = (button == MouseButton.RIGHT);
 		firstPixelOfStroke = true;
-		return onMouseMoved(x, y);
+		return onMouseMoved(design, x, y);
 	}
 
 	@Override
-	public Result onMouseMoved(int x, int y) {
+	public Result onMouseMoved(Design design, int x, int y) {
 		DesignOperation operation = null;
 		boolean merge = !firstPixelOfStroke;
 		if (drawing || erasing) {
@@ -47,7 +48,7 @@ public final class DrawTool implements MouseTool {
 	}
 
 	@Override
-	public Result onMouseReleased() {
+	public Result onMouseReleased(Design design) {
 		drawing = erasing = false;
 		return null;
 	}

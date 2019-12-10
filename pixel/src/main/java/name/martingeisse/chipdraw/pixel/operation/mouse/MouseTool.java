@@ -1,5 +1,6 @@
 package name.martingeisse.chipdraw.pixel.operation.mouse;
 
+import name.martingeisse.chipdraw.pixel.design.Design;
 import name.martingeisse.chipdraw.pixel.operation.DesignOperation;
 
 /**
@@ -7,11 +8,11 @@ import name.martingeisse.chipdraw.pixel.operation.DesignOperation;
  */
 public interface MouseTool {
 
-	Result onMousePressed(int x, int y, MouseButton button, boolean shift);
+	Result onMousePressed(Design design, int x, int y, MouseButton button, boolean shift);
 
-	Result onMouseMoved(int x, int y);
+	Result onMouseMoved(Design design, int x, int y);
 
-	Result onMouseReleased();
+	Result onMouseReleased(Design design);
 
 	enum MouseButton {
 		LEFT, MIDDLE, RIGHT;
