@@ -535,13 +535,15 @@ public class MainWindow extends JFrame implements Editor.Ui {
     }
 
     private void updateBottomLine() {
+        Design design = getCurrentDesign();
         String message = positionedDrcViolations.get(new Point(mousePixelX, mousePixelY));
         if (message == null) {
             message = "";
         } else {
             message = " / " + message;
         }
-        bottomLine.setText("  " + mousePixelX + ", " + mousePixelY + message);
+        bottomLine.setText("  " + design.getWidth() + " x " + design.getHeight() + " | " +
+            mousePixelX + ", " + mousePixelY + message);
     }
 
     private void run(UiRunnable runnable) {
