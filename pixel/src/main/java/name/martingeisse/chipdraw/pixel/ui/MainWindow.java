@@ -21,6 +21,7 @@ import name.martingeisse.chipdraw.pixel.operation.DesignOperation;
 import name.martingeisse.chipdraw.pixel.operation.OutOfPlaceDesignOperation;
 import name.martingeisse.chipdraw.pixel.operation.mouse.DrawTool;
 import name.martingeisse.chipdraw.pixel.operation.mouse.MouseTool;
+import name.martingeisse.chipdraw.pixel.operation.mouse.RowTool;
 import name.martingeisse.chipdraw.pixel.ui.util.DesignPixelPanel;
 import name.martingeisse.chipdraw.pixel.ui.util.MenuBarBuilder;
 import name.martingeisse.chipdraw.pixel.ui.util.SingleIconBooleanCellRenderer;
@@ -126,10 +127,9 @@ public class MainWindow extends JFrame implements Editor.Ui {
             button3x3.setFocusable(false);
             button3x3.addActionListener(event -> mouseTool = new DrawTool(materialUiState::getEditingMaterial, 3));
             cursorSizeButtonPanel.add(button3x3);
-
             JButton rowButton = new JButton(Icons.get("row.png"));
             rowButton.setFocusable(false);
-            rowButton.addActionListener(event -> {});
+            rowButton.addActionListener(event -> mouseTool = new RowTool());
             cursorSizeButtonPanel.add(rowButton);
 
             sideBar.add(cursorSizeButtonPanel);

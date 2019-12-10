@@ -40,7 +40,11 @@ public class DeleteRowOperation extends OutOfPlaceDesignOperation {
 		while (endIndex < oldDesign.getHeight() && endIndex - startIndex < maxIdenticalRowCount && rowsIdentical(oldDesign, endIndex, endIndex - 1)) {
 			endIndex++;
 		}
-		Design newDesign = new Design(oldDesign.getTechnology(), oldDesign.getWidth(), startIndex + oldDesign.getHeight() - endIndex);
+		int newHeight = startIndex + oldDesign.getHeight() - endIndex;
+		if (newHeight == 0) {
+			throw new UserVisibleMessageException("cannot delete all remaining rows");
+		}
+		Design newDesign = new Design(oldDesign.getTechnology(), oldDesign.getWidth(), newHeight);
 		newDesign.copyFrom(oldDesign, 0, 0, 0, 0, oldDesign.getWidth(), startIndex);
 		newDesign.copyFrom(oldDesign, 0, endIndex, 0, startIndex, oldDesign.getWidth(), oldDesign.getHeight() - endIndex);
 		return newDesign;
