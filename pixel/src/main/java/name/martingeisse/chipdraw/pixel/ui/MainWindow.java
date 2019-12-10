@@ -412,7 +412,13 @@ public class MainWindow extends JFrame implements Editor.Ui {
             builder.add("Enlarge", () -> performOperation(new OutOfPlaceDesignOperation() {
                 @Override
                 protected Design createNewDesign(Design oldDesign) throws UserVisibleMessageException {
-                    return new Enlarger(oldDesign).enlarge();
+                    return new Enlarger(oldDesign, 10).enlarge();
+                }
+            }));
+            builder.add("X-Enlarge", () -> performOperation(new OutOfPlaceDesignOperation() {
+                @Override
+                protected Design createNewDesign(Design oldDesign) throws UserVisibleMessageException {
+                    return new Enlarger(oldDesign, 10, true, false).enlarge();
                 }
             }));
             builder.add("Autocrop", () -> performOperation(new OutOfPlaceDesignOperation() {

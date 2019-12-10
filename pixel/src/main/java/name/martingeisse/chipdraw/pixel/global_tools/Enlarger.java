@@ -7,25 +7,30 @@ import name.martingeisse.chipdraw.pixel.design.Design;
  */
 public final class Enlarger {
 
-    private final Design design;
-    private final int boundarySize;
+	private final Design design;
+	private final int boundarySize;
+	private final boolean enlargeX, enlargeY;
 
-    public Enlarger(Design design, int boundarySize) {
-        if (boundarySize < 1) {
-            throw new IllegalArgumentException("invalid enlarger boundary size: " + boundarySize);
-        }
-        this.design = design;
-        this.boundarySize = boundarySize;
-    }
+	public Enlarger(Design design, int boundarySize) {
+        this(design, boundarySize, true, true);
+	}
 
-    public Enlarger(Design design) {
-        this(design, 10);
-    }
+	public Enlarger(Design design, int boundarySize, boolean enlargeX, boolean enlargeY) {
+		if (boundarySize < 1) {
+			throw new IllegalArgumentException("invalid enlarger boundary size: " + boundarySize);
+		}
+		this.design = design;
+		this.boundarySize = boundarySize;
+		this.enlargeX = enlargeX;
+		this.enlargeY = enlargeY;
+	}
 
-    public Design enlarge() {
-        Design out = new Design(design.getTechnology(), design.getWidth() + 2 * boundarySize, design.getHeight() + 2 * boundarySize);
-        out.copyFrom(design, 0, 0, boundarySize, boundarySize, design.getWidth(), design.getHeight());
-        return out;
-    }
+	public Design enlarge() {
+		int newWidth = design.getWidth() + (enlargeX ? 2 * boundarySize : 0);
+		int newHeight = design.getHeight() + (enlargeY ? 2 * boundarySize : 0);
+		Design out = new Design(design.getTechnology(), newWidth, newHeight);
+		out.copyFrom(design, 0, 0, enlargeX ? boundarySize : 0, enlargeY ? boundarySize : 0, design.getWidth(), design.getHeight());
+		return out;
+	}
 
 }
