@@ -14,20 +14,28 @@ import java.util.function.Predicate;
 public final class Autocropper {
 
     private final Design design;
+    private final boolean cropX, cropY;
 
     public Autocropper(Design design) {
+        this(design, true, true);
+    }
+
+    public Autocropper(Design design, boolean cropX, boolean cropY) {
         this.design = design;
+        this.cropX = cropX;
+        this.cropY = cropY;
     }
 
     public Design autocrop() throws UserVisibleMessageException {
         if (isDesignEmpty()) {
             throw new UserVisibleMessageException("design is empty");
         }
-        int top = getFirstFalse(this::isRowEmpty);
-        int bottom = getFirstFalse(n -> isRowEmpty(design.getHeight() - 1 - n));
-        int left = getFirstFalse(this::isColumnEmpty);
-        int right = getFirstFalse(n -> isColumnEmpty(design.getWidth() - 1 - n));
-        return design.createCopyOfRectangle(left, top, design.getWidth() - left - right, design.getHeight() - top - bottom);
+        int cropTop = cropY ? getFirstFalse(this::isRowEmpty) : 0;
+        int cropBottom = cropY ? getFirstFalse(n -> isRowEmpty(design.getHeight() - 1 - n)) : 0;
+        int cropLeft = cropX ? getFirstFalse(this::isColumnEmpty) : 0;
+        int cropRight = cropX ? getFirstFalse(n -> isColumnEmpty(design.getWidth() - 1 - n)) : 0;
+        return design.createCopyOfRectangle(cropLeft, cropTop,
+            design.getWidth() - cropLeft - cropRight, design.getHeight() - cropTop - cropBottom);
     }
 
     private boolean isDesignEmpty() {

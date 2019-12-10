@@ -421,6 +421,12 @@ public class MainWindow extends JFrame implements Editor.Ui {
                     return new Autocropper(oldDesign).autocrop();
                 }
             }));
+            builder.add("X-Autocrop", () -> performOperation(new OutOfPlaceDesignOperation() {
+                @Override
+                protected Design createNewDesign(Design oldDesign) throws UserVisibleMessageException {
+                    return new Autocropper(oldDesign, true, false).autocrop();
+                }
+            }));
             builder.add("LongCell", () -> LongCellGenerator.generate(JOptionPane.showInputDialog("Please enter a boolean term.")));
             builder.addMenu("StdCell");
             builder.add("New", () -> new MainWindow(workbench, new StandardCellTemplateGeneratorBase().generate()).setVisible(true));
