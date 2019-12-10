@@ -6,7 +6,6 @@ import name.martingeisse.chipdraw.pixel.About;
 import name.martingeisse.chipdraw.pixel.Editor;
 import name.martingeisse.chipdraw.pixel.Workbench;
 import name.martingeisse.chipdraw.pixel.design.*;
-import name.martingeisse.chipdraw.pixel.design.*;
 import name.martingeisse.chipdraw.pixel.drc.PositionedViolation;
 import name.martingeisse.chipdraw.pixel.drc.Violation;
 import name.martingeisse.chipdraw.pixel.global_tools.Autocropper;
@@ -20,21 +19,21 @@ import name.martingeisse.chipdraw.pixel.global_tools.stdcell.StandardCellTemplat
 import name.martingeisse.chipdraw.pixel.icons.Icons;
 import name.martingeisse.chipdraw.pixel.operation.DesignOperation;
 import name.martingeisse.chipdraw.pixel.operation.OutOfPlaceDesignOperation;
-import name.martingeisse.chipdraw.pixel.operation.library.DrawPoints;
-import name.martingeisse.chipdraw.pixel.operation.library.ErasePoints;
-import name.martingeisse.chipdraw.pixel.design.NoSuchTechnologyException;
+import name.martingeisse.chipdraw.pixel.operation.mouse.DrawTool;
+import name.martingeisse.chipdraw.pixel.operation.mouse.MouseTool;
 import name.martingeisse.chipdraw.pixel.ui.util.DesignPixelPanel;
 import name.martingeisse.chipdraw.pixel.ui.util.MenuBarBuilder;
+import name.martingeisse.chipdraw.pixel.ui.util.SingleIconBooleanCellRenderer;
 import name.martingeisse.chipdraw.pixel.ui.util.UiRunnable;
 import name.martingeisse.chipdraw.pixel.util.Point;
 import name.martingeisse.chipdraw.pixel.util.UserVisibleMessageException;
-import name.martingeisse.chipdraw.pixel.ui.util.SingleIconBooleanCellRenderer;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.function.Supplier;
 
 public class MainWindow extends JFrame implements Editor.Ui {
 
@@ -50,9 +49,8 @@ public class MainWindow extends JFrame implements Editor.Ui {
     private final Editor editor;
     private final JLabel bottomLine;
 
-    private boolean drawing, erasing, firstPixelOfStroke;
     private int pixelSize;
-    private int cursorSize = 1;
+    private MouseTool mouseTool;
 
     private int mousePixelX, mousePixelY;
     private Map<name.martingeisse.chipdraw.pixel.util.Point, String> positionedDrcViolations = ImmutableMap.of();
@@ -118,15 +116,15 @@ public class MainWindow extends JFrame implements Editor.Ui {
             cursorSizeButtonPanel.setLayout(new BoxLayout(cursorSizeButtonPanel, BoxLayout.X_AXIS));
             JButton button1x1 = new JButton(Icons.get("cursor_1x1.png"));
             button1x1.setFocusable(false);
-            button1x1.addActionListener(event -> cursorSize = 1);
+            button1x1.addActionListener(event -> mouseTool = new DrawTool(materialUiState::getEditingMaterial, 1));
             cursorSizeButtonPanel.add(button1x1);
             JButton button2x2 = new JButton(Icons.get("cursor_2x2.png"));
             button2x2.setFocusable(false);
-            button2x2.addActionListener(event -> cursorSize = 2);
+            button2x2.addActionListener(event -> mouseTool = new DrawTool(materialUiState::getEditingMaterial, 2));
             cursorSizeButtonPanel.add(button2x2);
             JButton button3x3 = new JButton(Icons.get("cursor_3x3.png"));
             button3x3.setFocusable(false);
-            button3x3.addActionListener(event -> cursorSize = 3);
+            button3x3.addActionListener(event -> mouseTool = new DrawTool(materialUiState::getEditingMaterial, 3));
             cursorSizeButtonPanel.add(button3x3);
 
             JButton rowButton = new JButton(Icons.get("row.png"));
@@ -239,39 +237,52 @@ public class MainWindow extends JFrame implements Editor.Ui {
         MouseAdapter mouseAdapter = new MouseAdapter() {
 
             @Override
-            public void mousePressed(MouseEvent e) {
-                drawing = (e.getButton() == MouseEvent.BUTTON1);
-                erasing = (e.getButton() == MouseEvent.BUTTON3);
-                firstPixelOfStroke = true;
-                mouseMoved(e);
+            public void mousePressed(MouseEvent event) {
+                MouseTool.MouseButton button;
+                if (event.getButton() == MouseEvent.BUTTON1) {
+                    button = MouseTool.MouseButton.LEFT;
+                } else if (event.getButton() == MouseEvent.BUTTON3) {
+                    button = MouseTool.MouseButton.RIGHT;
+                } else {
+                    button = MouseTool.MouseButton.MIDDLE;
+                }
+                boolean shift = (event.getModifiersEx() & KeyEvent.SHIFT_DOWN_MASK) != 0;
+                handle(event, () -> mouseTool.onMousePressed(mousePixelX, mousePixelY, button, shift));
             }
 
             @Override
-            public void mouseReleased(MouseEvent e) {
-                drawing = erasing = false;
+            public void mouseReleased(MouseEvent event) {
+                handle(event, () -> mouseTool.onMouseReleased());
             }
 
             @Override
             public void mouseMoved(MouseEvent event) {
-                mousePixelX = event.getX() / pixelSize;
-                mousePixelY = event.getY() / pixelSize;
-                if (drawing || erasing) {
-                    int cursorSize = MainWindow.this.cursorSize;
-                    int offset = (cursorSize - 1) / 2;
-                    Material material = materialUiState.getEditingMaterial();
-                    if (MainWindow.this.drawing) {
-                        performOperation(new DrawPoints(mousePixelX - offset, mousePixelY - offset, cursorSize, cursorSize, material), !firstPixelOfStroke);
+                int oldMousePixelX = mousePixelX;
+                int oldMousePixelY = mousePixelY;
+                handle(event, () -> {
+                    if (mousePixelX != oldMousePixelX || mousePixelY != oldMousePixelY) {
+                        return mouseTool.onMouseMoved(mousePixelX, mousePixelY);
                     } else {
-                        performOperation(new ErasePoints(mousePixelX - offset, mousePixelY - offset, cursorSize, cursorSize, material.getPlaneSchema()), !firstPixelOfStroke);
+                        return null;
                     }
-                    firstPixelOfStroke = false;
-                }
-                updateBottomLine();
+                });
             }
 
             @Override
             public void mouseDragged(MouseEvent e) {
                 mouseMoved(e);
+            }
+
+            private void handle(MouseEvent event, Supplier<MouseTool.Result> body) {
+                mousePixelX = event.getX() / pixelSize;
+                mousePixelY = event.getY() / pixelSize;
+                if (mouseTool != null) {
+                    MouseTool.Result result = body.get();
+                    if (result != null) {
+                        performOperation(result.getOperation(), result.isMerge());
+                    }
+                }
+                updateBottomLine();
             }
 
         };
@@ -480,8 +491,7 @@ public class MainWindow extends JFrame implements Editor.Ui {
     public void onRestart() {
         materialUiState.setTechnology(editor.getDesign().getTechnology());
         materialUiState.onClick(0, 0);
-        drawing = false;
-        erasing = false;
+        mouseTool = new DrawTool(materialUiState::getEditingMaterial, 1);
         pixelSize = 16;
         updateMainPanelSize();
     }
