@@ -113,31 +113,37 @@ public class MainWindow extends JFrame implements Editor.Ui {
                 MainWindow.this.repaint();
             });
         }
-        {
-            JPanel cursorSizeButtonPanel = new JPanel();
-            cursorSizeButtonPanel.setLayout(new BoxLayout(cursorSizeButtonPanel, BoxLayout.X_AXIS));
-            JButton button1x1 = new JButton(Icons.get("cursor_1x1.png"));
-            button1x1.setFocusable(false);
-            button1x1.addActionListener(event -> mouseTool = new DrawTool(materialUiState::getEditingMaterial, 1));
-            cursorSizeButtonPanel.add(button1x1);
-            JButton button2x2 = new JButton(Icons.get("cursor_2x2.png"));
-            button2x2.setFocusable(false);
-            button2x2.addActionListener(event -> mouseTool = new DrawTool(materialUiState::getEditingMaterial, 2));
-            cursorSizeButtonPanel.add(button2x2);
-            JButton button3x3 = new JButton(Icons.get("cursor_3x3.png"));
-            button3x3.setFocusable(false);
-            button3x3.addActionListener(event -> mouseTool = new DrawTool(materialUiState::getEditingMaterial, 3));
-            cursorSizeButtonPanel.add(button3x3);
-            JButton rowButton = new JButton(Icons.get("row.png"));
-            rowButton.setFocusable(false);
-            rowButton.addActionListener(event -> mouseTool = new RowTool());
-            cursorSizeButtonPanel.add(rowButton);
+		// note: we use several tool panels because BoxLayout is too stupid to break lines
+		{
+			JPanel toolPanel1 = new JPanel();
+			toolPanel1.setLayout(new BoxLayout(toolPanel1, BoxLayout.X_AXIS));
+			JButton button1x1 = new JButton(Icons.get("cursor_1x1.png"));
+			button1x1.setFocusable(false);
+			button1x1.addActionListener(event -> mouseTool = new DrawTool(materialUiState::getEditingMaterial, 1));
+			toolPanel1.add(button1x1);
+			JButton button2x2 = new JButton(Icons.get("cursor_2x2.png"));
+			button2x2.setFocusable(false);
+			button2x2.addActionListener(event -> mouseTool = new DrawTool(materialUiState::getEditingMaterial, 2));
+			toolPanel1.add(button2x2);
+			JButton button3x3 = new JButton(Icons.get("cursor_3x3.png"));
+			button3x3.setFocusable(false);
+			button3x3.addActionListener(event -> mouseTool = new DrawTool(materialUiState::getEditingMaterial, 3));
+			toolPanel1.add(button3x3);
+			JButton rowButton = new JButton(Icons.get("row.png"));
+			rowButton.setFocusable(false);
+			rowButton.addActionListener(event -> mouseTool = new RowTool());
+			toolPanel1.add(rowButton);
+			sideBar.add(toolPanel1);
+		}
+		{
+			JPanel toolPanel2 = new JPanel();
+			toolPanel2.setLayout(new BoxLayout(toolPanel2, BoxLayout.X_AXIS));
             JButton rectangleButton = new JButton(Icons.get("rectangle.png"));
             rectangleButton.setFocusable(false);
             rectangleButton.addActionListener(event -> mouseTool = new RectangleTool(materialUiState::getEditingMaterial));
-            cursorSizeButtonPanel.add(rectangleButton);
-            sideBar.add(cursorSizeButtonPanel);
-        }
+            toolPanel2.add(rectangleButton);
+			sideBar.add(toolPanel2);
+		}
         sideBar.add(Box.createGlue());
         {
             drcButton = new JButton("DRC");
