@@ -243,6 +243,15 @@ public class MainWindow extends JFrame implements Editor.Ui {
                 }
 
             }
+
+            @Override
+            protected void paintComponent(Graphics _g) {
+                super.paintComponent(_g);
+                if (mouseTool != null) {
+                    mouseTool.draw((Graphics2D)_g, zoom);
+                }
+            }
+
         };
         MouseAdapter mouseAdapter = new MouseAdapter() {
 

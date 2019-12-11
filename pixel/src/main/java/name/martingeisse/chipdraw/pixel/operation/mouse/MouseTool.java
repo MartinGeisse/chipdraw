@@ -3,10 +3,15 @@ package name.martingeisse.chipdraw.pixel.operation.mouse;
 import name.martingeisse.chipdraw.pixel.design.Design;
 import name.martingeisse.chipdraw.pixel.operation.DesignOperation;
 
+import java.awt.*;
+
 /**
  *
  */
 public interface MouseTool {
+
+	default void draw(Graphics2D g, int zoom) {
+	}
 
 	Result onMousePressed(Design design, int x, int y, MouseButton button, boolean shift);
 
