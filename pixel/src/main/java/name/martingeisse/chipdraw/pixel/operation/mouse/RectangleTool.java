@@ -3,6 +3,7 @@ package name.martingeisse.chipdraw.pixel.operation.mouse;
 import name.martingeisse.chipdraw.pixel.design.Design;
 import name.martingeisse.chipdraw.pixel.design.Material;
 import name.martingeisse.chipdraw.pixel.operation.library.DrawPoints;
+import name.martingeisse.chipdraw.pixel.operation.library.ErasePoints;
 
 import java.awt.*;
 import java.util.Random;
@@ -14,7 +15,7 @@ import java.util.function.Supplier;
 public class RectangleTool implements MouseTool {
 
 	private final Supplier<Material> materialProvider;
-	private boolean active;
+	private boolean active, erasing;
 	private int startX, startY;
 	private int endX, endY;
 	private int minX, minY, maxX, maxY;
@@ -40,6 +41,7 @@ public class RectangleTool implements MouseTool {
 	@Override
 	public Result onMousePressed(Design design, int x, int y, MouseButton button, boolean shift) {
 		active = true;
+		erasing = (button == MouseButton.RIGHT);
 		startX = endX = x;
 		startY = endY = y;
 		translateBounds();
@@ -67,7 +69,11 @@ public class RectangleTool implements MouseTool {
 			startY = endY;
 			endY = temp;
 		}
-		return new Result(new DrawPoints(minX, minY, maxX - minX + 1, maxY - minY + 1, materialProvider.get()), false);
+		if (erasing) {
+			return new Result(new ErasePoints(minX, minY, maxX - minX + 1, maxY - minY + 1, materialProvider.get().getPlaneSchema()), false);
+		} else {
+			return new Result(new DrawPoints(minX, minY, maxX - minX + 1, maxY - minY + 1, materialProvider.get()), false);
+		}
 	}
 
 }
