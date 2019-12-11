@@ -498,7 +498,7 @@ public class MainWindow extends JFrame implements Editor.Ui {
         Design design;
         try {
             design = loadAndSaveDialogs.showLoadDialog(this);
-        } catch (NoSuchTechnologyException exception) {
+        } catch (NoSuchTechnologyException|UserVisibleMessageException exception) {
             JOptionPane.showMessageDialog(this, exception.getMessage());
             return;
         }

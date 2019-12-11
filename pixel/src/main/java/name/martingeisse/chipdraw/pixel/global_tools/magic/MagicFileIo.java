@@ -53,17 +53,24 @@ public final class MagicFileIo {
 
 	//region reading
 
-	public static Design read(File file) throws IOException, UserVisibleMessageException {
+	public static Design read(File file, TechnologyRepository technologyRepository) throws IOException, UserVisibleMessageException, NoSuchTechnologyException {
 
 		// create empty design and determine coordinate offset
 		Design design;
 		int dx, dy;
 		{
+			StringBuilder technologyId = new StringBuilder();
 			MutableInt minX = new MutableInt(Integer.MAX_VALUE);
 			MutableInt minY = new MutableInt(Integer.MAX_VALUE);
 			MutableInt maxX = new MutableInt(Integer.MIN_VALUE);
 			MutableInt maxY = new MutableInt(Integer.MIN_VALUE);
 			new MagicFileReadHelper(file) {
+
+				@Override
+				protected void handleTechLine(String tech) throws UserVisibleMessageException {
+					technologyId.append(tech);
+				}
+
 				@Override
 				protected void handleRectLine(int x1, int y1, int x2, int y2) {
 					minX.setValue(Math.min(minX.getValue(), x1));
@@ -71,13 +78,15 @@ public final class MagicFileIo {
 					maxX.setValue(Math.max(maxX.getValue(), x2));
 					maxY.setValue(Math.max(maxY.getValue(), y2));
 				}
+
 			}.read();
 			if (minX.getValue() >= maxX.getValue() || minY.getValue() >= maxY.getValue()) {
 				throw new UserVisibleMessageException("design is empty");
 			}
 			dx = minX.getValue();
 			dy = minY.getValue();
-			design = new Design(Technologies.Concept.TECHNOLOGY, maxX.getValue() - dx, maxY.getValue() - dy);
+			Technology technology = technologyRepository.getTechnology(technologyId.toString());
+			design = new Design(technology, maxX.getValue() - dx, maxY.getValue() - dy);
 		}
 
 		// read design
@@ -110,8 +119,7 @@ public final class MagicFileIo {
 
 			@Override
 			protected void handleRectLine(int x1, int y1, int x2, int y2) throws UserVisibleMessageException {
-				// TODO inclusive / exclusive ?
-				// TODO y-flip
+				// TODO y-flip does not work correctly
 				if (plane == null) {
 					throw new UserVisibleMessageException("rectangle without material");
 				}
@@ -125,7 +133,7 @@ public final class MagicFileIo {
 					y1 = y2;
 					y2 = temp;
 				}
-				plane.drawRectangle(x1 - dx, y1 - dy, x2 - x1, y2 - y1, material);
+				plane.drawRectangle(x1 - dx, design.getHeight() - 1 - (y1 - dy), x2 - x1, y2 - y1, material);
 			}
 
 		}.read();

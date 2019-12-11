@@ -1,25 +1,27 @@
 package name.martingeisse.chipdraw.pixel.ui;
 
 import name.martingeisse.chipdraw.pixel.design.Design;
-import name.martingeisse.chipdraw.pixel.design.DesignPersistence;
 import name.martingeisse.chipdraw.pixel.design.NoSuchTechnologyException;
 import name.martingeisse.chipdraw.pixel.design.TechnologyRepository;
+import name.martingeisse.chipdraw.pixel.global_tools.magic.MagicFileIo;
+import name.martingeisse.chipdraw.pixel.util.UserVisibleMessageException;
 
 import javax.swing.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import java.awt.*;
-import java.io.*;
+import java.io.File;
+import java.io.IOException;
 
 public final class LoadAndSaveDialogs {
 
-    public static final String MEMORY_DUMP_FILENAME_EXTENSION = "ChipdrawMemoryDump";
+    public static final String FILE_NAME_EXTENSION = "mag";
 
-    private static final FileNameExtensionFilter FILE_NAME_EXTENSION_FILTER = new FileNameExtensionFilter("Chipdraw memory dump", MEMORY_DUMP_FILENAME_EXTENSION);
+    private static final FileNameExtensionFilter FILE_NAME_EXTENSION_FILTER = new FileNameExtensionFilter("Design file", FILE_NAME_EXTENSION);
 
-    private final DesignPersistence designPersistence;
+    private final TechnologyRepository technologyRepository;
 
     public LoadAndSaveDialogs(TechnologyRepository technologyRepository) {
-        this.designPersistence = new DesignPersistence(technologyRepository);
+        this.technologyRepository = technologyRepository;
     }
 
     public void showSaveDialog(Component parent, Design design) {
@@ -28,19 +30,19 @@ public final class LoadAndSaveDialogs {
             return;
         }
         try {
-            designPersistence.save(design, path);
+            MagicFileIo.write(design, new File(path), design.getTechnology().getId());
         } catch (IOException e) {
             JOptionPane.showMessageDialog(parent, "Error while saving: " + e);
         }
     }
 
-    public Design showLoadDialog(Component parent) throws NoSuchTechnologyException {
+    public Design showLoadDialog(Component parent) throws NoSuchTechnologyException, UserVisibleMessageException {
         String path = chooseFile(parent, JFileChooser.OPEN_DIALOG);
         if (path == null) {
             return null;
         }
         try {
-            return designPersistence.load(path);
+            return MagicFileIo.read(new File(path), technologyRepository);
         } catch (IOException e) {
             JOptionPane.showMessageDialog(parent, "Error while loading: " + e);
             return null;
@@ -54,8 +56,8 @@ public final class LoadAndSaveDialogs {
         chooser.setFileFilter(FILE_NAME_EXTENSION_FILTER);
         if (chooser.showOpenDialog(parent) == JFileChooser.APPROVE_OPTION) {
             String path = chooser.getSelectedFile().getPath();
-            if (!path.endsWith('.' + MEMORY_DUMP_FILENAME_EXTENSION)) {
-                path = path + '.' + MEMORY_DUMP_FILENAME_EXTENSION;
+            if (!path.endsWith('.' + FILE_NAME_EXTENSION)) {
+                path = path + '.' + FILE_NAME_EXTENSION;
             }
             return path;
         } else {

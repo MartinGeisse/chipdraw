@@ -24,9 +24,11 @@ class MagicFileReadHelper {
 					if (!readNonemptyLineNoNull(in).equals("magic")) {
 						throw new IOException("expected 'magic' line");
 					}
-					if (!readNonemptyLineNoNull(in).startsWith("tech ")) {
+					String techLine = readNonemptyLineNoNull(in);
+					if (!techLine.startsWith("tech ")) {
 						throw new IOException("expected 'tech' line'");
 					}
+					handleTechLine(techLine.substring(5).trim());
 					if (!readNonemptyLineNoNull(in).startsWith("timestamp ")) {
 						throw new IOException("expected 'timestamp' line'");
 					}
@@ -40,6 +42,9 @@ class MagicFileReadHelper {
 				}
 			}
 		}
+	}
+
+	protected void handleTechLine(String tech) throws UserVisibleMessageException {
 	}
 
 	private static String readNonemptyLineNoNull(LineNumberReader in) throws IOException {
