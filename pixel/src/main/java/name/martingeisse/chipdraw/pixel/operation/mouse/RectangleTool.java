@@ -18,7 +18,7 @@ public class RectangleTool implements MouseTool {
 	private boolean active, erasing;
 	private int startX, startY;
 	private int endX, endY;
-	private int minX, minY, maxX, maxY;
+	private int minX, minY, width, height;
 
 	public RectangleTool(Supplier<Material> materialProvider) {
 		this.materialProvider = materialProvider;
@@ -27,15 +27,17 @@ public class RectangleTool implements MouseTool {
 	private void translateBounds() {
 		minX = Math.min(startX, endX);
 		minY = Math.min(startY, endY);
-		maxX = Math.max(startX, endX);
-		maxY = Math.max(startY, endY);
+		width = Math.abs(endX - startX) + 1;
+		height = Math.abs(endY - startY) + 1;
 	}
 
 	@Override
 	public void draw(Graphics2D g, int zoom) {
-		Random random = new Random();
-		g.setColor(new Color(random.nextInt(256), random.nextInt(256), random.nextInt(256)));
-		g.drawRect(minX * zoom, minY * zoom, (maxX + 1) * zoom, (maxY + 1) * zoom);
+		if (active) {
+			Random random = new Random();
+			g.setColor(new Color(random.nextInt(256), random.nextInt(256), random.nextInt(256)));
+			g.drawRect(minX * zoom, minY * zoom, width * zoom, height * zoom);
+		}
 	}
 
 	@Override
@@ -70,9 +72,9 @@ public class RectangleTool implements MouseTool {
 			endY = temp;
 		}
 		if (erasing) {
-			return new Result(new ErasePoints(minX, minY, maxX - minX + 1, maxY - minY + 1, materialProvider.get().getPlaneSchema()), false);
+			return new Result(new ErasePoints(minX, minY, width, height, materialProvider.get().getPlaneSchema()), false);
 		} else {
-			return new Result(new DrawPoints(minX, minY, maxX - minX + 1, maxY - minY + 1, materialProvider.get()), false);
+			return new Result(new DrawPoints(minX, minY, width, height, materialProvider.get()), false);
 		}
 	}
 

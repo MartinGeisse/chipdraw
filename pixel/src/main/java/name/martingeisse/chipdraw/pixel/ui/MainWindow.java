@@ -302,6 +302,7 @@ public class MainWindow extends JFrame implements Editor.Ui {
                     }
                 }
                 updateBottomLine();
+                repaint();
             }
 
         };
