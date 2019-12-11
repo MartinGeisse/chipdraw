@@ -21,6 +21,7 @@ import name.martingeisse.chipdraw.pixel.operation.DesignOperation;
 import name.martingeisse.chipdraw.pixel.operation.OutOfPlaceDesignOperation;
 import name.martingeisse.chipdraw.pixel.operation.mouse.DrawTool;
 import name.martingeisse.chipdraw.pixel.operation.mouse.MouseTool;
+import name.martingeisse.chipdraw.pixel.operation.mouse.RectangleTool;
 import name.martingeisse.chipdraw.pixel.operation.mouse.RowTool;
 import name.martingeisse.chipdraw.pixel.ui.util.DesignPixelPanel;
 import name.martingeisse.chipdraw.pixel.ui.util.MenuBarBuilder;
@@ -131,7 +132,10 @@ public class MainWindow extends JFrame implements Editor.Ui {
             rowButton.setFocusable(false);
             rowButton.addActionListener(event -> mouseTool = new RowTool());
             cursorSizeButtonPanel.add(rowButton);
-
+            JButton rectangleButton = new JButton(Icons.get("rectangle.png"));
+            rectangleButton.setFocusable(false);
+            rectangleButton.addActionListener(event -> mouseTool = new RectangleTool(materialUiState::getEditingMaterial));
+            cursorSizeButtonPanel.add(rectangleButton);
             sideBar.add(cursorSizeButtonPanel);
         }
         sideBar.add(Box.createGlue());
