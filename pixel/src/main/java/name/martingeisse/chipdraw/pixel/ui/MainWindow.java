@@ -51,7 +51,7 @@ public class MainWindow extends JFrame implements Editor.Ui {
     private final Editor editor;
     private final JLabel bottomLine;
 
-    private int pixelSize;
+    private int zoom;
     private MouseTool mouseTool;
 
     private int mousePixelX, mousePixelY;
@@ -284,8 +284,8 @@ public class MainWindow extends JFrame implements Editor.Ui {
             }
 
             private void handle(MouseEvent event, Supplier<MouseTool.Result> body) {
-                mousePixelX = event.getX() / pixelSize;
-                mousePixelY = event.getY() / pixelSize;
+                mousePixelX = event.getX() / zoom;
+                mousePixelY = event.getY() / zoom;
                 if (mouseTool != null) {
                     MouseTool.Result result = body.get();
                     if (result != null) {
@@ -357,15 +357,15 @@ public class MainWindow extends JFrame implements Editor.Ui {
                         break;
 
                     case '+':
-                        if (pixelSize < MAX_PIXEL_SIZE) {
-                            pixelSize *= 2;
+                        if (zoom < MAX_PIXEL_SIZE) {
+                            zoom *= 2;
                             updateMainPanelSize();
                         }
                         break;
 
                     case '-':
-                        if (pixelSize > MIN_PIXEL_SIZE) {
-                            pixelSize /= 2;
+                        if (zoom > MIN_PIXEL_SIZE) {
+                            zoom /= 2;
                             updateMainPanelSize();
                         }
                         break;
@@ -469,12 +469,12 @@ public class MainWindow extends JFrame implements Editor.Ui {
         return editor.getDesign();
     }
 
-    public int getCurrentPixelSize() {
-        return pixelSize;
+    public int getZoom() {
+        return zoom;
     }
 
     private void updateMainPanelSize() {
-        Dimension size = new Dimension(editor.getDesign().getWidth() * pixelSize, editor.getDesign().getHeight() * pixelSize);
+        Dimension size = new Dimension(editor.getDesign().getWidth() * zoom, editor.getDesign().getHeight() * zoom);
         mainPanel.setPreferredSize(size);
         mainPanel.setSize(size);
         mainPanel.repaint();
@@ -514,7 +514,7 @@ public class MainWindow extends JFrame implements Editor.Ui {
         materialUiState.setTechnology(editor.getDesign().getTechnology());
         materialUiState.onClick(0, 0);
         mouseTool = new DrawTool(materialUiState::getEditingMaterial, 1);
-        pixelSize = 16;
+        zoom = 16;
         updateMainPanelSize();
     }
 

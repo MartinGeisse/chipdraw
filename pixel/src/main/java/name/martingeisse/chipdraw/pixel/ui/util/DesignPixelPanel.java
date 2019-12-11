@@ -31,11 +31,11 @@ public abstract class DesignPixelPanel extends JPanel {
         Design design = mainWindow.getCurrentDesign();
 
         // get width / height / pixel size
-        int pixelSize = mainWindow.getCurrentPixelSize();
+        int zoom = mainWindow.getZoom();
         int panelWidth = getWidth();
         int panelHeight = getHeight();
-        int designDisplayWidth = design.getWidth() * pixelSize;
-        int designDisplayHeight = design.getHeight() * pixelSize;
+        int designDisplayWidth = design.getWidth() * zoom;
+        int designDisplayHeight = design.getHeight() * zoom;
 
         // draw background
         if (designDisplayWidth < panelWidth || designDisplayHeight < panelHeight) {
@@ -48,24 +48,24 @@ public abstract class DesignPixelPanel extends JPanel {
         // draw pixels
         for (int x = 0; x < design.getWidth(); x++) {
             for (int y = 0; y < design.getHeight(); y++) {
-                drawPixel(g, x, y, x * pixelSize, y * pixelSize, pixelSize);
+                drawPixel(g, x, y, x * zoom, y * zoom, zoom);
             }
         }
 
         // draw grid
         g.setColor(Color.DARK_GRAY);
         for (int x = 1; x < design.getWidth(); x++) {
-            g.drawLine(x * pixelSize, 0, x * pixelSize, design.getHeight() * pixelSize);
+            g.drawLine(x * zoom, 0, x * zoom, design.getHeight() * zoom);
         }
         for (int y = 1; y < design.getHeight(); y++) {
-            g.drawLine(0, y * pixelSize, design.getWidth() * pixelSize, y * pixelSize);
+            g.drawLine(0, y * zoom, design.getWidth() * zoom, y * zoom);
         }
         g.setColor(Color.GRAY);
         for (int x = MACRO_GRID_SIZE; x < design.getWidth(); x += MACRO_GRID_SIZE) {
-            g.drawLine(x * pixelSize, 0, x * pixelSize, design.getHeight() * pixelSize);
+            g.drawLine(x * zoom, 0, x * zoom, design.getHeight() * zoom);
         }
         for (int y = MACRO_GRID_SIZE; y < design.getHeight(); y += MACRO_GRID_SIZE) {
-            g.drawLine(0, y * pixelSize, design.getWidth() * pixelSize, y * pixelSize);
+            g.drawLine(0, y * zoom, design.getWidth() * zoom, y * zoom);
         }
 
     }
