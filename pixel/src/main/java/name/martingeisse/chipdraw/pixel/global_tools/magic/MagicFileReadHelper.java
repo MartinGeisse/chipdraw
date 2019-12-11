@@ -94,7 +94,7 @@ class MagicFileReadHelper {
 		handleRectLine(Math.min(a, c), Math.min(b, d), Math.max(a, c), Math.max(b, d));
 	}
 
-	protected void handleRectLine(int x1, int y1, int x2, int y2) {
+	protected void handleRectLine(int x1, int y1, int x2, int y2) throws UserVisibleMessageException {
 	}
 
 	protected void parseRlabelLine(String line) throws UserVisibleMessageException {
