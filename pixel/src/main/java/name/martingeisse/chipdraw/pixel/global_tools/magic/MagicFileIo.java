@@ -119,7 +119,6 @@ public final class MagicFileIo {
 
 			@Override
 			protected void handleRectLine(int x1, int y1, int x2, int y2) throws UserVisibleMessageException {
-				// TODO y-flip does not work correctly
 				if (plane == null) {
 					throw new UserVisibleMessageException("rectangle without material");
 				}
