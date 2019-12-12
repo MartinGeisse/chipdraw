@@ -133,7 +133,7 @@ public final class MagicFileIo {
 					y1 = y2;
 					y2 = temp;
 				}
-				plane.drawRectangle(x1 - dx, design.getHeight() - 1 - (y1 - dy), x2 - x1, y2 - y1, material);
+				plane.drawRectangle(x1 - dx, design.getHeight() - (y2 - dy), x2 - x1, y2 - y1, material);
 			}
 
 		}.read();
