@@ -1,0 +1,23 @@
+
+Power rails are: Vdd top, GND bottom. For now, I won't use alternating single rails and flipped cells, to simplify
+things.
+
+Based on the routing considerations, cell sizes are multiples of 7 and routing ports are placed at 7-aligned positions.
+
+Cell height is, for now, fixed to 140.
+
+TODO how important are side connectors?
+- Side connectors are not the usual connection mechanism, but they can be useful. Normally, two cells connected by
+    side connectors should be merged into a single cell because they compute a function together and are way more
+    efficient when merged. Exceptions:
+    - Combining two gates (especially if the first one is an inverter) and the second gate takes its second input
+        from elsewhere, in a non-critical and non-recurring path. The effort to create a merged cell isn't worth it.
+            --> could this be simplified?
+    - Combining the last logic stage and the DFF behind it, or the DFF and the first logic stage.
+- It is rare to have a cell with more than one side connector; all of the above examples need only a single side
+    connector. Especially those cells that *could* take more than one side input layout-wise, e.g. NAND/NOR, have
+    least use for them. The case of more than one side input should definitely be handled by building a merged and
+    customized cell.
+
+For v1, I won't use side ports, to simplify things. I want to know first how crowded the lowest routing layer (metal2)
+actually is without side ports, and whether side ports would fix that.
