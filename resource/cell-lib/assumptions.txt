@@ -21,3 +21,14 @@ TODO how important are side connectors?
 
 For v1, I won't use side ports, to simplify things. I want to know first how crowded the lowest routing layer (metal2)
 actually is without side ports, and whether side ports would fix that.
+
+Regarding ports that still have placement freedom: In simple gates, e.g. INV or NAND, there is some freedom in where
+the ports are placed. Placement affects routing and can cause unnessecarily long tracks to connect to those ports,
+i.e. unwanted extra capacitance. One might think that the editor should allow to express that freedom directly and
+create "meta-cells" that only become concrete cells during the routing stage. HOWEVER, this problem affects only the
+most simple cells; anything slightly complex has little such freedom. So we might as well solve the problem either
+by building multiple versions of the simple cells, or use meta-cells and a generator while building the library, but
+either way keep the problem out of the routing phase. In any case we should avoid premature optimization, as always.
+
+
+
