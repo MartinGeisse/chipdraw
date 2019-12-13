@@ -1,0 +1,9 @@
+
+Power rails are: Vdd top, GND bottom. There are no alternating single rails and flipped cells, to simplify things.
+
+Based on the routing considerations, cell sizes are multiples of 7 and routing ports are placed at 7-aligned positions.
+
+Cell height is fixed to 140 (single-size) or aligned multiples of 140 (multi-size). Multi-size cells must route the
+power rails to the next cells properly.
+
+There won't be side ports (direct connections between neighbor cells purely on metal1 that bypass the routing layers).
