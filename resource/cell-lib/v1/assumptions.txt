@@ -7,3 +7,6 @@ Cell height is fixed to 140 (single-size) or aligned multiples of 140 (multi-siz
 power rails to the next cells properly.
 
 There won't be side ports (direct connections between neighbor cells purely on metal1 that bypass the routing layers).
+
+Both n-wells and p-wells will be used to be independent from the actual well scheme from the technology. Separate wells
+will be used per cell to fight off electrical noise.
