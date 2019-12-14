@@ -1,0 +1,96 @@
+magic
+tech concept
+timestamp 1576254422008
+<< metal1 >>
+rect 0 133 28 138
+rect 0 131 7 133
+rect 9 131 12 133
+rect 14 131 17 133
+rect 19 131 28 133
+rect 0 127 28 131
+rect 8 123 12 127
+rect 16 123 20 124
+rect 8 121 9 123
+rect 11 121 12 123
+rect 16 121 17 123
+rect 19 121 20 123
+rect 8 119 12 121
+rect 16 119 20 121
+rect 8 117 9 119
+rect 11 117 12 119
+rect 16 117 17 119
+rect 19 117 20 119
+rect 8 115 12 117
+rect 16 115 20 117
+rect 8 113 9 115
+rect 11 113 12 115
+rect 16 113 17 115
+rect 19 113 20 115
+rect 8 111 12 113
+rect 16 111 20 113
+rect 8 109 9 111
+rect 11 109 12 111
+rect 16 109 17 111
+rect 19 109 20 111
+rect 8 108 12 109
+rect 16 75 20 109
+rect 8 66 12 75
+rect 16 71 26 75
+rect 16 22 20 71
+rect 8 64 9 66
+rect 11 64 12 66
+rect 8 63 12 64
+rect 8 22 12 23
+rect 8 20 9 22
+rect 11 20 12 22
+rect 16 20 17 22
+rect 19 20 20 22
+rect 8 18 12 20
+rect 16 18 20 20
+rect 8 16 9 18
+rect 11 16 12 18
+rect 16 16 17 18
+rect 19 16 20 18
+rect 8 12 12 16
+rect 16 15 20 16
+rect 0 7 28 12
+rect 0 5 7 7
+rect 9 5 12 7
+rect 14 5 17 7
+rect 19 5 28 7
+rect 0 1 28 5
+<< contact >>
+rect 7 131 9 133
+rect 12 131 14 133
+rect 17 131 19 133
+rect 9 121 11 123
+rect 17 121 19 123
+rect 9 117 11 119
+rect 17 117 19 119
+rect 9 113 11 115
+rect 17 113 19 115
+rect 9 109 11 111
+rect 17 109 19 111
+rect 9 64 11 66
+rect 9 20 11 22
+rect 17 20 19 22
+rect 9 16 11 18
+rect 17 16 19 18
+rect 7 5 9 7
+rect 12 5 14 7
+rect 17 5 19 7
+<< poly >>
+rect 13 68 15 127
+rect 7 62 15 68
+rect 13 12 15 62
+<< ndiff >>
+rect 5 129 23 135
+rect 7 14 21 24
+<< pdiff >>
+rect 7 107 21 125
+rect 5 3 23 9
+<< nwell >>
+rect 2 47 26 138
+<< pwell >>
+rect 2 0 26 45
+<< end >>
