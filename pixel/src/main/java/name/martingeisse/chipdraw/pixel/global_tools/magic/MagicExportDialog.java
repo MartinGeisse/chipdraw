@@ -32,7 +32,7 @@ public final class MagicExportDialog {
 			} else {
 				throw new IllegalArgumentException("design for Magic export must use 'concept' or 'libresilicon-magic-scmos' technology");
 			}
-			MagicFileIo.write(convertedDesign, new File(path), "scmos");
+			MagicFileIo.write(convertedDesign, new File(path), "scmos", false);
 		} catch (ConceptToLibresiliconConverter.IncompatibilityException e) {
 			JOptionPane.showMessageDialog(parent, "Design is incompatible with LibreSilicon Magic SCMOS schema: " + e);
 		} catch (IOException e) {

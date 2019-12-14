@@ -28,7 +28,7 @@ public final class LoadAndSaveDialogs {
 			return;
 		}
 		try {
-			MagicFileIo.write(design, file, design.getTechnology().getId());
+			MagicFileIo.write(design, file, design.getTechnology().getId(), true);
 		} catch (IOException e) {
 			JOptionPane.showMessageDialog(parent, "Error while saving: " + e);
 		}

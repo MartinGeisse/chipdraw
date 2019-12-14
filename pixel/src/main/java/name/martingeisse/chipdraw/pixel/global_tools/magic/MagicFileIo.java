@@ -19,13 +19,17 @@ public final class MagicFileIo {
 
 	//region writing
 
-	public static void write(Design design, File file, String techSpecifier) throws IOException {
+	public static void write(Design design, File file, String techSpecifier, boolean writeSizer) throws IOException {
 		try (FileOutputStream fileOutputStream = new FileOutputStream(file)) {
 			try (OutputStreamWriter outputStreamWriter = new OutputStreamWriter(fileOutputStream, StandardCharsets.ISO_8859_1)) {
 				try (PrintWriter out = new PrintWriter(outputStreamWriter)) {
 					out.println("magic");
 					out.println("tech " + techSpecifier);
 					out.println("timestamp " + new Date().getTime());
+					if (writeSizer) {
+						out.println("<< sizer >>");
+						out.println("rect 0 0 " + design.getWidth() + " " + design.getHeight());
+					}
 					for (Plane plane : design.getPlanes()) {
 						for (Material outputMaterial : plane.getSchema().getMaterials()) {
 							if (plane.hasMaterial(outputMaterial)) {
@@ -92,6 +96,7 @@ public final class MagicFileIo {
 		// read design
 		new MagicFileReadHelper(file) {
 
+			private boolean isSizer;
 			private PlaneSchema planeSchema;
 			private Material material;
 			private Plane plane;
@@ -99,6 +104,14 @@ public final class MagicFileIo {
 			@Override
 			protected void handleSectionLine(String section) throws UserVisibleMessageException {
 				if (section.equals("end")) {
+					isSizer = false;
+					planeSchema = null;
+					material = null;
+					plane = null;
+					return;
+				}
+				if (section.equals("sizer")) {
+					isSizer = true;
 					planeSchema = null;
 					material = null;
 					plane = null;
@@ -107,6 +120,7 @@ public final class MagicFileIo {
 				for (PlaneSchema planeSchema : design.getTechnology().getPlaneSchemas()) {
 					for (Material material : planeSchema.getMaterials()) {
 						if (material.getName().equals(section)) {
+							this.isSizer = false;
 							this.planeSchema = planeSchema;
 							this.material = material;
 							this.plane = design.getPlane(planeSchema);
@@ -119,6 +133,9 @@ public final class MagicFileIo {
 
 			@Override
 			protected void handleRectLine(int x1, int y1, int x2, int y2) throws UserVisibleMessageException {
+				if (isSizer) {
+					return;
+				}
 				if (plane == null) {
 					throw new UserVisibleMessageException("rectangle without material");
 				}
