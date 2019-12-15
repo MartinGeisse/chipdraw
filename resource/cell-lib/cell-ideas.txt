@@ -1,0 +1,2 @@
+2-bit full-adder
+muxed D-input flipflop

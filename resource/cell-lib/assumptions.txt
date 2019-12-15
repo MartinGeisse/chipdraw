@@ -30,5 +30,24 @@ most simple cells; anything slightly complex has little such freedom. So we migh
 by building multiple versions of the simple cells, or use meta-cells and a generator while building the library, but
 either way keep the problem out of the routing phase. In any case we should avoid premature optimization, as always.
 
+-------
 
-
+A few interesting questions to optimize the cells:
+- can we tweak the numbers from the SCMOS design rules
+- scmos defines a growing minimum for metal tracks, the higher the layer. These numbers are especially interesting
+    because they affect signal routing.
+- what are the trade-offs for the widths of metal wires (resistance, capacitance)?
+- what are the trade-offs for the widths of poly wires (resistance, capacitance)?
+- what are the trade-offs for the widths of diffusion wires (resistance, capacitance)?
+- which kind of wire (metal vs. diffusion/poly) is preferred under what circumstances?
+- should we separate same-dopant wells between different cells, or are "joint wells" okay? This alone makes a huge
+    difference for small cells because a well gap also implies minimum spacing of diffusion to the gap, so it
+    easily adds one 7x7 tile and increases the width of an inverter from 3 to 4 tiles.
+- are many fixed-size vias or few large vias preferred? (I remember something about current density that prefers many
+    small vias)
+- does the process support a via stacked directly on top of a diffusion / poly contact?
+- does the process support a via stacked directly on top of another via?
+- does the process support a via stacked on top of insulation on top of a diffusion / poly contact? E.g. a metal1 to
+    poly/diffusion contact and a metal2-to-metal3 via on top, but metal1/metal2 not connected.
+- does the process support a via stacked on top of insulation on top ofanother via? E.g. a metal1-to-metal2 via
+    and a metal3-to-metal4 via on top of it, but metal2/metal3 not connected.
