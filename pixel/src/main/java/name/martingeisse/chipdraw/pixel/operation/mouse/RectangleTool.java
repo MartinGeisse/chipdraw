@@ -73,9 +73,9 @@ public class RectangleTool implements MouseTool {
 			endY = temp;
 		}
 		if (erasing) {
-			return new Result(new ErasePoints(minX, minY, width, height, materialProvider.get().getPlaneSchema(), design), false);
+			return new Result(new ErasePoints(minX, minY, width, height, materialProvider.get().getPlaneSchema()), false);
 		} else {
-			return new Result(new DrawPoints(minX, minY, width, height, materialProvider.get(), design), false);
+			return new Result(new DrawPoints(minX, minY, width, height, materialProvider.get()), false);
 		}
 	}
 

@@ -16,22 +16,9 @@ public abstract class AbstractDrawPointsOperation extends InPlaceDesignOperation
     private final int height;
     private byte[] backup;
 
-    public AbstractDrawPointsOperation(int x, int y, int width, int height, RectangularSize clipRegion) {
-        if (clipRegion != null) {
-            if (x < 0) {
-                width += x;
-                x = 0;
-            }
-            if (x + width > clipRegion.getWidth()) {
-                width = clipRegion.getWidth() - x;
-            }
-            if (y < 0) {
-                height += y;
-                y = 0;
-            }
-            if (y + height > clipRegion.getHeight()) {
-                height = clipRegion.getHeight() - y;
-            }
+    public AbstractDrawPointsOperation(int x, int y, int width, int height) {
+        if (width < 0 || height < 0) {
+            throw new IllegalArgumentException("invalid rectangle size: " + width + " x " + height);
         }
         this.x = x;
         this.y = y;
@@ -58,7 +45,7 @@ public abstract class AbstractDrawPointsOperation extends InPlaceDesignOperation
     @Override
     protected void doPerform(Design design) throws UserVisibleMessageException {
         Plane plane = design.getPlane(getPlaneSchema());
-        backup = plane.copyToArray(x, y, width, height); // TODO does not handle out-of-bounds
+        backup = plane.copyToArray(x, y, width, height);
         plane.drawRectangleAutoclip(x, y, width, height, getMaterial());
     }
 

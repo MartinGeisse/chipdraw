@@ -8,8 +8,8 @@ public final class ErasePoints extends AbstractDrawPointsOperation {
 
     private final PlaneSchema planeSchema;
 
-    public ErasePoints(int x, int y, int width, int height, PlaneSchema planeSchema, RectangularSize clipRegion) {
-        super(x, y, width, height, clipRegion);
+    public ErasePoints(int x, int y, int width, int height, PlaneSchema planeSchema) {
+        super(x, y, width, height);
         this.planeSchema = planeSchema;
     }
 

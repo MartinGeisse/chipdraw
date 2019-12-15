@@ -136,9 +136,15 @@ public final class Plane implements Serializable, RectangularSize {
 		}
 		if (width > this.width - x) {
 			width = this.width - x;
+			if (width < 0) {
+				width = 0;
+			}
 		}
 		if (height > this.height - y) {
 			height = this.height - y;
+			if (height < 0) {
+				height = 0;
+			}
 		}
 		drawRectangleInternal(x, y, width, height, material);
 	}
@@ -162,6 +168,9 @@ public final class Plane implements Serializable, RectangularSize {
 
 	public boolean isRectangleUniformAutoclip(int x, int y, int width, int height, Material material) {
 		validateRectangleSize(width, height);
+		if (width == 0 || height == 0) {
+			return true;
+		}
 
 		// handle non-clip case
 		if (isValidPosition(x, y) && isValidPosition(x + width - 1, y + height - 1)) {
@@ -184,9 +193,15 @@ public final class Plane implements Serializable, RectangularSize {
 		}
 		if (width > this.width - x) {
 			width = this.width - x;
+			if (width < 0) {
+				width = 0;
+			}
 		}
 		if (height > this.height - y) {
 			height = this.height - y;
+			if (height < 0) {
+				height = 0;
+			}
 		}
 		return isRectangleUniformInternal(x, y, width, height, material);
 	}
@@ -209,6 +224,9 @@ public final class Plane implements Serializable, RectangularSize {
 
 	public boolean isRectangleContainsMaterialAutoclip(int x, int y, int width, int height, Material material) {
 		validateRectangleSize(width, height);
+		if (width == 0 || height == 0) {
+			return false;
+		}
 
 		// handle non-clip case
 		if (isValidPosition(x, y) && isValidPosition(x + width - 1, y + height - 1)) {
@@ -231,9 +249,15 @@ public final class Plane implements Serializable, RectangularSize {
 		}
 		if (width > this.width - x) {
 			width = this.width - x;
+			if (width < 0) {
+				width = 0;
+			}
 		}
 		if (height > this.height - y) {
 			height = this.height - y;
+			if (height < 0) {
+				height = 0;
+			}
 		}
 		return isRectangleContainsMaterialInternal(x, y, width, height, material);
 	}
@@ -288,14 +312,6 @@ public final class Plane implements Serializable, RectangularSize {
 	}
 
 	public byte[] copyToArray(int x, int y, int width, int height) {
-		return copytoArrayInternal(x, y, width, height, null);
-	}
-
-	public void copyToArray(int x, int y, int width, int height, byte[] destination) {
-		copytoArrayInternal(x, y, width, height, destination);
-	}
-
-	private byte[] copytoArrayInternal(int x, int y, int width, int height, byte[] destination) {
 		validateRectangleSize(width, height);
 		if (x < 0) {
 			width += x;
@@ -307,15 +323,17 @@ public final class Plane implements Serializable, RectangularSize {
 		}
 		if (width > this.width - x) {
 			width = this.width - x;
+			if (width < 0) {
+				return new byte[0];
+			}
 		}
 		if (height > this.height - y) {
 			height = this.height - y;
+			if (height < 0) {
+				return new byte[0];
+			}
 		}
-		if (destination == null) {
-			destination = new byte[width * height];
-		} else if (destination.length < width * height) {
-			throw new IllegalArgumentException("array of size " + destination.length + " is too small, expected " + (width * height));
-		}
+		byte[] destination = new byte[width * height];
 		for (int dy = 0; dy < height; dy++) {
 			System.arraycopy(pixels, (y + dy) * this.width + x, destination, dy * width, width);
 		}
@@ -334,9 +352,15 @@ public final class Plane implements Serializable, RectangularSize {
 		}
 		if (width > this.width - x) {
 			width = this.width - x;
+			if (width < 0) {
+				width = 0;
+			}
 		}
 		if (height > this.height - y) {
 			height = this.height - y;
+			if (height < 0) {
+				height = 0;
+			}
 		}
 		if (source.length < width * height) {
 			throw new IllegalArgumentException("array of size " + source.length + " is too small, expected " + (width * height));
