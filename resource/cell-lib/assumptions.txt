@@ -43,6 +43,10 @@ A few interesting questions to optimize the cells:
 - should we separate same-dopant wells between different cells, or are "joint wells" okay? This alone makes a huge
     difference for small cells because a well gap also implies minimum spacing of diffusion to the gap, so it
     easily adds one 7x7 tile and increases the width of an inverter from 3 to 4 tiles.
+    ACTUALLY, the automatically generated well gap is too narrow; this means the inverter blows up to 5 tiles!
+    Fortunately, this does not apply to the well gap between adjactent power rails because they are of opposite
+    dopant type, i.e. they form a reverse-biased diode so they don't have a minimum spacing rule. I still have a
+    spacing of 2 pixels just because I can (and that might add some error margin for manufacturing).
 - are many fixed-size vias or few large vias preferred? (I remember something about current density that prefers many
     small vias)
 - does the process support a via stacked directly on top of a diffusion / poly contact?
