@@ -5,6 +5,7 @@ import name.martingeisse.chipdraw.pixel.design.Material;
 import name.martingeisse.chipdraw.pixel.design.Plane;
 import name.martingeisse.chipdraw.pixel.design.PlaneSchema;
 import name.martingeisse.chipdraw.pixel.operation.InPlaceDesignOperation;
+import name.martingeisse.chipdraw.pixel.util.RectangularSize;
 import name.martingeisse.chipdraw.pixel.util.UserVisibleMessageException;
 
 public abstract class AbstractDrawPointsOperation extends InPlaceDesignOperation {
@@ -15,7 +16,23 @@ public abstract class AbstractDrawPointsOperation extends InPlaceDesignOperation
     private final int height;
     private byte[] backup;
 
-    public AbstractDrawPointsOperation(int x, int y, int width, int height) {
+    public AbstractDrawPointsOperation(int x, int y, int width, int height, RectangularSize clipRegion) {
+        if (clipRegion != null) {
+            if (x < 0) {
+                width += x;
+                x = 0;
+            }
+            if (x + width > clipRegion.getWidth()) {
+                width = clipRegion.getWidth() - x;
+            }
+            if (y < 0) {
+                height += y;
+                y = 0;
+            }
+            if (y + height > clipRegion.getHeight()) {
+                height = clipRegion.getHeight() - y;
+            }
+        }
         this.x = x;
         this.y = y;
         this.width = width;

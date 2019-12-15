@@ -129,15 +129,15 @@ public class MainWindow extends JFrame implements Editor.Ui {
 			button3x3.setFocusable(false);
 			button3x3.addActionListener(event -> mouseTool = new DrawTool(materialUiState::getEditingMaterial, 3));
 			toolPanel1.add(button3x3);
-			JButton rowButton = new JButton(Icons.get("row.png"));
-			rowButton.setFocusable(false);
-			rowButton.addActionListener(event -> mouseTool = new RowTool());
-			toolPanel1.add(rowButton);
 			sideBar.add(toolPanel1);
 		}
 		{
 			JPanel toolPanel2 = new JPanel();
 			toolPanel2.setLayout(new BoxLayout(toolPanel2, BoxLayout.X_AXIS));
+            JButton rowButton = new JButton(Icons.get("row.png"));
+            rowButton.setFocusable(false);
+            rowButton.addActionListener(event -> mouseTool = new RowTool());
+            toolPanel2.add(rowButton);
             JButton rectangleButton = new JButton(Icons.get("rectangle.png"));
             rectangleButton.setFocusable(false);
             rectangleButton.addActionListener(event -> mouseTool = new RectangleTool(materialUiState::getEditingMaterial));

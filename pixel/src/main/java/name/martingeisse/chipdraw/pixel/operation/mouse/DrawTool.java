@@ -38,9 +38,9 @@ public final class DrawTool implements MouseTool {
 			int offset = (cursorSize - 1) / 2;
 			Material material = materialProvider.get();
 			if (drawing) {
-				operation = new DrawPoints(x - offset, y - offset, cursorSize, cursorSize, material);
+				operation = new DrawPoints(x - offset, y - offset, cursorSize, cursorSize, material, design);
 			} else {
-				operation = new ErasePoints(x - offset, y - offset, cursorSize, cursorSize, material.getPlaneSchema());
+				operation = new ErasePoints(x - offset, y - offset, cursorSize, cursorSize, material.getPlaneSchema(), design);
 			}
 			firstPixelOfStroke = false;
 		}
