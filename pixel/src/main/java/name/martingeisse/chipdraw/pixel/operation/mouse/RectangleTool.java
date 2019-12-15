@@ -60,7 +60,6 @@ public class RectangleTool implements MouseTool {
 
 	@Override
 	public Result onMouseReleased(Design design) {
-		// TODO generates negative size!
 		active = false;
 		if (startX > endX) {
 			int temp = startX;
