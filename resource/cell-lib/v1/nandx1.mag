@@ -1,0 +1,119 @@
+magic
+tech concept
+timestamp 1576481569720
+<< sizer >>
+rect 0 0 42 140
+<< metal1 >>
+rect 0 134 42 139
+rect 0 132 8 134
+rect 10 132 12 134
+rect 14 132 16 134
+rect 18 132 20 134
+rect 22 132 24 134
+rect 26 132 28 134
+rect 30 132 32 134
+rect 34 132 42 134
+rect 0 128 42 132
+rect 19 124 23 128
+rect 11 124 15 125
+rect 27 124 31 125
+rect 11 122 12 124
+rect 14 122 15 124
+rect 19 122 20 124
+rect 22 122 23 124
+rect 27 122 28 124
+rect 30 122 31 124
+rect 11 120 15 122
+rect 19 120 23 122
+rect 27 120 31 122
+rect 11 118 12 120
+rect 14 118 15 120
+rect 19 118 20 120
+rect 22 118 23 120
+rect 27 118 28 120
+rect 30 118 31 120
+rect 11 115 15 118
+rect 19 117 23 118
+rect 27 115 31 118
+rect 11 111 31 115
+rect 27 76 31 111
+rect 9 107 17 108
+rect 9 105 14 107
+rect 16 105 17 107
+rect 9 104 17 105
+rect 9 90 12 104
+rect 8 86 12 90
+rect 9 29 12 86
+rect 27 72 33 76
+rect 27 20 31 72
+rect 15 61 25 62
+rect 15 59 22 61
+rect 24 59 25 61
+rect 15 58 25 59
+rect 9 28 19 29
+rect 9 26 16 28
+rect 18 26 19 28
+rect 9 25 19 26
+rect 13 19 17 20
+rect 25 19 31 20
+rect 13 17 14 19
+rect 16 17 17 19
+rect 25 17 26 19
+rect 28 17 31 19
+rect 13 13 17 17
+rect 25 16 31 17
+rect 0 8 42 13
+rect 0 6 8 8
+rect 10 6 12 8
+rect 14 6 16 8
+rect 18 6 20 8
+rect 22 6 24 8
+rect 26 6 28 8
+rect 30 6 32 8
+rect 34 6 42 8
+rect 0 2 42 6
+<< contact >>
+rect 8 132 10 134
+rect 12 132 14 134
+rect 16 132 18 134
+rect 20 132 22 134
+rect 24 132 26 134
+rect 28 132 30 134
+rect 32 132 34 134
+rect 12 122 14 124
+rect 20 122 22 124
+rect 28 122 30 124
+rect 12 118 14 120
+rect 20 118 22 120
+rect 28 118 30 120
+rect 14 105 16 107
+rect 22 59 24 61
+rect 16 26 18 28
+rect 14 17 16 19
+rect 26 17 28 19
+rect 8 6 10 8
+rect 12 6 14 8
+rect 16 6 18 8
+rect 20 6 22 8
+rect 24 6 26 8
+rect 28 6 30 8
+rect 32 6 34 8
+<< poly >>
+rect 16 109 18 128
+rect 24 63 26 128
+rect 12 103 18 109
+rect 20 57 26 63
+rect 22 13 24 57
+rect 14 24 20 30
+rect 18 13 20 24
+<< ndiff >>
+rect 6 130 36 136
+rect 12 15 30 21
+<< pdiff >>
+rect 10 116 32 126
+rect 6 4 36 10
+<< nwell >>
+rect 3 48 39 139
+<< pwell >>
+rect 3 1 39 46
+<< end >>
