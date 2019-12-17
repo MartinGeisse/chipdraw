@@ -1,6 +1,6 @@
 magic
 tech concept
-timestamp 1576565380090
+timestamp 1576565346600
 << sizer >>
 rect 0 0 42 140
 << metal1 >>
@@ -32,30 +32,54 @@ rect 19 118 20 120
 rect 22 118 23 120
 rect 27 118 28 120
 rect 30 118 31 120
-rect 11 115 15 118
-rect 19 117 23 118
-rect 27 115 31 118
-rect 11 111 31 115
-rect 27 76 30 111
-rect 9 107 17 108
-rect 9 105 14 107
-rect 16 105 17 107
-rect 9 104 17 105
-rect 9 90 12 104
+rect 11 116 15 118
+rect 19 116 23 118
+rect 27 116 31 118
+rect 11 114 12 116
+rect 14 114 15 116
+rect 19 114 20 116
+rect 22 114 23 116
+rect 27 114 28 116
+rect 30 114 31 116
+rect 11 112 15 114
+rect 19 112 23 114
+rect 27 112 31 114
+rect 11 110 12 112
+rect 14 110 15 112
+rect 19 110 20 112
+rect 22 110 23 112
+rect 27 110 28 112
+rect 30 110 31 112
+rect 11 107 15 110
+rect 19 109 23 110
+rect 27 107 31 110
+rect 11 104 31 107
+rect 27 76 30 104
+rect 13 101 17 102
+rect 9 99 14 101
+rect 16 99 17 101
+rect 9 98 17 99
+rect 9 90 12 98
 rect 8 86 12 90
-rect 9 29 12 86
+rect 9 32 12 86
 rect 27 72 33 76
-rect 27 20 30 72
+rect 27 24 30 72
 rect 15 61 25 62
 rect 15 59 22 61
 rect 24 59 25 61
 rect 15 58 25 59
-rect 9 28 19 29
-rect 9 26 16 28
-rect 18 26 19 28
-rect 9 25 19 26
-rect 13 19 17 20
-rect 25 19 30 20
+rect 9 31 19 32
+rect 9 29 16 31
+rect 18 29 19 31
+rect 15 28 19 29
+rect 13 23 17 24
+rect 25 23 30 24
+rect 13 21 14 23
+rect 16 21 17 23
+rect 25 21 26 23
+rect 28 21 30 23
+rect 13 19 17 21
+rect 25 19 30 21
 rect 13 17 14 19
 rect 16 17 17 19
 rect 25 17 26 19
@@ -86,9 +110,17 @@ rect 28 122 30 124
 rect 12 118 14 120
 rect 20 118 22 120
 rect 28 118 30 120
-rect 14 105 16 107
+rect 12 114 14 116
+rect 20 114 22 116
+rect 28 114 30 116
+rect 12 110 14 112
+rect 20 110 22 112
+rect 28 110 30 112
+rect 14 99 16 101
 rect 22 59 24 61
-rect 16 26 18 28
+rect 16 29 18 31
+rect 14 21 16 23
+rect 26 21 28 23
 rect 14 17 16 19
 rect 26 17 28 19
 rect 8 6 10 8
@@ -99,18 +131,18 @@ rect 24 6 26 8
 rect 28 6 30 8
 rect 32 6 34 8
 << poly >>
-rect 16 109 18 128
+rect 16 103 18 128
 rect 24 63 26 128
-rect 12 103 18 109
+rect 12 97 18 103
 rect 20 57 26 63
 rect 22 13 24 57
-rect 14 24 20 30
-rect 18 13 20 24
+rect 14 27 20 33
+rect 18 13 20 27
 << ndiff >>
 rect 6 130 36 136
-rect 12 15 30 21
+rect 12 15 30 25
 << pdiff >>
-rect 10 116 32 126
+rect 10 108 32 126
 rect 6 4 36 10
 << nwell >>
 rect 3 48 39 139
