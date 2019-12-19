@@ -1,0 +1,27 @@
+Hi all,
+
+some updates and questions regarding my cell/mask editor:
+
+- The pixel-based editor works quite well now. With some practice, a few hours were enough for me to draw 15+ simple
+    cells (inverter, buffer, nand, nor, and, or, tri-state inverter; each with different drive strengths). Especially
+    since many of those are simple variants of each other.
+
+- I defined the standard cell height to be 140 lambda, which is way too much, even when you are inexperienced and use
+    a very conservative DRC. Much space is wasted. I will eventually restart at 100 or 70 lambda.
+
+- The DRC I'm using is *very* conservative, even more so than MOSIS SCMOS. I will mostly keep it that way unless/until
+    you know more about the actual constraints of your process.
+
+The most constraining open questions regarding the process are about wells. I will post them here in case you already
+have some information in this regard. Note that I am thinking of purely digital circuits for now, ignoring analog and
+clock network related stuff.
+
+- Should I assume n-wells only, p-wells only, or both? If both, Do I have to keep a minimum spacing between them?
+    (MOSIS SCMOS says "no spacing, just don't make them overlap", probably because in digital if they touch they
+    make a reverse-biased diode). The spacing is the crucial point here since it affects the cell layout.
+
+- Can the n-wells (or p-wells) of different cells be merged without getting issues with electrical noise? Some cell
+    libraries seem to do this, i.e. they use a single long well across a whole row of cells instead of one well per
+    cell (or even one well per transistor). This is super important because separate wells means spacing between
+    wells and even more spacing between source/drain and well boundaries, so it constrains the layout a lot.
+

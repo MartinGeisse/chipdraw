@@ -32,6 +32,14 @@ either way keep the problem out of the routing phase. In any case we should avoi
 
 -------
 
+Some lessons learned while building a cell library:
+
+- using 140 lambda for the height is way too much, even when you are inexperienced and use a very conservative DRC
+- with some practice, a few hours are enough to draw 15+ cells. Add some time for optimization for smaller heights
+    than 140, you should still end up with 5-10 cells in that time.
+- more knowledge about the process constraints would allow much better optimization.
+
+
 A few interesting questions to optimize the cells:
 - can we tweak the numbers from the SCMOS design rules
 - scmos defines a growing minimum for metal tracks, the higher the layer. These numbers are especially interesting
