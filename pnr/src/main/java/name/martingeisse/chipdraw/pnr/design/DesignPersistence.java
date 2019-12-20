@@ -1,12 +1,15 @@
 package name.martingeisse.chipdraw.pnr.design;
 
 import com.google.common.collect.ImmutableList;
-import name.martingeisse.chipdraw.pnr.cell.CellLibraryRepository;
-import name.martingeisse.chipdraw.pnr.cell.NoSuchCellLibraryException;
+import name.martingeisse.chipdraw.pnr.cell.*;
+import org.apache.commons.lang3.StringUtils;
 
 import java.io.*;
+import java.nio.charset.StandardCharsets;
 
 public final class DesignPersistence {
+
+    public static final String FORMAT_TOKEN_VERSION_0000 = "CDPR0000";
 
     private final CellLibraryRepository cellLibraryRepository;
 
@@ -16,53 +19,118 @@ public final class DesignPersistence {
 
     public void save(Design design, String path) throws IOException {
         try (FileOutputStream fileOutputStream = new FileOutputStream(path)) {
-            ObjectOutputStream objectOutputStream = new ObjectOutputStream(fileOutputStream);
-            objectOutputStream.writeObject(design);
-            objectOutputStream.flush();
-            System.out.println("saved to: " + path);
+            try (OutputStreamWriter outputStreamWriter = new OutputStreamWriter(fileOutputStream, StandardCharsets.UTF_8)) {
+                try (PrintWriter out = new PrintWriter(outputStreamWriter)) {
+                    out.println(FORMAT_TOKEN_VERSION_0000);
+                    out.println(design.getWidth());
+                    out.println(design.getHeight());
+                    out.println(design.getCellLibrary().getId());
+                    out.println("---");
+                    for (RoutingPlane routingPlane : design.getRoutingPlanes()) {
+                        for (int y = 0; y < design.getHeight(); y++) {
+                            for (int x = 0; x < design.getWidth(); x++) {
+                                out.print((char)('0' + routingPlane.getTile(x, y).ordinal()));
+                            }
+                            out.println();
+                        }
+                        out.println("---");
+                    }
+                    CellPlane cellPlane = design.getCellPlane();
+                    for (CellInstance cellInstance : cellPlane.getCellInstances()) {
+                        out.println(cellInstance.getTemplate().getId() + ' ' + cellInstance.getX() + ' ' + cellInstance.getY());
+                    }
+                    out.println("---");
+                }
+            }
         }
     }
 
-    public Design load(String path) throws IOException, NoSuchCellLibraryException {
+    public Design load(String path) throws IOException, NoSuchCellLibraryException, NoSuchCellException {
         try (FileInputStream fileInputStream = new FileInputStream(path)) {
-            System.out.println("loading from: " + path);
-            ObjectInputStream objectInputStream = new ObjectInputStream(fileInputStream);
-            objectInputStream.setObjectInputFilter(this::filter);
-            Design design = (Design) objectInputStream.readObject();
-            design.initializeAfterDeserialization(cellLibraryRepository);
-            return design;
-        } catch (ClassNotFoundException e) {
-            throw new IOException("deserialization problem", e);
+            try (InputStreamReader inputStreamReader = new InputStreamReader(fileInputStream, StandardCharsets.UTF_8)) {
+                try (LineNumberReader in = new LineNumberReader(inputStreamReader)) {
+                    String actualFormatToken = in.readLine();
+                    if (!actualFormatToken.equals(FORMAT_TOKEN_VERSION_0000)) {
+                        throw new IOException("wrong format token: " + actualFormatToken);
+                    }
+                    int width = expectIntLine(in);
+                    int height = expectIntLine(in);
+                    String cellLibraryId = expectLine(in);
+                    CellLibrary cellLibrary = cellLibraryRepository.getCellLibrary(cellLibraryId);
+                    expectSeparatorLine(in);
+                    Design design = new Design(cellLibrary, width, height);
+                    for (RoutingPlane routingPlane : design.getRoutingPlanes()) {
+                        for (int y = 0; y < design.getHeight(); y++) {
+                            String line = expectLine(in);
+                            if (line.length() != width) {
+                                throw new IOException("expected line width of " + width);
+                            }
+                            for (int x = 0; x < design.getWidth(); x++) {
+                                char c = line.charAt(x);
+                                if (c < '0' || c > '7') {
+                                    throw new IOException("unexpected routing tile: " + c);
+                                }
+                                RoutingTile routingTile = RoutingTile.values()[c - '0'];
+                                routingPlane.setTile(x, y, routingTile);
+                            }
+                        }
+                        expectSeparatorLine(in);
+                    }
+                    CellPlane cellPlane = design.getCellPlane();
+                    while (true) {
+                        String line = expectLine(in);
+                        if (line.equals("---")) {
+                            break;
+                        }
+                        String[] segments = StringUtils.split(line);
+                        if (segments.length != 3) {
+                            throw new IOException("invalid cell line");
+                        }
+                        String cellTemplateId = segments[0];
+                        CellTemplate cellTemplate = cellLibrary.getCellTemplate(cellTemplateId);
+                        int x = Integer.parseInt(segments[1]);
+                        int y = Integer.parseInt(segments[2]);
+                        cellPlane.add(new CellInstance(cellTemplate, x, y));
+                    }
+                    expectEof(in);
+                    return design;
+                }
+            }
         }
     }
 
-    private ObjectInputFilter.Status filter(ObjectInputFilter.FilterInfo info) {
-        Class<?> c = info.serialClass();
-
-        // null is always accepted (no depth test for now)
-        if (c == null) {
-            return ObjectInputFilter.Status.ALLOWED;
+    private static String expectLine(LineNumberReader in) throws IOException {
+        String line = in.readLine();
+        if (line == null) {
+            throw new IOException("unexpected EOF");
         }
+        return line;
+    }
 
-        // application types
-        if (c == Design.class || c == RoutingPlane.class) {
-            return ObjectInputFilter.Status.ALLOWED;
+    private static int expectIntLine(LineNumberReader in) throws IOException {
+        try {
+            return Integer.parseInt(in.readLine());
+        } catch (Exception e) {
+            throw new IOException("expected separator line");
         }
+    }
 
-        // immutable collections
-        if (c.getName().equals("com.google.common.collect.ImmutableList$SerializedForm")) {
-            return ObjectInputFilter.Status.ALLOWED;
+    private static void expectSeparatorLine(LineNumberReader in) throws IOException {
+        if (!"---".equals(in.readLine())) {
+            throw new IOException("expected separator line");
         }
-        if (ImmutableList.class.isAssignableFrom(c)) {
-            return ObjectInputFilter.Status.ALLOWED;
-        }
+    }
 
-        // core types
-        if (c == Object[].class || c == byte[].class) {
-            return ObjectInputFilter.Status.ALLOWED;
+    private static void expectEof(LineNumberReader in) throws IOException {
+        while (true) {
+            String line = in.readLine();
+            if (line == null) {
+                return;
+            }
+            if (!line.isEmpty()) {
+                throw new IOException("expected EOF, found: " + line);
+            }
         }
-
-        return ObjectInputFilter.Status.REJECTED;
     }
 
 }

@@ -584,7 +584,7 @@ public class MainWindow extends JFrame implements Editor.Ui {
         Design design;
         try {
             design = loadAndSaveDialogs.showLoadDialog(this);
-        } catch (NoSuchCellLibraryException exception) {
+        } catch (NoSuchCellLibraryException|NoSuchCellException exception) {
             JOptionPane.showMessageDialog(this, exception.getMessage());
             return;
         }

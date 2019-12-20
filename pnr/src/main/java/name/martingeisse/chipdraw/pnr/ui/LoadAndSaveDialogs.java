@@ -1,6 +1,7 @@
 package name.martingeisse.chipdraw.pnr.ui;
 
 import name.martingeisse.chipdraw.pnr.cell.CellLibraryRepository;
+import name.martingeisse.chipdraw.pnr.cell.NoSuchCellException;
 import name.martingeisse.chipdraw.pnr.cell.NoSuchCellLibraryException;
 import name.martingeisse.chipdraw.pnr.design.Design;
 import name.martingeisse.chipdraw.pnr.design.DesignPersistence;
@@ -12,9 +13,9 @@ import java.io.IOException;
 
 public final class LoadAndSaveDialogs {
 
-    public static final String MEMORY_DUMP_FILENAME_EXTENSION = "ChipdrawPnrMemoryDump";
+    public static final String PNR_DESIGN_FILENAME_EXTENSION = "cdpnr";
 
-    private static final FileNameExtensionFilter FILE_NAME_EXTENSION_FILTER = new FileNameExtensionFilter("Chipdraw PNR memory dump", MEMORY_DUMP_FILENAME_EXTENSION);
+    private static final FileNameExtensionFilter FILE_NAME_EXTENSION_FILTER = new FileNameExtensionFilter("Chipdraw PNR design", PNR_DESIGN_FILENAME_EXTENSION);
 
     private final DesignPersistence designPersistence;
 
@@ -34,7 +35,7 @@ public final class LoadAndSaveDialogs {
         }
     }
 
-    public Design showLoadDialog(Component parent) throws NoSuchCellLibraryException {
+    public Design showLoadDialog(Component parent) throws NoSuchCellLibraryException, NoSuchCellException {
         String path = chooseFile(parent, JFileChooser.OPEN_DIALOG);
         if (path == null) {
             return null;
@@ -54,8 +55,8 @@ public final class LoadAndSaveDialogs {
         chooser.setFileFilter(FILE_NAME_EXTENSION_FILTER);
         if (chooser.showOpenDialog(parent) == JFileChooser.APPROVE_OPTION) {
             String path = chooser.getSelectedFile().getPath();
-            if (!path.endsWith('.' + MEMORY_DUMP_FILENAME_EXTENSION)) {
-                path = path + '.' + MEMORY_DUMP_FILENAME_EXTENSION;
+            if (!path.endsWith('.' + PNR_DESIGN_FILENAME_EXTENSION)) {
+                path = path + '.' + PNR_DESIGN_FILENAME_EXTENSION;
             }
             return path;
         } else {
