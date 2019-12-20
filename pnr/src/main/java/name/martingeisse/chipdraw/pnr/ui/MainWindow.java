@@ -309,12 +309,12 @@ public class MainWindow extends JFrame implements Editor.Ui {
                     placingVia = (e.getButton() == MouseEvent.BUTTON1 && (e.getModifiersEx() & InputEvent.SHIFT_DOWN_MASK) != 0);
                     removingVia = (e.getButton() == MouseEvent.BUTTON3 && (e.getModifiersEx() & InputEvent.SHIFT_DOWN_MASK) != 0);
                     firstPixelOfStroke = true;
-                    mouseMoved(e);
                     if (placingVia || removingVia) {
                         placingViaOriginalScreenY = e.getY();
                         placingViaOriginalPixelX = mousePixelX;
                         placingViaOriginalPixelY = mousePixelY;
                     }
+                    mouseMoved(e);
                 }
             }
 
