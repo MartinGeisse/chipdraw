@@ -12,6 +12,7 @@ import name.martingeisse.chipdraw.pnr.design.RoutingPlane;
 import name.martingeisse.chipdraw.pnr.design.RoutingTile;
 import name.martingeisse.chipdraw.pnr.drc.PositionedViolation;
 import name.martingeisse.chipdraw.pnr.drc.Violation;
+import name.martingeisse.chipdraw.pnr.global_tools.VerilogExportDialog;
 import name.martingeisse.chipdraw.pnr.icons.Icons;
 import name.martingeisse.chipdraw.pnr.operation.DesignOperation;
 import name.martingeisse.chipdraw.pnr.ui.util.MenuBarBuilder;
@@ -535,6 +536,7 @@ public class MainWindow extends JFrame implements Editor.Ui {
 //                    return new Autocropper(oldDesign).autocrop();
 //                }
 //            }));
+            builder.add("Export Verilog", () -> VerilogExportDialog.showExportDialog(this, getCurrentDesign()));
             builder.addMenu("Help");
             builder.addExternalLink("Contents", "https://github.com/MartinGeisse/chipdraw/blob/master/doc/index.md"); // TODO link to commit for this version
             builder.add("About", () -> JOptionPane.showMessageDialog(MainWindow.this, About.ABOUT_TEXT));
