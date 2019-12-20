@@ -143,13 +143,15 @@ public class MainWindow extends JFrame implements Editor.Ui {
 
         mainPanel = new DesignTilePanel(this) {
 
-            private void drawPlane(Graphics2D g, int planeIndex, int pixelX, int pixelY, int screenX, int screenY, int screenSize, Color color) {
+            private void drawPlane(Graphics2D g, int planeIndex, int pixelX, int pixelY, int screenX, int screenY, int screenSize,
+                                   Color color, Color viaDownColor, Color viaUpColor) {
                 RoutingPlane plane = editor.getDesign().getRoutingPlanes().get(planeIndex);
                 if (!planeUiState.isPlaneVisible(planeIndex)) {
                     return;
                 }
                 RoutingTile tile = plane.getTile(pixelX, pixelY);
                 g.setPaint(color);
+
                 int centerX = screenX + screenSize / 2;
                 int centerY = screenY + screenSize / 2;
                 if (tile.isEastConnected()) {
@@ -158,20 +160,26 @@ public class MainWindow extends JFrame implements Editor.Ui {
                 if (tile.isSouthConnected()) {
                     g.drawLine(centerX, centerY, centerX, centerY + screenSize);
                 }
-                if (tile.isDownConnected()) {
-                    g.drawLine(centerX, centerY, centerX - 3, centerY + 3);
+
+                int viaX = screenX + screenSize / 4;
+                int viaY = screenY + screenSize / 4;
+                int viaSize = screenSize / 2;
+                if (tile.isDownConnected() && viaDownColor != null) {
+                    g.setPaint(new GradientPaint(viaX, viaY, color, viaX, viaY + viaSize, viaDownColor));
+                    g.fillRect(viaX, viaY, viaSize, viaSize);
                 }
                 RoutingPlane planeAbove = plane.getRoutingPlaneAbove();
-                if (planeAbove != null && planeAbove.getTile(pixelX, pixelY).isDownConnected()) {
-                    g.drawLine(centerX, centerY, centerX + 3, centerY - 3);
+                if (planeAbove != null && planeAbove.getTile(pixelX, pixelY).isDownConnected() && viaUpColor != null) {
+                    g.setPaint(new GradientPaint(viaX, viaY, viaUpColor, viaX, viaY + viaSize, color));
+                    g.fillRect(viaX, viaY, viaSize, viaSize);
                 }
             }
 
             @Override
             protected void drawTile(Graphics2D g, int pixelX, int pixelY, int screenX, int screenY, int screenSize) {
-                drawPlane(g, 0, pixelX, pixelY, screenX, screenY, screenSize, Color.RED);
-                drawPlane(g, 1, pixelX, pixelY, screenX, screenY, screenSize, Color.GREEN);
-                drawPlane(g, 2, pixelX, pixelY, screenX, screenY, screenSize, Color.BLUE);
+                drawPlane(g, 0, pixelX, pixelY, screenX, screenY, screenSize, Color.RED, Color.GREEN, null);
+                drawPlane(g, 1, pixelX, pixelY, screenX, screenY, screenSize, Color.GREEN, Color.BLUE, Color.RED);
+                drawPlane(g, 2, pixelX, pixelY, screenX, screenY, screenSize, Color.BLUE, Color.LIGHT_GRAY, Color.GREEN);
                 if (positionedDrcViolations.get(new name.martingeisse.chipdraw.pnr.util.Point(pixelX, pixelY)) != null) {
                     int centerX = screenX + screenSize / 2 - 2;
                     int centerY = screenY + screenSize / 2 - 2;
