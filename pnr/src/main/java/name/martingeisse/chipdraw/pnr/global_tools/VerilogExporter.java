@@ -15,6 +15,7 @@ public class VerilogExporter {
 
     private final Design design;
     private final File file;
+    private final List<Net> nets = new ArrayList<>();
 
     public VerilogExporter(Design design, File file) {
         this.design = design;
@@ -33,7 +34,7 @@ public class VerilogExporter {
 
     private void export(PrintWriter out) {
         out.println("module exported();");
-        List<Net> nets = new ArrayList<>();
+
         // TODO recognize pad nets by a "mesh" of a certain minimum size in routing layer 0.
         // Will not assign nice names to pads but we can accept that.
         new ConnectivityExtractor3d() {
@@ -68,10 +69,34 @@ public class VerilogExporter {
         for (CellInstance cellInstance : design.getCellPlane().getCellInstances()) {
             out.print("\t" + cellInstance.getTemplate().getId() +
                     " cell_" + cellInstance.getX() + "_" + cellInstance.getY());
-            // TODO
+            boolean first = true;
+            for (Port port : cellInstance.getTemplate().getPorts()) {
+                Net net = findNetForPort(cellInstance, port);
+                if (net != null) {
+                    if (first) {
+                        first = false;
+                        out.println();
+                    } else {
+                        out.println(",");
+                    }
+                    out.print("\t\t." + port.getName() + "(" + net.getName() + ")");
+                }
+            }
+            out.println();
             out.println("\t);");
         }
         out.println("endmodule");
+    }
+
+    private Net findNetForPort(CellInstance cellInstance, Port port) {
+        for (Net net : nets) {
+            for (PortConnection portConnection : net.getPortConnections()) {
+                if (portConnection.getCellInstance() == cellInstance && portConnection.getPort() == port) {
+                    return net;
+                }
+            }
+        }
+        return null;
     }
 
     public static final class Net {
