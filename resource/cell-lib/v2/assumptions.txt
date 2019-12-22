@@ -1,0 +1,36 @@
+
+Based on the routing considerations, cell sizes are multiples of 7 and routing ports are placed at 7-aligned positions.
+
+Power rails in the cells are: Vdd top, GND bottom. Each is 2 tiles (14 lambda) including spacing.
+- Rails might have to be connected to stronger power tracks on both sides, not just one
+- a smaller library may be derived from this one using one tile (7 lambda) including spacing, i.e. 4 lambda for each
+    rail itself. It has to be tested whether this is sufficient for power rails.
+    - connecting to stronger power on both sides is a must
+    - it is possible to improve rails by adding vertical power tracks between cells every N tiles. Both Vdd and GND
+        should run vertically, with one connecting to the left and the other connecting to the right. This solves
+        weak rails purely on metal1.
+- deriving a library with 1.5 tiles per rail, i.e. 3 tiles (21 lambda) for both, might be possible, but I don't
+    know how this plays together with routing alignment.
+
+Cells may be flipped and rails merged without changes to the library. This can be done purely in the PNR tool.
+
+Cell height is fixed to 70 (single-size) or aligned multiples of 70 (multi-size). Multi-size cells must route the
+power rails to the next cells properly.
+TODO work out the height of the cells. 140 was too much, but I don't know what the height should be.
+
+For now, there won't be side ports (direct connections between neighbor cells purely on metal1 that bypass the routing
+layers). The PNR tool cannot handle them yet, and I don't know what useful side ports look like. Also, datapath
+subsystems don't fit well into a standard library because the height of a bit lane is configurable. I might rather
+look into a datapath generation tool instead of using standard cells for that.
+
+Both n-wells and p-wells will be used to be independent from the actual well scheme from the technology. As per SCMOS,
+spacing between them is 0 (IMO, they should form a reverse-biased diode when they touch). All n-wells of a cell row
+will be joined; likewise for p-wells. This should be okay since we don't have analog stuff. If noise does build up
+to critical amounts at some point, it should be fixed there, instead of fixing it for all cells where it does not
+matter. When I know what noise works like, special noise-cancelling cells might be added. (Just as an idea, this
+may be a cell that does separate wells between left and right, and/or adds lots of well taps, and/or adds a big
+capacitor between Vdd and GND).
+
+Since I don't know yet about the well scheme, I'll paint all pixels as either n-well or p-well, leaving no well pixel
+empty. The DRC understands well taps but not substrate taps, so this way it will stop complaining about the taps
+themselves but still check spacing between the taps and opposite wells.
