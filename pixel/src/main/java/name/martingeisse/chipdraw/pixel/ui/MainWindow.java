@@ -23,10 +23,9 @@ import name.martingeisse.chipdraw.pixel.operation.mouse.DrawTool;
 import name.martingeisse.chipdraw.pixel.operation.mouse.MouseTool;
 import name.martingeisse.chipdraw.pixel.operation.mouse.RectangleTool;
 import name.martingeisse.chipdraw.pixel.operation.mouse.RowTool;
-import name.martingeisse.chipdraw.pixel.ui.util.DesignPixelPanel;
-import name.martingeisse.chipdraw.pixel.ui.util.MenuBarBuilder;
-import name.martingeisse.chipdraw.pixel.ui.util.SingleIconBooleanCellRenderer;
-import name.martingeisse.chipdraw.pixel.ui.util.UiRunnable;
+import name.martingeisse.chipdraw.pixel.operation.scmos.ScmosContactTool;
+import name.martingeisse.chipdraw.pixel.operation.scmos.ScmosContactType;
+import name.martingeisse.chipdraw.pixel.ui.util.*;
 import name.martingeisse.chipdraw.pixel.util.Point;
 import name.martingeisse.chipdraw.pixel.util.UserVisibleMessageException;
 
@@ -115,35 +114,25 @@ public class MainWindow extends JFrame implements Editor.Ui {
         }
 		// note: we use several tool panels because BoxLayout is too stupid to break lines
 		{
-			JPanel toolPanel1 = new JPanel();
-			toolPanel1.setLayout(new BoxLayout(toolPanel1, BoxLayout.X_AXIS));
-			JButton button1x1 = new JButton(Icons.get("cursor_1x1.png"));
-			button1x1.setFocusable(false);
-			button1x1.addActionListener(event -> mouseTool = new DrawTool(materialUiState::getEditingMaterial, 1));
-			toolPanel1.add(button1x1);
-			JButton button2x2 = new JButton(Icons.get("cursor_2x2.png"));
-			button2x2.setFocusable(false);
-			button2x2.addActionListener(event -> mouseTool = new DrawTool(materialUiState::getEditingMaterial, 2));
-			toolPanel1.add(button2x2);
-			JButton button3x3 = new JButton(Icons.get("cursor_3x3.png"));
-			button3x3.setFocusable(false);
-			button3x3.addActionListener(event -> mouseTool = new DrawTool(materialUiState::getEditingMaterial, 3));
-			toolPanel1.add(button3x3);
-			sideBar.add(toolPanel1);
+            ToolbarBuilder builder = new ToolbarBuilder();
+            builder.add("cursor_1x1.png", event -> mouseTool = new DrawTool(materialUiState::getEditingMaterial, 1));
+            builder.add("cursor_2x2.png", event -> mouseTool = new DrawTool(materialUiState::getEditingMaterial, 2));
+            builder.add("cursor_3x3.png", event -> mouseTool = new DrawTool(materialUiState::getEditingMaterial, 3));
+			sideBar.add(builder.build());
 		}
 		{
-			JPanel toolPanel2 = new JPanel();
-			toolPanel2.setLayout(new BoxLayout(toolPanel2, BoxLayout.X_AXIS));
-            JButton rowButton = new JButton(Icons.get("row.png"));
-            rowButton.setFocusable(false);
-            rowButton.addActionListener(event -> mouseTool = new RowTool());
-            toolPanel2.add(rowButton);
-            JButton rectangleButton = new JButton(Icons.get("rectangle.png"));
-            rectangleButton.setFocusable(false);
-            rectangleButton.addActionListener(event -> mouseTool = new RectangleTool(materialUiState::getEditingMaterial));
-            toolPanel2.add(rectangleButton);
-			sideBar.add(toolPanel2);
+            ToolbarBuilder builder = new ToolbarBuilder();
+            builder.add("row.png", event -> mouseTool = new RowTool());
+            builder.add("rectangle.png", event -> mouseTool = new RectangleTool(materialUiState::getEditingMaterial));
+            sideBar.add(builder.build());
 		}
+        {
+            ToolbarBuilder builder = new ToolbarBuilder();
+            builder.add("contact_n.png", event -> mouseTool = new ScmosContactTool(ScmosContactType.NDIFF));
+            builder.add("contact_p.png", event -> mouseTool = new ScmosContactTool(ScmosContactType.PDIFF));
+            builder.add("contact_g.png", event -> mouseTool = new ScmosContactTool(ScmosContactType.POLY));
+            sideBar.add(builder.build());
+        }
         sideBar.add(Box.createGlue());
         {
             drcButton = new JButton("DRC");
