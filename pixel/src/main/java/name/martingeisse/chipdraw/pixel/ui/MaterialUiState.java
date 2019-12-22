@@ -26,11 +26,13 @@ public final class MaterialUiState {
     }
 
     public void setTechnology(Technology technology) {
-        this.technology = technology;
-        this.materials = technology.getFlattenedMaterialList();
-        this.visiblePlanes = new HashSet<>(technology.getPlaneSchemas());
-        this.editingMaterial = materials.get(0);
-        sidebarTableModel.fireTableDataChanged();
+        if (technology != this.technology) {
+            this.technology = technology;
+            this.materials = technology.getFlattenedMaterialList();
+            this.visiblePlanes = new HashSet<>(technology.getPlaneSchemas());
+            this.editingMaterial = materials.get(0);
+            sidebarTableModel.fireTableDataChanged();
+        }
     }
 
     public TableModel getSidebarTableModel() {
