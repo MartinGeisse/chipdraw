@@ -25,6 +25,7 @@ import name.martingeisse.chipdraw.pixel.operation.mouse.RectangleTool;
 import name.martingeisse.chipdraw.pixel.operation.mouse.RowTool;
 import name.martingeisse.chipdraw.pixel.operation.scmos.ScmosContactTool;
 import name.martingeisse.chipdraw.pixel.operation.scmos.ScmosContactType;
+import name.martingeisse.chipdraw.pixel.operation.scmos.ScmosTransistorTool;
 import name.martingeisse.chipdraw.pixel.ui.util.*;
 import name.martingeisse.chipdraw.pixel.util.Point;
 import name.martingeisse.chipdraw.pixel.util.UserVisibleMessageException;
@@ -131,6 +132,12 @@ public class MainWindow extends JFrame implements Editor.Ui {
             builder.add("contact_n.png", event -> mouseTool = new ScmosContactTool(ScmosContactType.NDIFF));
             builder.add("contact_p.png", event -> mouseTool = new ScmosContactTool(ScmosContactType.PDIFF));
             builder.add("contact_g.png", event -> mouseTool = new ScmosContactTool(ScmosContactType.POLY));
+            sideBar.add(builder.build());
+        }
+        {
+            ToolbarBuilder builder = new ToolbarBuilder();
+            builder.add("transistor_n.png", event -> mouseTool = new ScmosTransistorTool(Technologies.Concept.MATERIAL_NDIFF));
+            builder.add("transistor_p.png", event -> mouseTool = new ScmosTransistorTool(Technologies.Concept.MATERIAL_PDIFF));
             sideBar.add(builder.build());
         }
         sideBar.add(Box.createGlue());
