@@ -15,14 +15,14 @@ public class StandardCellTemplateGeneratorBase {
 
     // general
     private int width = 280;
-    private int height = 140;
+    private int height = 70;
 
     // wells
-    private int topWellMargin = 1;
-    private int bottomWellMargin = 1;
-    private int leftWellMargin = 2;
-    private int rightWellMargin = 2;
-    private int wellGap = 2;
+    private int topWellMargin = 0;
+    private int bottomWellMargin = 0;
+    private int leftWellMargin = 0;
+    private int rightWellMargin = 0;
+    private int wellGap = 0;
 
     // power rails
     private int powerRailHeight = 11;
@@ -32,7 +32,7 @@ public class StandardCellTemplateGeneratorBase {
     // well taps
     private int wellTapMargin = 5;
     private int wellTapSize = 2;
-    private int wellTapSpacing = 3;
+    private int wellTapSpacing = 2;
     private int overlapByDiffusion = 2;
 
 //endregion
@@ -184,7 +184,7 @@ public class StandardCellTemplateGeneratorBase {
 
             // contacts
             int x = leftWellMargin + wellTapMargin;
-            while (x < width - rightWellMargin - wellTapMargin - wellTapSize) {
+            while (x <= width - rightWellMargin - wellTapMargin - wellTapSize) {
                 metalPlane.drawRectangle(x, nwellY, 2, 2, Technologies.Concept.MATERIAL_CONTACT);
                 metalPlane.drawRectangle(x, pwellY, 2, 2, Technologies.Concept.MATERIAL_CONTACT);
                 x = x + wellTapSize + wellTapSpacing;
