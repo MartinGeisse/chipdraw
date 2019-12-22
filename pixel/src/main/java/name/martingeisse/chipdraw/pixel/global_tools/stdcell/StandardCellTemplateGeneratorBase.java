@@ -23,6 +23,7 @@ public class StandardCellTemplateGeneratorBase {
     private int leftWellMargin = 0;
     private int rightWellMargin = 0;
     private int wellGap = 0;
+    private int nwellHeight = 39;
 
     // power rails
     private int powerRailHeight = 11;
@@ -163,8 +164,7 @@ public class StandardCellTemplateGeneratorBase {
         {
             int wellWidth = width - leftWellMargin - rightWellMargin;
             int combinedWellHeight = height - topWellMargin - bottomWellMargin - wellGap;
-            int pwellHeight = combinedWellHeight / 3;
-            int nwellHeight = combinedWellHeight - pwellHeight;
+            int pwellHeight = combinedWellHeight - nwellHeight;
             wellPlane.drawRectangle(leftWellMargin, topWellMargin, wellWidth, nwellHeight, Technologies.Concept.MATERIAL_NWELL);
             wellPlane.drawRectangle(leftWellMargin, height - bottomWellMargin - pwellHeight, wellWidth, pwellHeight, Technologies.Concept.MATERIAL_PWELL);
         }
