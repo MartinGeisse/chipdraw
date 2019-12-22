@@ -57,6 +57,8 @@ public class MainWindow extends JFrame implements Editor.Ui {
     private int mousePixelX, mousePixelY;
     private Map<name.martingeisse.chipdraw.pixel.util.Point, String> positionedDrcViolations = ImmutableMap.of();
 
+    private boolean isShiftDown;
+
     public MainWindow(Workbench _workbench, Design _design) {
         super("Chipdraw");
         this.workbench = _workbench;
@@ -244,7 +246,7 @@ public class MainWindow extends JFrame implements Editor.Ui {
             protected void paintComponent(Graphics _g) {
                 super.paintComponent(_g);
                 if (mouseTool != null) {
-                    mouseTool.draw((Graphics2D)_g, zoom);
+                    mouseTool.draw((Graphics2D)_g, zoom, isShiftDown);
                 }
             }
 
@@ -304,6 +306,25 @@ public class MainWindow extends JFrame implements Editor.Ui {
         };
         mainPanel.addMouseListener(mouseAdapter);
         mainPanel.addMouseMotionListener(mouseAdapter);
+        mainPanel.addKeyListener(new KeyAdapter() {
+
+            @Override
+            public void keyPressed(KeyEvent e) {
+                if (e.getKeyCode() == KeyEvent.VK_SHIFT) {
+                    isShiftDown = true;
+                    MainWindow.this.repaint();
+                }
+            }
+
+            @Override
+            public void keyReleased(KeyEvent e) {
+                if (e.getKeyCode() == KeyEvent.VK_SHIFT) {
+                    isShiftDown = false;
+                    MainWindow.this.repaint();
+                }
+            }
+
+        });
         {
             InputMap inputMap = mainPanel.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW);
             inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_Z, Toolkit.getDefaultToolkit().getMenuShortcutKeyMaskEx()), ActionName.UNDO);

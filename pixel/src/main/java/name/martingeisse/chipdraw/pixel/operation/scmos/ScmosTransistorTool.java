@@ -28,14 +28,18 @@ public final class ScmosTransistorTool extends AbstractClickTool {
 	}
 
 	@Override
-	public void draw(Graphics2D g, int zoom) {
+	public void draw(Graphics2D g, int zoom, boolean shift) {
 		Random random = new Random();
 		g.setColor(new Color(random.nextInt(256), random.nextInt(256), random.nextInt(256)));
 		int x = getMouseX();
 		int y = getMouseY();
-		g.drawRect(x * zoom, y * zoom, 6 * zoom, 6 * zoom);
-		g.drawRect((x + 2) * zoom, (y - 2) * zoom, 2 * zoom, 10 * zoom);
-		// TODO draw horizontally when shift is pressed
+		if (shift) {
+			g.drawRect(x * zoom, y * zoom, 6 * zoom, 6 * zoom);
+			g.drawRect((x - 2) * zoom, (y + 2) * zoom, 10 * zoom, 2 * zoom);
+		} else {
+			g.drawRect(x * zoom, y * zoom, 6 * zoom, 6 * zoom);
+			g.drawRect((x + 2) * zoom, (y - 2) * zoom, 2 * zoom, 10 * zoom);
+		}
 	}
 
 }

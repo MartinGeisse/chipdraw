@@ -10,7 +10,7 @@ import java.awt.*;
  */
 public interface MouseTool {
 
-	default void draw(Graphics2D g, int zoom) {
+	default void draw(Graphics2D g, int zoom, boolean shift) {
 	}
 
 	Result onMousePressed(Design design, int x, int y, MouseButton button, boolean shift);

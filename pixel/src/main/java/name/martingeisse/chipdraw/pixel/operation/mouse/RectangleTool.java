@@ -32,7 +32,7 @@ public class RectangleTool implements MouseTool {
 	}
 
 	@Override
-	public void draw(Graphics2D g, int zoom) {
+	public void draw(Graphics2D g, int zoom, boolean shift) {
 		if (active) {
 			Random random = new Random();
 			g.setColor(new Color(random.nextInt(256), random.nextInt(256), random.nextInt(256)));

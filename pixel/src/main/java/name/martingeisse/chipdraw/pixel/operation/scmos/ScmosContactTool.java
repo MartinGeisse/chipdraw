@@ -27,7 +27,7 @@ public final class ScmosContactTool extends AbstractClickTool {
 	}
 
 	@Override
-	public void draw(Graphics2D g, int zoom) {
+	public void draw(Graphics2D g, int zoom, boolean shift) {
 		Random random = new Random();
 		g.setColor(new Color(random.nextInt(256), random.nextInt(256), random.nextInt(256)));
 		int x = getMouseX();
