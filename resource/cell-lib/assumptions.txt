@@ -63,3 +63,18 @@ A few interesting questions to optimize the cells:
     poly/diffusion contact and a metal2-to-metal3 via on top, but metal1/metal2 not connected.
 - does the process support a via stacked on top of insulation on top ofanother via? E.g. a metal1-to-metal2 via
     and a metal3-to-metal4 via on top of it, but metal2/metal3 not connected.
+
+--------
+
+Actually, joint wells are not that useful by themselves. As long as the boundary between n-wells and p-wells is not
+fixed -- and that constrains the design more than is useful -- we do not know that lies beyond the boundary of a
+standard cell. Even with joint wells, we cannot assume that the next pixel behind the boundary is a well of the same
+type. We would have to define, at least for a certain number of cell boundary pixels, where the p/n well boundary lies.
+
+For now I will just go without such an assumption, but that means keeping a minimum spacing from the cell boundary.
+By removing the 3 or so inter-well spacing pixels, we gained... 3 pixels.
+
+OTOH, within a single cell, I can totally make use of relaxed spacing rules, so maybe cells that do more than simple
+gates may be the solution to this problem, besides improving area in general.
+
+
