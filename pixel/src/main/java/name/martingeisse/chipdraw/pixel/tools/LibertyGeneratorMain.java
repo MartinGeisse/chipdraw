@@ -16,10 +16,14 @@ public class LibertyGeneratorMain {
         printFunctionCell("Inverter", 28 * 70, "(!a)", "a");
         printFunctionCell("Nand", 35 * 70, "(!(a b))", "a", "b");
         printFunctionCell("Nor", 35 * 70, "(!(a+b))", "a", "b");
-        printFunctionCell("And", 45 * 70, "(a b)", "a", "b");
-        printFunctionCell("Or", 45 * 70, "(a+b)", "a", "b");
 
-        printFunctionCell("AndOrInvert", 45 * 70, "(a+b)", "a", "b");
+        printFunctionCell("Buffer", 35 * 70, "a", "a");
+        printFunctionCell("And", 49 * 70, "(a b)", "a", "b");
+        printFunctionCell("Or", 49 * 70, "(a+b)", "a", "b");
+
+        printFunctionCell("AndOrInvert", 42 * 70, "(!((a b)+c))", "a", "b", "c");
+        printFunctionCell("OrAndInvert", 42 * 70, "(!((a+b) c))", "a", "b", "c");
+        printFunctionCell("AndAndOrInvert", 49 * 70, "(!((a b)+(c d)))", "a", "b", "c", "d");
 
         System.out.println("}");
     }
