@@ -1,10 +1,10 @@
 magic
 tech concept
-timestamp 1577109137631
+timestamp 1577180984864
 << sizer >>
-rect 0 0 45 70
+rect 0 0 49 70
 << metal1 >>
-rect 0 65 45 69
+rect 0 65 49 69
 rect 0 63 5 65
 rect 7 63 9 65
 rect 11 63 13 65
@@ -14,8 +14,9 @@ rect 23 63 25 65
 rect 27 63 29 65
 rect 31 63 33 65
 rect 35 63 37 65
-rect 39 63 45 65
-rect 0 58 45 63
+rect 39 63 41 65
+rect 43 63 49 65
+rect 0 58 49 63
 rect 6 55 10 58
 rect 22 55 31 58
 rect 14 55 18 56
@@ -97,7 +98,7 @@ rect 6 13 10 16
 rect 18 15 22 16
 rect 27 13 31 16
 rect 35 15 39 16
-rect 0 7 45 13
+rect 0 7 49 13
 rect 0 5 5 7
 rect 7 5 9 7
 rect 11 5 13 7
@@ -107,8 +108,9 @@ rect 23 5 25 7
 rect 27 5 29 7
 rect 31 5 33 7
 rect 35 5 37 7
-rect 39 5 45 7
-rect 0 2 45 5
+rect 39 5 41 7
+rect 43 5 49 7
+rect 0 2 49 5
 << contact >>
 rect 5 63 7 65
 rect 9 63 11 65
@@ -119,6 +121,7 @@ rect 25 63 27 65
 rect 29 63 31 65
 rect 33 63 35 65
 rect 37 63 39 65
+rect 41 63 43 65
 rect 7 53 9 55
 rect 15 53 17 55
 rect 23 53 25 55
@@ -151,6 +154,7 @@ rect 25 5 27 7
 rect 29 5 31 7
 rect 33 5 35 7
 rect 37 5 39 7
+rect 41 5 43 7
 << poly >>
 rect 11 46 13 59
 rect 19 46 21 59
@@ -171,17 +175,17 @@ rect 15 12 17 25
 rect 1 21 13 23
 rect 11 12 13 21
 << ndiff >>
-rect 3 61 41 67
+rect 3 61 45 67
 rect 26 14 40 24
 rect 5 14 23 20
 << pdiff >>
 rect 5 47 40 57
 rect 26 39 40 47
-rect 3 3 41 9
+rect 3 3 45 9
 << nwell >>
-rect 0 31 45 70
-rect 20 29 45 31
+rect 0 31 49 70
+rect 20 29 49 31
 << pwell >>
 rect 0 29 20 31
-rect 0 0 45 29
+rect 0 0 49 29
 << end >>
