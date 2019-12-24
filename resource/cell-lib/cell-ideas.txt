@@ -1,2 +1,7 @@
 2-bit full-adder
 muxed D-input flipflop
+twin NAND/NOR with shared input, e.g.
+    out1 = a NAND b
+    out2 = a NAND c
+    (stack transistors vertically with common source)
+    -> Problem: yosys/abc cannot handle multi-output cells
