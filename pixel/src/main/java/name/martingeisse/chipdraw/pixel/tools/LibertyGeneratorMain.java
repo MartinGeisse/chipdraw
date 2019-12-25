@@ -30,6 +30,7 @@ public class LibertyGeneratorMain {
                     printFunctionCell("Nand4", 49 * 70, "(!(a b c d))", "a", "b", "c", "d");
                     printFunctionCell("Nor", 35 * 70, "(!(a+b))", "a", "b");
                     printFunctionCell("Nor3", 42 * 70, "(!(a+b+c))", "a", "b", "c");
+                    printFunctionCell("Nor4", 49 * 70, "(!(a+b+c+d))", "a", "b", "c", "d");
 
                     printFunctionCell("Buffer", 35 * 70, "a", "a");
                     printFunctionCell("And", 49 * 70, "(a b)", "a", "b");
