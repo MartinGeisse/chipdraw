@@ -41,6 +41,38 @@ public class LibertyGeneratorMain {
                     printFunctionCell("AndAndOrInvert", 49 * 70, "(!((a b)+(c d)))", "a", "b", "c", "d");
                     printFunctionCell("And3OrInvert", 49 * 70, "(!((a b c)+d))", "a", "b", "c", "d");
 
+                    //
+                    // "what-if" area: These cells do not yet exist, but we want to see what happens if they do.
+                    //
+
+                    // currently not useful
+                    // printFunctionCell("And3And2OrInvert", 56 * 70, "(!((a b c)+(d e)))", "a", "b", "c", "d", "e");
+
+                    // currently not useful
+                    // printFunctionCell("Nand5", 56 * 70, "(!(a b c d e))", "a", "b", "c", "d", "e");
+
+                    // currently not useful
+                    // printFunctionCell("Nor5", 56 * 70, "(!(a+b+c+d+e))", "a", "b", "c", "d", "e");
+
+                    // TODO useful
+                    // printFunctionCell("SingleInverterNand", 42 * 70, "(!((!a) b))", "a", "b");
+
+                    // currently not useful
+                    // printFunctionCell("SingleInverterNand3", 49 * 70, "(!((!a) b c))", "a", "b", "c");
+
+                    // TODO useful
+                    // printFunctionCell("DoubleInverterNand3", 49 * 70, "(!((!a) (!b) c))", "a", "b", "c");
+
+                    // currently not useful
+                    // printFunctionCell("SingleInverterNor", 42 * 70, "(!((!a)+b))", "a", "b");
+
+                    // currently not useful
+                    // printFunctionCell("SingleInverterNor3", 42 * 70, "(!((!a)+b+c))", "a", "b", "c");
+
+                    // currently not useful
+                    // printFunctionCell("DoubleInverterNor3", 42 * 70, "(!((!a)+(!b)+c))", "a", "b", "c");
+
+
                     out.println("}");
                 }
             }
