@@ -27,6 +27,7 @@ public class LibertyGeneratorMain {
                     printFunctionCell("Inverter", 28 * 70, "(!a)", "a");
                     printFunctionCell("Nand", 35 * 70, "(!(a b))", "a", "b");
                     printFunctionCell("Nand3", 42 * 70, "(!(a b c))", "a", "b", "c");
+                    printFunctionCell("Nand4", 49 * 70, "(!(a b c d))", "a", "b", "c", "d");
                     printFunctionCell("Nor", 35 * 70, "(!(a+b))", "a", "b");
                     printFunctionCell("Nor3", 42 * 70, "(!(a+b+c))", "a", "b", "c");
 

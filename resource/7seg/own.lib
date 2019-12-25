@@ -46,6 +46,25 @@ library(osu05_stdcells) {
 			function: "(!(a b c))";
 		}
 	}
+	cell(Nand4) {
+		area: 3430;
+		pin(a) {
+			direction: input;
+		}
+		pin(b) {
+			direction: input;
+		}
+		pin(c) {
+			direction: input;
+		}
+		pin(d) {
+			direction: input;
+		}
+		pin(out) {
+			direction: output;
+			function: "(!(a b c d))";
+		}
+	}
 	cell(Nor) {
 		area: 2450;
 		pin(a) {
