@@ -72,6 +72,44 @@ public class LibertyGeneratorMain {
                     // currently not useful
                     // printFunctionCell("DoubleInverterNor3", 42 * 70, "(!((!a)+(!b)+c))", "a", "b", "c");
 
+                    // TODO useful
+                    // printFunctionCell("Xor", 56 * 70, "((a (!b))+((!a) b))", "a", "b");
+
+                    // TODO useful
+                    // printFunctionCell("Xnor", 56 * 70, "((a b)+((!a) (!b)))", "a", "b");
+
+                    // TODO useful
+                    // printFunctionCell("Mux", 56 * 70, "((s a)+((!s) b))", "s", "a", "b");
+
+                    // ?
+                    // printFunctionCell("And4OrInvert", 63 * 70, "(!((a b c d)+e))", "a", "b", "c", "d", "e");
+
+                    // crashes abc and in turn yosys
+                    // printFunctionCell("And3And2OrInvert", 63 * 70, "((a b c)+(d e))", "a", "b", "c", "d", "e");
+
+                    // ?
+                    // printFunctionCell("Or4AndInvert", 63 * 70, "(!((a+b+c+d) e))", "a", "b", "c", "d", "e");
+
+                    // ?
+                    // printFunctionCell("AndAndAndOr3Invert", 63 * 70, "(!((a b)+(c d)+(e f)))", "a", "b", "c", "d", "e", "f");
+
+                    // ?
+                    // printFunctionCell("OrAnd3Invert", 56 * 70, "(!((a+b) c d))", "a", "b", "c", "d");
+
+                    // ?
+                    // printFunctionCell("AndMux", 56 * 70, "((sx sy a)+(((!sx)+(!sy)) b))", "sx", "sy", "a", "b");
+
+                    // ?
+                    // printFunctionCell("OrMux", 56 * 70, "(((sx+sy) a)+((!sx) (!sy) b))", "sx", "sy", "a", "b");
+
+                    // probably useful
+                    // printFunctionCell("OrOrAnd3Invert", 56 * 70, "(!((a+b) (c+d) e))", "a", "b", "c", "d", "e");
+
+                    // ?
+                    // printFunctionCell("AndOr3Invert", 56 * 70, "(!((a b)+c+d))", "a", "b", "c", "d");
+
+                    // ?
+                    // printFunctionCell("AndAndOr3Invert", 63 * 70, "(!((a b)+(c d)+e))", "a", "b", "c", "d", "e");
 
                     out.println("}");
                 }
