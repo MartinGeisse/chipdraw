@@ -31,12 +31,11 @@ cd ${sourcedir}
 #---------------------------------------------------------------------
 
 cat > sevenseg.ys << EOF
-read_liberty -lib -ignore_miss_dir -setattr blackbox ${libertypath}
-read_verilog sevenseg.v
-EOF
-# TODO add other verilog files
 
-cat >> sevenseg.ys << EOF
+read_liberty -lib -ignore_miss_dir -setattr blackbox ${libertypath}
+
+read_verilog sevenseg.v
+# TODO add other verilog files
 
 # High-level synthesis
 synth -top sevenseg
@@ -45,43 +44,20 @@ synth -top sevenseg
 dfflibmap -liberty ${libertypath}
 opt
 
-EOF
-
-if ( ${?abc_script} ) then
-   if ( ${abc_script} != "" ) then
-      cat >> sevenseg.ys << EOF
-abc -exe ${bindir}/yosys-abc -liberty ${libertypath} -script ${abc_script}
-flatten
-
-EOF
-   else
-      echo "Warning: no abc script ${abc_script}, using default, no script" |& tee -a ${synthlog}
-      cat >> sevenseg.ys << EOF
-abc -exe ${bindir}/yosys-abc -liberty ${libertypath}
-flatten
-
-EOF
-   endif
-else
-   cat >> sevenseg.ys << EOF
 # Map combinatorial cells, standard script
 abc -exe ${bindir}/yosys-abc -liberty ${libertypath} -script +strash;scorr;ifraig;retime,{D};strash;dch,-f;map,-M,1,{D}
 flatten
-
-EOF
-endif
 
 # Purge buffering of internal net name aliases.  Option "debug"
 # retains all internal names by buffering them, resulting in a
 # larger layout (especially for layouts derived from hierarchical
 # source), but one in which all signal names from the source can
 # be probed.
-
-if ( ! ${?yosys_debug} ) then
-   cat >> sevenseg.ys << EOF
 clean -purge
+
 EOF
-endif
+
+
 
 # Map tiehi and tielo, if they are defined
 
