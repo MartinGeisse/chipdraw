@@ -55,37 +55,20 @@ flatten
 # be probed.
 clean -purge
 
-EOF
-
-
-
-# Output buffering, if not specifically prevented
-if (!($?nobuffers)) then
-    cat >> sevenseg.ys << EOF
 # Output buffering
 iopadmap -outpad ${bufcell} ${bufpin_in}:${bufpin_out} -bits
-EOF
-endif
 
-cat >> sevenseg.ys << EOF
 # Cleanup
 opt
 clean
 rename -enumerate
 write_blif -buf ${bufcell} ${bufpin_in} ${bufpin_out} sevenseg_mapped.blif
+
 EOF
 
 #---------------------------------------------------------------------
 # Yosys synthesis
 #---------------------------------------------------------------------
-
-if ( ! ${?yosys_options} ) then
-   set yosys_options = ""
-endif
-
-# Check if "yosys_options" specifies a script to use for yosys.
-# If not, call yosys with the default script.
-set usescript = `echo ${yosys_options} | grep -- -s | wc -l`
 
 # If there is a file sevenseg_mapped.blif, move it to a temporary
 # place so we can see if yosys generates a new one or not.
@@ -95,11 +78,7 @@ if ( -f sevenseg_mapped.blif ) then
 endif
 
 echo "Running yosys for verilog parsing and synthesis" |& tee -a ${synthlog}
-if ( ${usescript} == 1 ) then
-   eval ${bindir}/yosys ${yosys_options} |& tee -a ${synthlog}
-else
-   eval ${bindir}/yosys ${yosys_options} -s sevenseg.ys |& tee -a ${synthlog}
-endif
+eval ${bindir}/yosys "" -s sevenseg.ys |& tee -a ${synthlog}
 
 #---------------------------------------------------------------------
 # Spot check:  Did yosys produce file sevenseg_mapped.blif?
@@ -136,21 +115,10 @@ set final_blif = "sevenseg_mapped_tmp.blif"
 
 echo "Cleaning Up blif file syntax" |& tee -a ${synthlog}
 
-if ( "$tielo" == "") then
-   set subs0a="/LOGIC0/s/O=/${bufpin_in}=gnd ${bufpin_out}=/"
-   set subs0b="/LOGIC0/s/LOGIC0/${bufcell}/"
-else
-   set subs0a=""
-   set subs0b=""
-endif
-
-if ( "$tiehi" == "") then
-   set subs1a="/LOGIC1/s/O=/${bufpin_in}=vdd ${bufpin_out}=/"
-   set subs1b="/LOGIC1/s/LOGIC1/${bufcell}/"
-else
-   set subs1a=""
-   set subs1b=""
-endif
+set subs0a="/LOGIC0/s/O=/${bufpin_in}=gnd ${bufpin_out}=/"
+set subs0b="/LOGIC0/s/LOGIC0/${bufcell}/"
+set subs1a="/LOGIC1/s/O=/${bufpin_in}=vdd ${bufpin_out}=/"
+set subs1b="/LOGIC1/s/LOGIC1/${bufcell}/"
 
 #---------------------------------------------------------------------
 # Remove backslashes, references to "$techmap", and
