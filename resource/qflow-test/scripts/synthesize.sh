@@ -14,8 +14,8 @@ cd /home/martin/git-repos/chipdraw/resource/qflow-test
 source project_vars.sh
 
 # Reset the logfile
-rm -f ${synthlog} >& /dev/null
-touch ${synthlog}
+rm -f synth.log >& /dev/null
+touch synth.log
 
 #
 set libertypath=techdir/osu05_stdcells.lib
@@ -25,11 +25,7 @@ set lefpath=techdir/osu050_stdcells.lef
 #
 cd ${sourcedir}
 
-
-#---------------------------------------------------------------------
-# Generate the main yosys script
-#---------------------------------------------------------------------
-
+# generate yosys script
 cat > sevenseg.ys << EOF
 
 read_liberty -lib -ignore_miss_dir -setattr blackbox ${libertypath}
@@ -66,44 +62,14 @@ write_blif -buf ${bufcell} ${bufpin_in} ${bufpin_out} sevenseg_mapped.blif
 
 EOF
 
-#---------------------------------------------------------------------
-# Yosys synthesis
-#---------------------------------------------------------------------
+# run yosys
+yosys -s sevenseg.ys |& tee -a synth.log
 
-# If there is a file sevenseg_mapped.blif, move it to a temporary
-# place so we can see if yosys generates a new one or not.
-
-if ( -f sevenseg_mapped.blif ) then
-   mv sevenseg_mapped.blif sevenseg_mapped_orig.blif
-endif
-
-echo "Running yosys for verilog parsing and synthesis" |& tee -a ${synthlog}
-eval ${bindir}/yosys "" -s sevenseg.ys |& tee -a ${synthlog}
-
-#---------------------------------------------------------------------
-# Spot check:  Did yosys produce file sevenseg_mapped.blif?
-#---------------------------------------------------------------------
-
-if ( !( -f sevenseg_mapped.blif )) then
-   echo "outputprep failure:  No file sevenseg_mapped.blif." |& tee -a ${synthlog}
-   echo "Premature exit." |& tee -a ${synthlog}
-   echo "Synthesis flow stopped due to error condition." >> ${synthlog}
-   # Replace the old blif file, if we had moved it
-   if ( -f sevenseg_mapped_orig.blif ) then
-      mv sevenseg_mapped_orig.blif sevenseg_mapped.blif
-   endif
-   exit 1
-else
-   # Remove the old blif file, if we had moved it
-   if ( -f sevenseg_mapped_orig.blif ) then
-      rm sevenseg_mapped_orig.blif
-   endif
-endif
-
-echo "Cleaning up output syntax" |& tee -a ${synthlog}
+# "clean up output syntax"
 ${scriptdir}/ypostproc.tcl sevenseg_mapped.blif sevenseg techdir/osu050.sh
 
 # Buffers already handled within yosys
+# TODO sevenseg_mapped.blif or sevenseg_mapped_tmp.blif?
 set final_blif = "sevenseg_mapped_tmp.blif"
 
 #---------------------------------------------------------------------
@@ -113,7 +79,7 @@ set final_blif = "sevenseg_mapped_tmp.blif"
 # defined.
 #---------------------------------------------------------------------
 
-echo "Cleaning Up blif file syntax" |& tee -a ${synthlog}
+echo "Cleaning Up blif file syntax" |& tee -a synth.log
 
 set subs0a="/LOGIC0/s/O=/${bufpin_in}=gnd ${bufpin_out}=/"
 set subs0b="/LOGIC0/s/LOGIC0/${bufcell}/"
@@ -139,16 +105,16 @@ cd ${synthdir}
 # BlifFanout could run here, but I don't have that on my system. It would be used to insert higher-strength gates
 # in high-fanout cases.
 
-echo "" >> ${synthlog}
-echo "Generating RTL verilog and SPICE netlist file in directory" |& tee -a ${synthlog}
-echo "	 ${synthdir}" |& tee -a ${synthlog}
-echo "Files:" |& tee -a ${synthlog}
-echo "   Verilog: ${synthdir}/sevenseg.rtl.v" |& tee -a ${synthlog}
-echo "   Verilog: ${synthdir}/sevenseg.rtlnopwr.v" |& tee -a ${synthlog}
-echo "   Spice:   ${synthdir}/sevenseg.spc" |& tee -a ${synthlog}
-echo "" >> ${synthlog}
+echo "" >> synth.log
+echo "Generating RTL verilog and SPICE netlist file in directory" |& tee -a synth.log
+echo "	 ${synthdir}" |& tee -a synth.log
+echo "Files:" |& tee -a synth.log
+echo "   Verilog: ${synthdir}/sevenseg.rtl.v" |& tee -a synth.log
+echo "   Verilog: ${synthdir}/sevenseg.rtlnopwr.v" |& tee -a synth.log
+echo "   Spice:   ${synthdir}/sevenseg.spc" |& tee -a synth.log
+echo "" >> synth.log
 
-echo "Running blif2Verilog." |& tee -a ${synthlog}
+echo "Running blif2Verilog." |& tee -a synth.log
 ${bindir}/blif2Verilog -c -v ${vddnet} -g ${gndnet} sevenseg.blif > sevenseg.rtl.v
 
 ${bindir}/blif2Verilog -c -p -v ${vddnet} -g ${gndnet} sevenseg.blif > sevenseg.rtlnopwr.v
@@ -162,18 +128,18 @@ ${bindir}/blif2Verilog -c -p -v ${vddnet} -g ${gndnet} sevenseg.blif > sevenseg.
 if ( !( -f sevenseg.rtl.v || \
         ( -M sevenseg.rtl.v < -M sevenseg.blif ))) then
    echo "blif2Verilog failure:  No file sevenseg.rtl.v created." \
-                |& tee -a ${synthlog}
+                |& tee -a synth.log
 endif
 
 if ( !( -f sevenseg.rtlnopwr.v || \
         ( -M sevenseg.rtlnopwr.v < -M sevenseg.blif ))) then
    echo "blif2Verilog failure:  No file sevenseg.rtlnopwr.v created." \
-                |& tee -a ${synthlog}
+                |& tee -a synth.log
 endif
 
 #---------------------------------------------------------------------
 
-echo "Running blif2BSpice." |& tee -a ${synthlog}
+echo "Running blif2BSpice." |& tee -a synth.log
 if ("x${spicefile}" == "x") then
     set spiceopt=""
 else
@@ -191,10 +157,10 @@ ${bindir}/blif2BSpice -i -p ${vddnet} -g ${gndnet} ${spiceopt} \
 if ( !( -f sevenseg.spc || \
         ( -M sevenseg.spc < -M sevenseg.blif ))) then
    echo "blif2BSpice failure:  No file sevenseg.spc created." \
-                |& tee -a ${synthlog}
+                |& tee -a synth.log
 else
 
-   echo "Running spi2xspice.py" |& tee -a ${synthlog}
+   echo "Running spi2xspice.py" |& tee -a synth.log
    if ("x${spicefile}" == "x") then
        set spiceopt=""
    else
@@ -207,5 +173,5 @@ endif
 if ( !( -f sevenseg.xspice || \
 	( -M sevenseg.xspice < -M sevenseg.spc ))) then
    echo "spi2xspice.py failure:  No file sevenseg.xspice created." \
-		|& tee -a ${synthlog}
+		|& tee -a synth.log
 endif
