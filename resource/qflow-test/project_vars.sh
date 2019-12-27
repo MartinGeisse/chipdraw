@@ -25,8 +25,5 @@
 # set via_stacks = 
 # set qrouter_options = 
 
-# Minimum operating period of the clock (in ps)
-# set vesta_options = "--period 1E5"
-
 #------------------------------------------------------------
 
