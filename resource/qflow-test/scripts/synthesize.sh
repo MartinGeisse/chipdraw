@@ -59,20 +59,6 @@ EOF
 
 
 
-# Map tiehi and tielo, if they are defined
-
-if ( ${?tiehi} && ${?tiehipin_out} ) then
-   if ( "${tiehi}" != "" ) then
-      echo "hilomap -hicell $tiehi $tiehipin_out" >> sevenseg.ys  
-   endif
-endif
-
-if ( ${?tielo} && ${?tielopin_out} ) then
-   if ( "${tielo}" != "" ) then
-      echo "hilomap -locell $tielo $tielopin_out" >> sevenseg.ys  
-   endif
-endif
-
 # Output buffering, if not specifically prevented
 if (!($?nobuffers)) then
     cat >> sevenseg.ys << EOF
