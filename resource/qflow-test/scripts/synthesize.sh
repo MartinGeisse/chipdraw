@@ -206,80 +206,8 @@ cat ${final_blif} | sed \
 # Switch to synthdir for processing of the BDNET netlist
 cd ${synthdir}
 
-#---------------------------------------------------------------------
-# If "nofanout" is set, then don't run blifFanout.
-#---------------------------------------------------------------------
-
-if ($?nofanout) then
-   set nchanged=0
-else
-
-#---------------------------------------------------------------------
-# Make a copy of the original blif file, as this will be overwritten
-# by the fanout handling process
-#---------------------------------------------------------------------
-
-   cp sevenseg.blif sevenseg_bak.blif
-
-#---------------------------------------------------------------------
-# Check all gates for fanout load, and adjust gate strengths as
-# necessary.  Iterate this step until all gates satisfy drive
-# requirements.
-#
-# Use option "-c value" in fanout_options to force a value for the
-# (maximum expected) output load, in fF (default is 30fF)
-# Use option "-l value" in fanout_options to force a value for the
-# maximum latency, in ps (default is 1000ps)
-#---------------------------------------------------------------------
-
-   rm -f sevenseg_nofanout
-   touch sevenseg_nofanout
-   if ($?gndnet) then
-      echo $gndnet >> sevenseg_nofanout
-   endif
-   if ($?vddnet) then
-      echo $vddnet >> sevenseg_nofanout
-   endif
-
-   if (! $?fanout_options) then
-      set fanout_options=""
-   endif
-
-   echo "Running blifFanout (iterative)" |& tee -a ${synthlog}
-   echo "" >> ${synthlog}
-   if (-f ${libertypath} && -f ${bindir}/blifFanout ) then
-      set nchanged=1000
-      while ($nchanged > 0)
-         mv sevenseg.blif tmp.blif
-         if ("x${separator}" == "x") then
-	    set sepoption=""
-         else
-	    set sepoption="-s ${separator}"
-         endif
-         if ("x${bufcell}" == "x") then
-	    set bufoption=""
-         else
-	    set bufoption="-b ${bufcell} -i ${bufpin_in} -o ${bufpin_out}"
-         endif
-         ${bindir}/blifFanout ${fanout_options} -I sevenseg_nofanout -p ${libertypath} ${sepoption} ${bufoption} tmp.blif sevenseg.blif >>& ${synthlog}
-         set nchanged=$status
-         echo "gates resized: $nchanged" |& tee -a ${synthlog}
-      end
-   else
-      set nchanged=0
-   endif
-endif
-
-#---------------------------------------------------------------------
-# Spot check:  Did blifFanout produce an error?
-#---------------------------------------------------------------------
-
-if ( $nchanged < 0 ) then
-   echo "blifFanout failure.  See file ${synthlog} for error messages." |& tee -a ${synthlog}
-   echo "Premature exit." |& tee -a ${synthlog}
-   echo "Synthesis flow stopped due to error condition." >> ${synthlog}
-   exit 1
-endif
+# BlifFanout could run here, but I don't have that on my system. It would be used to insert higher-strength gates
+# in high-fanout cases.
 
 echo "" >> ${synthlog}
 echo "Generating RTL verilog and SPICE netlist file in directory" |& tee -a ${synthlog}
