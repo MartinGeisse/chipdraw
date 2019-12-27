@@ -17,29 +17,10 @@ source project_vars.sh
 rm -f ${synthlog} >& /dev/null
 touch ${synthlog}
 
-# Prepend techdir to libertyfile unless libertyfile begins with "/"
-set abspath=`echo ${libertyfile} | cut -c1`
-if ( "${abspath}" == "/" ) then
-   set libertypath=${libertyfile}
-else
-   set libertypath=techdir/${libertyfile}
-endif
-
-# Prepend techdir to spicefile unless spicefile begins with "/"
-set abspath=`echo ${spicefile} | cut -c1`
-if ( "${abspath}" == "/" ) then
-   set spicepath=${spicefile}
-else
-   set spicepath=techdir/${spicefile}
-endif
-
-# Prepend techdir to leffile unless leffile begins with "/"
-set abspath=`echo ${leffile} | cut -c1`
-if ( "${abspath}" == "/" ) then
-   set lefpath=${leffile}
-else
-   set lefpath=techdir/${leffile}
-endif
+#
+set libertypath=techdir/osu05_stdcells.lib
+set spicepath=techdir/osu050_stdcells.sp
+set lefpath=techdir/osu050_stdcells.lef
 
 #---------------------------------------------------------------------
 # Determine hierarchy by running yosys with a simple script to check
