@@ -30,13 +30,9 @@ cd ${sourcedir}
 # Generate the main yosys script
 #---------------------------------------------------------------------
 
-# Determine version of yosys
-set major = 0
-set minor = 8
-
 cat > sevenseg.ys << EOF
 read_liberty -lib -ignore_miss_dir -setattr blackbox ${libertypath}
-read_verilog ${svopt} sevenseg.${vext}
+read_verilog sevenseg.v
 EOF
 # TODO add other verilog files
 
@@ -166,22 +162,8 @@ endif
 echo "Cleaning up output syntax" |& tee -a ${synthlog}
 ${scriptdir}/ypostproc.tcl sevenseg_mapped.blif sevenseg techdir/osu050.sh
 
-#----------------------------------------------------------------------
-# Add buffers in front of all outputs (for yosys versions before 0.2.0)
-#----------------------------------------------------------------------
-
-if ( ${major} == 0 && ${minor} < 2 ) then
-   if ($?nobuffers) then
-      set final_blif = "sevenseg_mapped_tmp.blif"
-   else
-      echo "Adding output buffers"
-      ${scriptdir}/ybuffer.tcl sevenseg_mapped_tmp.blif sevenseg_mapped_buf.blif techdir/osu050.sh
-      set final_blif = "sevenseg_mapped_buf.blif"
-   endif
-else
-   # Buffers already handled within yosys
-   set final_blif = "sevenseg_mapped_tmp.blif"
-endif
+# Buffers already handled within yosys
+set final_blif = "sevenseg_mapped_tmp.blif"
 
 #---------------------------------------------------------------------
 # The following definitions will replace "LOGIC0" and "LOGIC1"
