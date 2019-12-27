@@ -22,85 +22,16 @@ set libertypath=techdir/osu05_stdcells.lib
 set spicepath=techdir/osu050_stdcells.sp
 set lefpath=techdir/osu050_stdcells.lef
 
-#---------------------------------------------------------------------
-# Determine hierarchy by running yosys with a simple script to check
-# hierarchy.  Add files until yosys no longer reports an error.
-# Any error not related to a missing source file causes the script
-# to rerun yosys and dump error information into the log file, and
-# exit.
-#---------------------------------------------------------------------
-
+#
 cd ${sourcedir}
 
-set uniquedeplist = ""
-set yerrcnt = 2
-
-while ($yerrcnt > 1)
-
-# Note:  While the use of read_liberty to allow structural verilog only
-# works in yosys 0.3.1 and newer, the following line works for the
-# purpose of querying the hierarchy in all versions.
-
-set vext = "v"
-set svopt = ""
-
-if ( !( -f sevenseg.${vext} )) then
-   set vext = "sv"
-   set svopt = "-sv"
-   if ( !( -f sevenseg.${vext} )) then
-      echo "Error:  Verilog source file sevenseg.v (or .sv) cannot be found!" |& tee -a ${synthlog}
-   endif
-endif
-
-cat > sevenseg.ys << EOF
-# Synthesis script for yosys created by qflow
-read_liberty -lib -ignore_miss_dir -setattr blackbox ${libertypath}
-read_verilog ${svopt} sevenseg.${vext}
-EOF
-
-foreach subname ( $uniquedeplist )
-    if ( !( -f ${subname}.${vext} )) then
-	echo "Error:  Verilog source file ${subname}.${vext} cannot be found!" |& tee -a ${synthlog}
-    endif
-    echo "read_verilog ${svopt} ${subname}.${vext}" >> sevenseg.ys
-end
-
-cat >> sevenseg.ys << EOF
-# Hierarchy check
-hierarchy -check
-EOF
-
-set yerrors = `eval ${bindir}/yosys -s sevenseg.ys |& sed -e "/\\/s#\\#/#g" | grep ERROR`
-set yerrcnt = `echo $yerrors | wc -c`
-
-if ($yerrcnt > 1) then
-   set yvalid = `echo $yerrors | grep "referenced in module" | wc -c`
-   if ($yvalid > 1) then
-      set newdep = `echo $yerrors | cut -d " " -f 3 | cut -c3- | cut -d "'" -f 1`
-      set uniquedeplist = "${uniquedeplist} ${newdep}"
-   else
-      ${bindir}/yosys -s sevenseg.ys >& ${synthlog}
-      echo "Errors detected in verilog source, need to be corrected." |& tee -a ${synthlog}
-      echo "See file ${synthlog} for error output."
-      echo "Synthesis flow stopped due to error condition." >> ${synthlog}
-      exit 1
-   endif
-endif
-
-# end while ($yerrcnt > 1)
-end
 
 #---------------------------------------------------------------------
 # Generate the main yosys script
 #---------------------------------------------------------------------
 
-set blif_opts = ""
-
 # Set option for generating buffers
-set blif_opts = "${blif_opts} -buf ${bufcell} ${bufpin_in} ${bufpin_out}"
-
-# Set option for generating only the flattened top-level cell
-# set blif_opts = "${blif_opts} sevenseg"
+set blif_opts = " -buf ${bufcell} ${bufpin_in} ${bufpin_out}"
 
 # Determine version of yosys
 set versionstring = `${bindir}/yosys -V | cut -d' ' -f2`
@@ -144,10 +75,7 @@ cat > sevenseg.ys << EOF
 read_liberty -lib -ignore_miss_dir -setattr blackbox ${libertypath}
 read_verilog ${svopt} sevenseg.${vext}
 EOF
-
-foreach subname ( $uniquedeplist )
-    echo "read_verilog ${svopt} ${subname}.${vext}" >> sevenseg.ys
-end
+# TODO add other verilog files
 
 # Will not support yosys 0.0.x syntax; flag a warning instead
 
