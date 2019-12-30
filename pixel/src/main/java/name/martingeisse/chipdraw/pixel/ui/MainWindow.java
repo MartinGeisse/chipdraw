@@ -493,13 +493,19 @@ public class MainWindow extends JFrame implements Editor.Ui {
             builder.add("Extend Cell (7)", () -> performOperation(new OutOfPlaceDesignOperation() {
                 @Override
                 protected Design createNewDesign(Design oldDesign) {
-                    return new StandardCellExtender(7).extend(oldDesign);
+                    return new StandardCellExtender(7, false).extend(oldDesign);
                 }
             }));
             builder.add("Extend Cell (14)", () -> performOperation(new OutOfPlaceDesignOperation() {
                 @Override
                 protected Design createNewDesign(Design oldDesign) {
-                    return new StandardCellExtender(14).extend(oldDesign);
+                    return new StandardCellExtender(14, false).extend(oldDesign);
+                }
+            }));
+            builder.add("Extend Cell Left (7)", () -> performOperation(new OutOfPlaceDesignOperation() {
+                @Override
+                protected Design createNewDesign(Design oldDesign) {
+                    return new StandardCellExtender(7, true).extend(oldDesign);
                 }
             }));
             builder.addMenu("Help");
