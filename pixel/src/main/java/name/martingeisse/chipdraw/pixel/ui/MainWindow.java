@@ -23,6 +23,7 @@ import name.martingeisse.chipdraw.pixel.operation.mouse.RowTool;
 import name.martingeisse.chipdraw.pixel.operation.scmos.ScmosContactTool;
 import name.martingeisse.chipdraw.pixel.operation.scmos.ScmosContactType;
 import name.martingeisse.chipdraw.pixel.operation.scmos.ScmosTransistorTool;
+import name.martingeisse.chipdraw.pixel.operation.scmos.meta_transistor.TransistorToolFactory;
 import name.martingeisse.chipdraw.pixel.ui.util.*;
 import name.martingeisse.chipdraw.pixel.util.Point;
 import name.martingeisse.chipdraw.pixel.util.UserVisibleMessageException;
@@ -137,6 +138,7 @@ public class MainWindow extends JFrame implements Editor.Ui {
             ToolbarBuilder builder = new ToolbarBuilder();
             builder.add("transistor_n.png", event -> mouseTool = new ScmosTransistorTool(Technologies.Concept.MATERIAL_NDIFF));
             builder.add("transistor_p.png", event -> mouseTool = new ScmosTransistorTool(Technologies.Concept.MATERIAL_PDIFF));
+            builder.add("transistor_meta.png", event -> invokeMetaTransistorTool());
             sideBar.add(builder.build());
         }
         sideBar.add(Box.createGlue());
@@ -417,6 +419,10 @@ public class MainWindow extends JFrame implements Editor.Ui {
                         }
                         break;
 
+                    case 't':
+                        invokeMetaTransistorTool();
+                        break;
+
                 }
             }
         });
@@ -596,4 +602,12 @@ public class MainWindow extends JFrame implements Editor.Ui {
         }
     }
 
+    private void invokeMetaTransistorTool() {
+        run(() -> {
+            String formula = JOptionPane.showInputDialog("Please enter the transistor formula");
+            if (formula != null) {
+                mouseTool = TransistorToolFactory.create(formula);
+            }
+        });
+    }
 }

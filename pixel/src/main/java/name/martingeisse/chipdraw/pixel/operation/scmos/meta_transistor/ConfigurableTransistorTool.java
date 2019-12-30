@@ -74,17 +74,23 @@ public final class ConfigurableTransistorTool extends AbstractClickTool {
     	// initial contacts
     	int totalLength = 5;
 		consumer.consume(1, 1, 4, metalHeight, Technologies.Concept.MATERIAL_METAL1);
+        for (int j = 0; j < transistorWidth; j++) {
+            consumer.consume(2, 2 + 4 * j, 2, 2, Technologies.Concept.MATERIAL_CONTACT);
+        }
 
 		for (int gateGroup : gateGroups) {
 
 			// gates
 			for (int i = 0; i < gateGroup; i++) {
-				consumer.consume(totalLength, -2, 2, polyHeight, Technologies.Concept.MATERIAL_POLY);
+				consumer.consume(totalLength + 1, -2, 2, polyHeight, Technologies.Concept.MATERIAL_POLY);
 				totalLength += 4;
 			}
 
 			// contacts
 			consumer.consume(totalLength, 1, 4, metalHeight, Technologies.Concept.MATERIAL_METAL1);
+            for (int j = 0; j < transistorWidth; j++) {
+                consumer.consume(totalLength + 1, 2 + 4 * j, 2, 2, Technologies.Concept.MATERIAL_CONTACT);
+            }
 			totalLength += 4;
 
 		}
