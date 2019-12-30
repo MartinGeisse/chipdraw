@@ -1,6 +1,0 @@
-
-TODO:
-
-"new design" action, dialog, select technology
-
-improve fill patterns --> opaque patterns are not useful for drawing!
