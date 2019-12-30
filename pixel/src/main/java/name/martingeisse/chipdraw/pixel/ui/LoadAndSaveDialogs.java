@@ -16,6 +16,8 @@ public final class LoadAndSaveDialogs {
 	public static final String FILE_NAME_EXTENSION = "mag";
 	public static final String DOT_FILE_NAME_EXTENSION = "." + FILE_NAME_EXTENSION;
 
+	public static File SUGGESTED_FOLDER = null;
+
 	private final TechnologyRepository technologyRepository;
 
 	public LoadAndSaveDialogs(TechnologyRepository technologyRepository) {
@@ -65,6 +67,7 @@ public final class LoadAndSaveDialogs {
 
 		// show the file chooser dialog
 		FileDialog fileDialog = new FileDialog(frame);
+		fileDialog.setDirectory(SUGGESTED_FOLDER.getPath());
 		fileDialog.setFilenameFilter((parentFolder, filename) -> filename.endsWith(DOT_FILE_NAME_EXTENSION));
 		fileDialog.setMode(mode);
 		fileDialog.setMultipleMode(false);
