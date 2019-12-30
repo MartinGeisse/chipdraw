@@ -11,6 +11,7 @@ import name.martingeisse.chipdraw.pixel.drc.Violation;
 import name.martingeisse.chipdraw.pixel.global_tools.Autocropper;
 import name.martingeisse.chipdraw.pixel.global_tools.Enlarger;
 import name.martingeisse.chipdraw.pixel.global_tools.magic.MagicExportDialog;
+import name.martingeisse.chipdraw.pixel.global_tools.stdcell.StandardCellExtender;
 import name.martingeisse.chipdraw.pixel.global_tools.stdcell.StandardCellPruner;
 import name.martingeisse.chipdraw.pixel.global_tools.stdcell.StandardCellTemplateGeneratorBase;
 import name.martingeisse.chipdraw.pixel.icons.Icons;
@@ -476,6 +477,18 @@ public class MainWindow extends JFrame implements Editor.Ui {
                 @Override
                 protected Design createNewDesign(Design oldDesign) throws UserVisibleMessageException {
                     return new StandardCellPruner().prune(editor.getDesign());
+                }
+            }));
+            builder.add("Extend Cell (7)", () -> performOperation(new OutOfPlaceDesignOperation() {
+                @Override
+                protected Design createNewDesign(Design oldDesign) {
+                    return new StandardCellExtender(7).extend(oldDesign);
+                }
+            }));
+            builder.add("Extend Cell (14)", () -> performOperation(new OutOfPlaceDesignOperation() {
+                @Override
+                protected Design createNewDesign(Design oldDesign) {
+                    return new StandardCellExtender(14).extend(oldDesign);
                 }
             }));
             builder.addMenu("Help");
