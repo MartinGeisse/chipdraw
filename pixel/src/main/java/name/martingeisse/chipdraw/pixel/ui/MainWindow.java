@@ -64,15 +64,26 @@ public class MainWindow extends JFrame implements Editor.Ui {
         this.materialUiState = new MaterialUiState(_design.getTechnology());
         this.editor = new Editor(this);
 
-        setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
+        setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
         setSize(800, 600);
         setResizable(true);
 
         addWindowListener(new WindowAdapter() {
+
+            @Override
+            public void windowClosing(WindowEvent e) {
+                // this is far from perfect, but at least it helps when you mis-click the close button, which I did...
+                int answer = JOptionPane.showConfirmDialog(MainWindow.this, "Really quit?", "Quit", JOptionPane.YES_NO_OPTION);
+                if (answer == JOptionPane.YES_OPTION) {
+                    dispose();
+                }
+            }
+
             @Override
             public void windowClosed(WindowEvent e) {
                 editor.dispose();
             }
+
         });
 
         sideBar = new JPanel();
