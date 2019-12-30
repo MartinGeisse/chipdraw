@@ -9,10 +9,7 @@ import name.martingeisse.chipdraw.pixel.design.*;
 import name.martingeisse.chipdraw.pixel.drc.PositionedViolation;
 import name.martingeisse.chipdraw.pixel.drc.Violation;
 import name.martingeisse.chipdraw.pixel.global_tools.Autocropper;
-import name.martingeisse.chipdraw.pixel.global_tools.ConnectivityExtractor;
-import name.martingeisse.chipdraw.pixel.global_tools.CornerStitchingExtrator;
 import name.martingeisse.chipdraw.pixel.global_tools.Enlarger;
-import name.martingeisse.chipdraw.pixel.global_tools.longcell.LongCellGenerator;
 import name.martingeisse.chipdraw.pixel.global_tools.magic.MagicExportDialog;
 import name.martingeisse.chipdraw.pixel.global_tools.stdcell.StandardCellPruner;
 import name.martingeisse.chipdraw.pixel.global_tools.stdcell.StandardCellTemplateGeneratorBase;
@@ -432,8 +429,9 @@ public class MainWindow extends JFrame implements Editor.Ui {
             MenuBarBuilder builder = new MenuBarBuilder();
             builder.addMenu("File");
             builder.add("New", () -> new MainWindow(workbench, new Design(editor.getDesign().getTechnology(), 200, 200)).setVisible(true));
-            builder.add("Load", this::showLoadDialog);
-            builder.add("Save", this::showSaveDialog);
+            builder.add("Load...", this::showLoadDialog);
+            builder.add("Save As...", this::showSaveDialog);
+            builder.add("Magic Export As...", () -> MagicExportDialog.showExportDialog(this, editor.getDesign()));
             builder.addSeparator();
             builder.add("Quit", () -> System.exit(0));
             builder.addMenu("Edit");
@@ -442,10 +440,7 @@ public class MainWindow extends JFrame implements Editor.Ui {
             builder.addMenu("View");
             builder.add("Up", materialUiState::moveVisibilityUp);
             builder.add("Down", materialUiState::moveVisibilityDown);
-            builder.addMenu("Test");
-            builder.add("Corner Stitching Extractor", () -> new CornerStitchingExtrator.Test().extract(editor.getDesign()));
-            builder.add("Connectivity Extractor", () -> new ConnectivityExtractor.Test().extract(editor.getDesign()));
-            builder.add("Magic Export", () -> MagicExportDialog.showExportDialog(this, editor.getDesign()));
+            builder.addMenu("Tools");
             builder.add("Enlarge", () -> performOperation(new OutOfPlaceDesignOperation() {
                 @Override
                 protected Design createNewDesign(Design oldDesign) throws UserVisibleMessageException {
@@ -470,10 +465,8 @@ public class MainWindow extends JFrame implements Editor.Ui {
                     return new Autocropper(oldDesign, true, false).autocrop();
                 }
             }));
-            builder.add("LongCell", () -> LongCellGenerator.generate(JOptionPane.showInputDialog("Please enter a boolean term.")));
-            builder.addMenu("StdCell");
-            builder.add("New", () -> new MainWindow(workbench, new StandardCellTemplateGeneratorBase().generate()).setVisible(true));
-            builder.add("Prune", () -> performOperation(new OutOfPlaceDesignOperation() {
+            builder.add("New StdCell", () -> new MainWindow(workbench, new StandardCellTemplateGeneratorBase().generate()).setVisible(true));
+            builder.add("Prune StdCell", () -> performOperation(new OutOfPlaceDesignOperation() {
                 @Override
                 protected Design createNewDesign(Design oldDesign) throws UserVisibleMessageException {
                     return new StandardCellPruner().prune(editor.getDesign());
