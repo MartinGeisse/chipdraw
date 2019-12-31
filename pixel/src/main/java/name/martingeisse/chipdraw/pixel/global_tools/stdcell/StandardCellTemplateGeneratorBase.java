@@ -14,7 +14,7 @@ public class StandardCellTemplateGeneratorBase {
 //region fields
 
     // general
-    private int width = 280;
+    private int width = 28;
     private int height = 70;
 
     // wells
