@@ -4,7 +4,7 @@ import java.io.File;
 
 public class GenerateMain {
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws Exception {
         File folder = new File("resource/cell-lib/generated");
         if (folder.exists()) {
             folder.delete();

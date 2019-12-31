@@ -30,17 +30,18 @@ public final class ConfigurableTransistorTool extends AbstractClickTool {
 
     @Override
     protected DesignOperation onClick(Design design, int x, int y, MouseButton button, boolean shift) {
-        if (button == MouseButton.LEFT) {
-            return new SnapshottingDesignOperation() {
-                @Override
-                protected void doPerform(Design newDesign) {
-                    produceRectangles((dx, dy, w, h, material) -> {
-                        newDesign.getPlane(material.getPlaneSchema()).drawRectangleAutoclip(x + dx, y + dy, w, h, material);
-                    });
-                }
-            };
-        }
-        return null;
+        return (button == MouseButton.LEFT) ? createOperation(x, y) : null;
+    }
+
+    public DesignOperation createOperation(int x, int y) {
+        return new SnapshottingDesignOperation() {
+            @Override
+            protected void doPerform(Design newDesign) {
+                produceRectangles((dx, dy, w, h, material) -> {
+                    newDesign.getPlane(material.getPlaneSchema()).drawRectangleAutoclip(x + dx, y + dy, w, h, material);
+                });
+            }
+        };
     }
 
     @Override
