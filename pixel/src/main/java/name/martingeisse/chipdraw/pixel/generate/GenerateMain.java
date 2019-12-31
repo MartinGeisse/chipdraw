@@ -1,8 +1,5 @@
 package name.martingeisse.chipdraw.pixel.generate;
 
-import name.martingeisse.chipdraw.pixel.generate.impl.LibraryBuilderImpl;
-import name.martingeisse.chipdraw.pixel.generate.lib.TestGenerator;
-
 import java.io.File;
 
 public class GenerateMain {
@@ -13,7 +10,7 @@ public class GenerateMain {
             folder.delete();
         }
         folder.mkdir();
-        LibraryBuilderImpl libraryBuilder = new LibraryBuilderImpl(folder);
+        LibraryBuilder libraryBuilder = new LibraryBuilder(folder);
         new TestGenerator().generate(libraryBuilder);
     }
 
