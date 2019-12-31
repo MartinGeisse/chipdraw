@@ -3,14 +3,14 @@ group = 'name.martingeisse'
 version = '0.1'
 
 apply plugin: 'java'
-apply plugin: 'application'
+// apply plugin: 'application'
 
 sourceCompatibility = '1.10'
 targetCompatibility = '1.10'
 tasks.withType(JavaCompile) {
 	options.encoding = 'UTF-8'
 }
-mainClassName = "name.martingeisse.chipdraw.unspice.Main"
+// mainClassName = "name.martingeisse.chipdraw.unspice.Main"
 
 sourceSets.main.java.srcDir 'src/main/generated'
 sourceSets.main.resources.srcDir 'src/main/java'

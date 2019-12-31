@@ -10,7 +10,7 @@ targetCompatibility = '1.10'
 tasks.withType(JavaCompile) {
 	options.encoding = 'UTF-8'
 }
-mainClassName = "name.martingeisse.chipdraw.pixel.Main"
+mainClassName = "name.martingeisse.chipdraw.pixel.StandardCellMain"
 
 sourceSets.main.java.srcDir 'src/main/generated'
 sourceSets.main.resources.srcDir 'src/main/java'
