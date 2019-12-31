@@ -490,6 +490,12 @@ public class MainWindow extends JFrame implements Editor.Ui {
                     return new StandardCellPruner().prune(editor.getDesign());
                 }
             }));
+            builder.add("Repair Rails", () -> performOperation(new OutOfPlaceDesignOperation() {
+                @Override
+                protected Design createNewDesign(Design oldDesign) {
+                    return new StandardCellExtender(0, false).extend(oldDesign);
+                }
+            }));
             builder.add("Extend Cell (7)", () -> performOperation(new OutOfPlaceDesignOperation() {
                 @Override
                 protected Design createNewDesign(Design oldDesign) {
