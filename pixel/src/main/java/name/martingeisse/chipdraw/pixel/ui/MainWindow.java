@@ -73,7 +73,7 @@ public class MainWindow extends JFrame implements Editor.Ui {
             @Override
             public void windowClosing(WindowEvent e) {
                 // this is far from perfect, but at least it helps when you mis-click the close button, which I did...
-                int answer = JOptionPane.showConfirmDialog(MainWindow.this, "Really quit?", "Quit", JOptionPane.YES_NO_OPTION);
+                int answer = JOptionPane.showConfirmDialog(MainWindow.this, "Really close?", "Close Window", JOptionPane.YES_NO_OPTION);
                 if (answer == JOptionPane.YES_OPTION) {
                     dispose();
                 }
