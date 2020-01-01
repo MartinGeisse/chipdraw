@@ -19,8 +19,8 @@ public final class CellBuilder {
     private final File file;
     private final List<Element> nmosElements = new ArrayList<>();
     private final List<Element> pmosElements = new ArrayList<>();
-    private int pmosDistanceFromBoundary;
-    private int nmosDistanceFromBoundary;
+    private int vddRailHeightandMargin;
+    private int gndRailHeightandMargin;
 
     public CellBuilder(File file) {
         this.file = file;
@@ -53,8 +53,8 @@ public final class CellBuilder {
         templateGenerator.setWidth(totalWidth);
         SimpleOperationExecutor executor = new SimpleOperationExecutor(templateGenerator.generate());
 
-        pmosDistanceFromBoundary = templateGenerator.getPowerRailTopMargin() + templateGenerator.getPowerRailHeight() + 1;
-        nmosDistanceFromBoundary = templateGenerator.getPowerRailBottomMargin() + templateGenerator.getPowerRailHeight() + 1;
+        vddRailHeightandMargin = templateGenerator.getPowerRailTopMargin() + templateGenerator.getPowerRailHeight();
+        gndRailHeightandMargin = templateGenerator.getPowerRailBottomMargin() + templateGenerator.getPowerRailHeight();
 
         draw(executor, 5, nmosElements, Technologies.Concept.MATERIAL_NDIFF);
         draw(executor, 5, pmosElements, Technologies.Concept.MATERIAL_PDIFF);
@@ -77,12 +77,11 @@ public final class CellBuilder {
 
     private void draw(SimpleOperationExecutor executor, int x, List<Element> elements, Material diffusionMaterial) throws Exception {
         for (Element element : elements) {
-
             int y;
             if (diffusionMaterial == Technologies.Concept.MATERIAL_PDIFF) {
-                y = pmosDistanceFromBoundary;
+                y = vddRailHeightandMargin + element.getRailSpacing();
             } else {
-                y = executor.getDesign().getHeight() - nmosDistanceFromBoundary - element.getHeight();
+                y = executor.getDesign().getHeight() - gndRailHeightandMargin - element.getRailSpacing() - element.getHeight();
             }
 
             element.draw(executor, x, y, diffusionMaterial);

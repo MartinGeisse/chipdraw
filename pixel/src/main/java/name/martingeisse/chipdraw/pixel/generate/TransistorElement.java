@@ -87,6 +87,11 @@ public class TransistorElement implements Element {
     }
 
     @Override
+    public int getRailSpacing() {
+        return 1;
+    }
+
+    @Override
     public void draw(SimpleOperationExecutor executor, int x, int y, Material diffusionMaterial) throws Exception {
         ConfigurableTransistorTool tool = new ConfigurableTransistorTool(diffusionMaterial, size, gateGroups, rotated);
         executor.perform(tool.createOperation(x, y));
