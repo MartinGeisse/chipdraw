@@ -1,0 +1,54 @@
+
+The idea of "technologies" is not great as it is since the behavior of the editor isn't only dependent on what is
+called a technology in manufacturing. For example, editing a cell is different from editing a complete die in
+terms of tools and possibly even DRC. It may even be different for different cell libraries, e.g. port-to-routing-grid
+alignment, default cell size, DRC minimum spacing at cell boundaries, etc.
+
+This question is related to how the "new" and "load" commands are handled -- same window or new window? Let's clear
+that first. --> "Multi-editor shell feels like the best variant, new window second best."
+
+We could capture all this in a "technology", which has the advantage that a single application can contain code for
+everything.
+(+) User can easily open any cell because the cell's technology ID says everything needed to edit that cell.
+(+) Plugins can decide which techs they apply to.
+(-) Plane schemas cannnot be re-used easily.
+    - Plane schemas can be decoupled from other technology aspects. For example, hold the list of plane schemas in a
+        PlaneSchemas object instead of the tech, and refer to that object from the tech.
+        - Should any "intrinsic" DRC rules be stored in the PlaneSchemas? -> there is currently no reason to do that,
+            and storing them separately in the tech is much more flexible.
+
+Are there alternatives to "tech means DRC + tools and is library specific"?
+- tech as in "layer schemas" is different from tech as in "manufacturing limitations" / DRC. So even DRC rules that are
+    lib-inspecific may be different for different manufacturing techs, even if they use the same layer schemas.
+    - then continue this discussion with tech in the manufacturing meaning, because that answers the important
+        questions. Layer schemas may be extracted to keep the code DRY, but none of the important problems is solved
+        by that.
+        - then all DRC is at least tech specific, because without manufacturing (layer schemas only) there are no
+            invalid designs.
+- both DRC and tools can be library specific
+- which parts are library-specific may be unknown in advance
+    - for tools, this may lead to useless tools
+    - for DRC, this may lead to false errors. However, many DRC rules are related to the manufacturing technology and
+        so are lib-inspecific, but the execution of the DRC is lib-specific (e.g. assumptions about pixels that lie
+        beyond the cell boundary).
+
+
+-----------------------------------------------------------------------------------------------------------------------
+SUB: How do "new" and "load" behave?
+
+Variants:
+- re-use window
+- open new window
+- one application instance is a shell for multiple editors
+
+The user might use the open command to load a cell from a different cell library, or even manufacturing technology.
+The fact that the user might try this is independent from how cell library schemes and technologies are handled,
+unless a distinction is made before loading, i.e. by file name extension. But that would be confusing ("why can't I
+see that cell in the open dialog!?")
+
+Multi-editor shell feels like the best variant, new window second best.
+
+Multi-editor has the disadvantage that the window menu is part of the shell, not of the individual editor, but has to
+change with the tech / cell lib. This would need a macOS-like "morphing menu". This is not impossible but at least it's
+yet another reason to go with separate windows and opening a new window for "new" / "load" for now.
+-----------------------------------------------------------------------------------------------------------------------
