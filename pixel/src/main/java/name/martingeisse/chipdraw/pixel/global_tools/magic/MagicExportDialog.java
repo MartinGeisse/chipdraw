@@ -1,7 +1,8 @@
 package name.martingeisse.chipdraw.pixel.global_tools.magic;
 
+import name.martingeisse.chipdraw.pixel.design.ConceptSchemas;
 import name.martingeisse.chipdraw.pixel.design.Design;
-import name.martingeisse.chipdraw.pixel.design.Technologies;
+import name.martingeisse.chipdraw.pixel.libresilicon.LibresiliconTechnologies;
 
 import javax.swing.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
@@ -25,9 +26,9 @@ public final class MagicExportDialog {
 		}
 		try {
 			Design convertedDesign;
-			if (design.getTechnology() == Technologies.Concept.TECHNOLOGY) {
+			if (ConceptSchemas.conforms(design.getTechnology())) {
 				convertedDesign = new ConceptToLibresiliconConverter(design).convert();
-			} else if (design.getTechnology() == Technologies.LibreSiliconMagicScmos.TECHNOLOGY) {
+			} else if (design.getTechnology() == LibresiliconTechnologies.MagicScmos.TECHNOLOGY) {
 				convertedDesign = design;
 			} else {
 				throw new IllegalArgumentException("design for Magic export must use 'concept' or 'libresilicon-magic-scmos' technology");

@@ -19,7 +19,7 @@ public class StandardCellExtender {
 
         StandardCellTemplateGeneratorBase generator = new StandardCellTemplateGeneratorBase();
         generator.setWidth(newDesign.getWidth());
-        Design template = generator.generate();
+        Design template = generator.generate(oldDesign.getTechnology());
         newDesign.copyFrom(template, left ? 0 : oldDesign.getWidth(), 0, left ? 0 : oldDesign.getWidth(), 0, amount, oldDesign.getHeight());
         {
             int h = generator.getWellTapMargin() + generator.getWellTapSize() + generator.getOverlapByDiffusion();

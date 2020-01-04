@@ -1,9 +1,6 @@
 package name.martingeisse.chipdraw.pixel.global_tools.stdcell;
 
-import name.martingeisse.chipdraw.pixel.design.Design;
-import name.martingeisse.chipdraw.pixel.design.Material;
-import name.martingeisse.chipdraw.pixel.design.Plane;
-import name.martingeisse.chipdraw.pixel.design.Technologies;
+import name.martingeisse.chipdraw.pixel.design.*;
 
 /**
  * This base class can be used to generate standard cell templates but will use generic values that might be off for a
@@ -154,24 +151,26 @@ public class StandardCellTemplateGeneratorBase {
 
     //endregion
 
-    public Design generate() {
-        Design design = new Design(Technologies.Concept.TECHNOLOGY, width, height);
-        Plane wellPlane = design.getPlane(Technologies.Concept.PLANE_WELL);
-        Plane diffusionPlane = design.getPlane(Technologies.Concept.PLANE_DIFF);
-        Plane metalPlane = design.getPlane(Technologies.Concept.PLANE_METAL1);
+    public Design generate(Technology technology) {
+        ConceptSchemas.validateConforms(technology);
+
+        Design design = new Design(technology, width, height);
+        Plane wellPlane = design.getPlane(ConceptSchemas.PLANE_WELL);
+        Plane diffusionPlane = design.getPlane(ConceptSchemas.PLANE_DIFF);
+        Plane metalPlane = design.getPlane(ConceptSchemas.PLANE_METAL1);
 
         // wells
         {
             int wellWidth = width - leftWellMargin - rightWellMargin;
             int combinedWellHeight = height - topWellMargin - bottomWellMargin - wellGap;
             int pwellHeight = combinedWellHeight - nwellHeight;
-            wellPlane.drawRectangle(leftWellMargin, topWellMargin, wellWidth, nwellHeight, Technologies.Concept.MATERIAL_NWELL);
-            wellPlane.drawRectangle(leftWellMargin, height - bottomWellMargin - pwellHeight, wellWidth, pwellHeight, Technologies.Concept.MATERIAL_PWELL);
+            wellPlane.drawRectangle(leftWellMargin, topWellMargin, wellWidth, nwellHeight, ConceptSchemas.MATERIAL_NWELL);
+            wellPlane.drawRectangle(leftWellMargin, height - bottomWellMargin - pwellHeight, wellWidth, pwellHeight, ConceptSchemas.MATERIAL_PWELL);
         }
 
         // power rails
-        metalPlane.drawRectangle(0, powerRailTopMargin, width, powerRailHeight, Technologies.Concept.MATERIAL_METAL1);
-        metalPlane.drawRectangle(0, height - powerRailBottomMargin - powerRailHeight, width, powerRailHeight, Technologies.Concept.MATERIAL_METAL1);
+        metalPlane.drawRectangle(0, powerRailTopMargin, width, powerRailHeight, ConceptSchemas.MATERIAL_METAL1);
+        metalPlane.drawRectangle(0, height - powerRailBottomMargin - powerRailHeight, width, powerRailHeight, ConceptSchemas.MATERIAL_METAL1);
 
         // well taps
         {
@@ -179,14 +178,14 @@ public class StandardCellTemplateGeneratorBase {
             // diffusion
             int nwellY = topWellMargin + wellTapMargin;
             int pwellY = height - bottomWellMargin - wellTapMargin - wellTapSize;
-            drawDiffusionForWellTaps(diffusionPlane, Technologies.Concept.MATERIAL_NDIFF, nwellY);
-            drawDiffusionForWellTaps(diffusionPlane, Technologies.Concept.MATERIAL_PDIFF, pwellY);
+            drawDiffusionForWellTaps(diffusionPlane, ConceptSchemas.MATERIAL_NDIFF, nwellY);
+            drawDiffusionForWellTaps(diffusionPlane, ConceptSchemas.MATERIAL_PDIFF, pwellY);
 
             // contacts
             int x = leftWellMargin + wellTapMargin;
             while (x <= width - rightWellMargin - wellTapMargin - wellTapSize) {
-                metalPlane.drawRectangle(x, nwellY, 2, 2, Technologies.Concept.MATERIAL_CONTACT);
-                metalPlane.drawRectangle(x, pwellY, 2, 2, Technologies.Concept.MATERIAL_CONTACT);
+                metalPlane.drawRectangle(x, nwellY, 2, 2, ConceptSchemas.MATERIAL_CONTACT);
+                metalPlane.drawRectangle(x, pwellY, 2, 2, ConceptSchemas.MATERIAL_CONTACT);
                 x = x + wellTapSize + wellTapSpacing;
             }
 

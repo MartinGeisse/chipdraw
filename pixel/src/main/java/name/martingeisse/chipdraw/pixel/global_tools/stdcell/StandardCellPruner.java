@@ -11,7 +11,7 @@ public class StandardCellPruner {
         StandardCellTemplateGeneratorBase generator = new StandardCellTemplateGeneratorBase();
         generator.setWidth(originalDesign.getWidth());
         generator.setHeight(originalDesign.getHeight());
-        Design template = generator.generate();
+        Design template = generator.generate(originalDesign.getTechnology());
 
         // find rightmost difference
         int modifiedWidth = originalDesign.getWidth();
