@@ -1,4 +1,4 @@
-package name.martingeisse.chipdraw.pixel.generate;
+package name.martingeisse.chipdraw.pixel.generate.a;
 
 import name.martingeisse.chipdraw.pixel.design.ConceptSchemas;
 import name.martingeisse.chipdraw.pixel.design.Design;

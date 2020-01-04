@@ -1,4 +1,4 @@
-package name.martingeisse.chipdraw.pixel.generate;
+package name.martingeisse.chipdraw.pixel.generate.a;
 
 import com.google.common.collect.ImmutableList;
 import name.martingeisse.chipdraw.pixel.design.ConceptSchemas;

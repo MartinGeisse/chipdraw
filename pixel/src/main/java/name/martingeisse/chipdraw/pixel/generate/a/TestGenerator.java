@@ -1,4 +1,4 @@
-package name.martingeisse.chipdraw.pixel.generate;
+package name.martingeisse.chipdraw.pixel.generate.a;
 
 public class TestGenerator {
 
