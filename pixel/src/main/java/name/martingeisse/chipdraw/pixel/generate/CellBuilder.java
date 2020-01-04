@@ -5,7 +5,7 @@ import name.martingeisse.chipdraw.pixel.design.Design;
 import name.martingeisse.chipdraw.pixel.design.Material;
 import name.martingeisse.chipdraw.pixel.global_tools.magic.MagicFileIo;
 import name.martingeisse.chipdraw.pixel.global_tools.stdcell.StandardCellTemplateGeneratorBase;
-import name.martingeisse.chipdraw.pixel.libresilicon.LibresiliconTechnologies;
+import name.martingeisse.chipdraw.pixel.libre_silicon.LibreSiliconTechnologies;
 import name.martingeisse.chipdraw.pixel.operation.SimpleOperationExecutor;
 
 import java.io.File;
@@ -50,7 +50,7 @@ public final class CellBuilder {
 
         StandardCellTemplateGeneratorBase templateGenerator = new StandardCellTemplateGeneratorBase();
         templateGenerator.setWidth(totalWidth);
-        SimpleOperationExecutor executor = new SimpleOperationExecutor(templateGenerator.generate(LibresiliconTechnologies.CONCEPT_TECHNOLOGY));
+        SimpleOperationExecutor executor = new SimpleOperationExecutor(templateGenerator.generate(LibreSiliconTechnologies.TEST000_CONCEPT_MG_70_7_TECHNOLOGY));
 
         vddRailHeightandMargin = templateGenerator.getPowerRailTopMargin() + templateGenerator.getPowerRailHeight();
         gndRailHeightandMargin = templateGenerator.getPowerRailBottomMargin() + templateGenerator.getPowerRailHeight();

@@ -1,35 +1,41 @@
-package name.martingeisse.chipdraw.pixel.libresilicon;
+package name.martingeisse.chipdraw.pixel.libre_silicon;
 
 import com.google.common.collect.ImmutableList;
 import name.martingeisse.chipdraw.pixel.design.*;
 import name.martingeisse.chipdraw.pixel.drc.Drc;
 import name.martingeisse.chipdraw.pixel.drc.concept.ConceptDrc;
 
-public final class LibresiliconTechnologies {
+public final class LibreSiliconTechnologies {
 
-    public static final Technology CONCEPT_TECHNOLOGY;
+    public static final Technology TEST000_CONCEPT_TECHNOLOGY = new Technology("LibreSilicon-test000-concept",
+            ConceptSchemas.PLANE_LIST, new TechnologyBehavior() {
 
-    static {
-        TechnologyBehavior technologyBehavior = new TechnologyBehavior() {
+        @Override
+        public ImmutableList<ImmutableList<PlaneSchema>> getPlaneGroups() {
+            return ConceptSchemas.PLANE_GROUPS;
+        }
 
-            @Override
-            public ImmutableList<ImmutableList<PlaneSchema>> getPlaneGroups() {
-                return ImmutableList.of(
-                        ImmutableList.of(ConceptSchemas.PLANE_PAD, ConceptSchemas.PLANE_METAL2),
-                        ImmutableList.of(ConceptSchemas.PLANE_METAL2, ConceptSchemas.PLANE_METAL1),
-                        ImmutableList.of(ConceptSchemas.PLANE_METAL1, ConceptSchemas.PLANE_POLY, ConceptSchemas.PLANE_DIFF, ConceptSchemas.PLANE_WELL),
-                        ImmutableList.of(ConceptSchemas.PLANE_POLY, ConceptSchemas.PLANE_DIFF, ConceptSchemas.PLANE_WELL)
-                );
-            }
+        @Override
+        public Drc getDrc() {
+            return new ConceptDrc();
+        }
 
-            @Override
-            public Drc getDrc() {
-                return new ConceptDrc();
-            }
+    });
 
-        };
-        CONCEPT_TECHNOLOGY = new Technology("concept", ConceptSchemas.PLANE_LIST, technologyBehavior);
-    }
+    public static final Technology TEST000_CONCEPT_MG_70_7_TECHNOLOGY = new Technology("LibreSilicon-test000-concept-mg-70-7",
+            ConceptSchemas.PLANE_LIST, new TechnologyBehavior() {
+
+        @Override
+        public ImmutableList<ImmutableList<PlaneSchema>> getPlaneGroups() {
+            return ConceptSchemas.PLANE_GROUPS;
+        }
+
+        @Override
+        public Drc getDrc() {
+            return new ConceptDrc();
+        }
+
+    });
 
     /**
      * This closely resembles the LibreSilicon designs in Magic.
@@ -88,7 +94,7 @@ public final class LibresiliconTechnologies {
             PLANE_METAL2 = new PlaneSchema("metal2", ImmutableList.of("metal2", "pad"));
             MATERIAL_METAL2 = PLANE_METAL2.getMaterials().get(0);
             MATERIAL_PAD = PLANE_METAL2.getMaterials().get(1);
-            TECHNOLOGY = new Technology("libresilicon-magic-scmos",
+            TECHNOLOGY = new Technology("LibreSilicon-test000-scmos",
                     new PlaneListSchema(ImmutableList.of(PLANE_WELL, PLANE_ACTIVE, PLANE_METAL1, PLANE_METAL2)),
                     null);
         }
@@ -98,7 +104,7 @@ public final class LibresiliconTechnologies {
 
     }
 
-    private LibresiliconTechnologies() {
+    private LibreSiliconTechnologies() {
     }
 
 }

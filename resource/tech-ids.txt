@@ -1,0 +1,22 @@
+
+Naming rules:
+- segments are separated by a dash
+- all LibreSilicon-related tech IDs start with the "LibreSilicon" segment
+- next comes the tech generation segment. test000 to test999 are used for initial evaluation generations.
+- next comes "concept" for conceptual design (e.g. simplified plane schema that does not separate diffusion/active)
+    or a different segment for an actual manufacturing process
+- for complete dies, the identifier ends there
+- for cell libraries, the next segment are the initials or a similar mnemonic for the library designer, followed by
+    a designer specific suffix for the library
+
+------------------------------------------------------------------------------------------------------------
+
+LibreSilicon-test000-concept
+    First LibreSilicon evaluation generation, concept designs for full dies
+
+LibreSilicon-test000-scmos
+    First LibreSilicon evaluation generation, Magic / SCMOS designs for full dies
+
+LibreSilicon-test000-concept-mg-70-7
+    First LibreSilicon evaluation generation, concept designs for cell library by Martin Geisse with unit cell height
+    set to 70*lambda and port alignment set to 7*lambda.

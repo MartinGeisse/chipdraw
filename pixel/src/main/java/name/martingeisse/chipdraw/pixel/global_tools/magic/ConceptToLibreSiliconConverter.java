@@ -4,19 +4,19 @@ import name.martingeisse.chipdraw.pixel.design.ConceptSchemas;
 import name.martingeisse.chipdraw.pixel.design.Design;
 import name.martingeisse.chipdraw.pixel.design.Material;
 import name.martingeisse.chipdraw.pixel.design.Plane;
-import name.martingeisse.chipdraw.pixel.libresilicon.LibresiliconTechnologies;
+import name.martingeisse.chipdraw.pixel.libre_silicon.LibreSiliconTechnologies;
 
-public final class ConceptToLibresiliconConverter {
+public final class ConceptToLibreSiliconConverter {
 
     private final Design original;
 
-    public ConceptToLibresiliconConverter(Design conceptDesign) {
+    public ConceptToLibreSiliconConverter(Design conceptDesign) {
         ConceptSchemas.validateConforms(conceptDesign.getTechnology());
         this.original = conceptDesign;
     }
 
     public Design convert() throws IncompatibilityException {
-        Design converted = new Design(LibresiliconTechnologies.MagicScmos.TECHNOLOGY, original.getWidth(), original.getHeight());
+        Design converted = new Design(LibreSiliconTechnologies.MagicScmos.TECHNOLOGY, original.getWidth(), original.getHeight());
 
         // original planes
         Plane originalWellPlane = original.getPlane(ConceptSchemas.PLANE_WELL);
@@ -27,10 +27,10 @@ public final class ConceptToLibresiliconConverter {
         Plane originalPadPlane = original.getPlane(ConceptSchemas.PLANE_PAD);
 
         // converted planes
-        Plane convertedWellPlane = converted.getPlane(LibresiliconTechnologies.MagicScmos.PLANE_WELL);
-        Plane convertedActivePlane = converted.getPlane(LibresiliconTechnologies.MagicScmos.PLANE_ACTIVE);
-        Plane convertedMetal1Plane = converted.getPlane(LibresiliconTechnologies.MagicScmos.PLANE_METAL1);
-        Plane convertedMetal2Plane = converted.getPlane(LibresiliconTechnologies.MagicScmos.PLANE_METAL2);
+        Plane convertedWellPlane = converted.getPlane(LibreSiliconTechnologies.MagicScmos.PLANE_WELL);
+        Plane convertedActivePlane = converted.getPlane(LibreSiliconTechnologies.MagicScmos.PLANE_ACTIVE);
+        Plane convertedMetal1Plane = converted.getPlane(LibreSiliconTechnologies.MagicScmos.PLANE_METAL1);
+        Plane convertedMetal2Plane = converted.getPlane(LibreSiliconTechnologies.MagicScmos.PLANE_METAL2);
 
         for (int x = 0; x < original.getWidth(); x++) {
             for (int y = 0; y < original.getHeight(); y++) {
@@ -45,9 +45,9 @@ public final class ConceptToLibresiliconConverter {
 
                 // wells can be copied directly
                 if (originalWell == ConceptSchemas.MATERIAL_NWELL) {
-                    convertedWellPlane.setPixel(x, y, LibresiliconTechnologies.MagicScmos.MATERIAL_NWELL);
+                    convertedWellPlane.setPixel(x, y, LibreSiliconTechnologies.MagicScmos.MATERIAL_NWELL);
                 } else if (originalWell == ConceptSchemas.MATERIAL_PWELL) {
-                    convertedWellPlane.setPixel(x, y, LibresiliconTechnologies.MagicScmos.MATERIAL_PWELL);
+                    convertedWellPlane.setPixel(x, y, LibreSiliconTechnologies.MagicScmos.MATERIAL_PWELL);
                 }
 
                 // active has lots of different upwards contact types in Magic, all of which are represented by
@@ -56,17 +56,17 @@ public final class ConceptToLibresiliconConverter {
                     // concept metal1 has a downwards contact
 
                     if (originalPoly != Material.NONE) {
-                        convertedActivePlane.setPixel(x, y, LibresiliconTechnologies.MagicScmos.MATERIAL_POLYCONTACT);
+                        convertedActivePlane.setPixel(x, y, LibreSiliconTechnologies.MagicScmos.MATERIAL_POLYCONTACT);
                     } else if (originalDiff != Material.NONE) {
                         convertedActivePlane.setPixel(x, y,
                             originalDiff == ConceptSchemas.MATERIAL_NDIFF ?
-                                    LibresiliconTechnologies.MagicScmos.MATERIAL_NDCONTACT :
-                                    LibresiliconTechnologies.MagicScmos.MATERIAL_PDCONTACT);
+                                    LibreSiliconTechnologies.MagicScmos.MATERIAL_NDCONTACT :
+                                    LibreSiliconTechnologies.MagicScmos.MATERIAL_PDCONTACT);
                     } else if (originalWell != Material.NONE) {
                         convertedActivePlane.setPixel(x, y,
                             originalWell == ConceptSchemas.MATERIAL_NWELL ?
-                                    LibresiliconTechnologies.MagicScmos.MATERIAL_NSUBSTRATENCONTACT :
-                                    LibresiliconTechnologies.MagicScmos.MATERIAL_PSUBSTRATEPCONTACT);
+                                    LibreSiliconTechnologies.MagicScmos.MATERIAL_NSUBSTRATENCONTACT :
+                                    LibreSiliconTechnologies.MagicScmos.MATERIAL_PSUBSTRATEPCONTACT);
                     } else {
                         // TODO we must decide for either a n-substrate or twin-well process. The reduced information
                         // in the "concept" technology is otherwise not enough.
@@ -80,16 +80,16 @@ public final class ConceptToLibresiliconConverter {
                         if (originalDiff != Material.NONE) {
                             convertedActivePlane.setPixel(x, y,
                                     originalDiff == ConceptSchemas.MATERIAL_NDIFF ?
-                                            LibresiliconTechnologies.MagicScmos.MATERIAL_NTRANSISTOR :
-                                            LibresiliconTechnologies.MagicScmos.MATERIAL_PTRANSISTOR);
+                                            LibreSiliconTechnologies.MagicScmos.MATERIAL_NTRANSISTOR :
+                                            LibreSiliconTechnologies.MagicScmos.MATERIAL_PTRANSISTOR);
                         } else {
-                            convertedActivePlane.setPixel(x, y, LibresiliconTechnologies.MagicScmos.MATERIAL_POLYSILICON);
+                            convertedActivePlane.setPixel(x, y, LibreSiliconTechnologies.MagicScmos.MATERIAL_POLYSILICON);
                         }
                     } else if (originalDiff != Material.NONE) {
                         convertedActivePlane.setPixel(x, y,
                                 originalDiff == ConceptSchemas.MATERIAL_NDIFF ?
-                                        LibresiliconTechnologies.MagicScmos.MATERIAL_NDIFFUSION :
-                                        LibresiliconTechnologies.MagicScmos.MATERIAL_PDIFFUSION);
+                                        LibreSiliconTechnologies.MagicScmos.MATERIAL_NDIFFUSION :
+                                        LibreSiliconTechnologies.MagicScmos.MATERIAL_PDIFFUSION);
                     }
 
                 }
@@ -101,9 +101,9 @@ public final class ConceptToLibresiliconConverter {
                     } // else: empty
                 } else {
                     if (originalMetal2 == ConceptSchemas.MATERIAL_VIA12) {
-                        convertedMetal1Plane.setPixel(x, y, LibresiliconTechnologies.MagicScmos.MATERIAL_M2CONTACT);
+                        convertedMetal1Plane.setPixel(x, y, LibreSiliconTechnologies.MagicScmos.MATERIAL_M2CONTACT);
                     } else {
-                        convertedMetal1Plane.setPixel(x, y, LibresiliconTechnologies.MagicScmos.MATERIAL_METAL1);
+                        convertedMetal1Plane.setPixel(x, y, LibreSiliconTechnologies.MagicScmos.MATERIAL_METAL1);
                     }
                 }
 
@@ -114,9 +114,9 @@ public final class ConceptToLibresiliconConverter {
                     } // else: empty
                 } else {
                     if (originalPad == ConceptSchemas.MATERIAL_PAD) {
-                        convertedMetal2Plane.setPixel(x, y, LibresiliconTechnologies.MagicScmos.MATERIAL_PAD);
+                        convertedMetal2Plane.setPixel(x, y, LibreSiliconTechnologies.MagicScmos.MATERIAL_PAD);
                     } else {
-                        convertedMetal2Plane.setPixel(x, y, LibresiliconTechnologies.MagicScmos.MATERIAL_METAL2);
+                        convertedMetal2Plane.setPixel(x, y, LibreSiliconTechnologies.MagicScmos.MATERIAL_METAL2);
                     }
                 }
 

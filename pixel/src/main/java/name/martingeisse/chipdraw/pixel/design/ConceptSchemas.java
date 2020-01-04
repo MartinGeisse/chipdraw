@@ -25,6 +25,13 @@ public final class ConceptSchemas {
 
     public static final PlaneListSchema PLANE_LIST;
 
+    public static final ImmutableList<ImmutableList<PlaneSchema>> PLANE_GROUPS = ImmutableList.of(
+            ImmutableList.of(ConceptSchemas.PLANE_PAD, ConceptSchemas.PLANE_METAL2),
+            ImmutableList.of(ConceptSchemas.PLANE_METAL2, ConceptSchemas.PLANE_METAL1),
+            ImmutableList.of(ConceptSchemas.PLANE_METAL1, ConceptSchemas.PLANE_POLY, ConceptSchemas.PLANE_DIFF, ConceptSchemas.PLANE_WELL),
+            ImmutableList.of(ConceptSchemas.PLANE_POLY, ConceptSchemas.PLANE_DIFF, ConceptSchemas.PLANE_WELL)
+    );
+
     static {
         PLANE_PAD = new PlaneSchema("pad");
         MATERIAL_PAD = PLANE_PAD.getMaterials().get(0);

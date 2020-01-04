@@ -3,7 +3,7 @@ package name.martingeisse.chipdraw.pixel;
 import name.martingeisse.chipdraw.pixel.design.Design;
 import name.martingeisse.chipdraw.pixel.design.SimpleTechnologyRepository;
 import name.martingeisse.chipdraw.pixel.global_tools.stdcell.StandardCellTemplateGeneratorBase;
-import name.martingeisse.chipdraw.pixel.libresilicon.LibresiliconTechnologies;
+import name.martingeisse.chipdraw.pixel.libre_silicon.LibreSiliconTechnologies;
 import name.martingeisse.chipdraw.pixel.ui.LoadAndSaveDialogs;
 import name.martingeisse.chipdraw.pixel.ui.MainWindow;
 
@@ -13,13 +13,8 @@ public class StandardCellMain {
 
     public static void main(String[] args) {
         LoadAndSaveDialogs.SUGGESTED_FOLDER = new File("resource/cell-lib/v2");
-
-        SimpleTechnologyRepository technologyRepository = new SimpleTechnologyRepository();
-        technologyRepository.add(LibresiliconTechnologies.CONCEPT_TECHNOLOGY);
-        technologyRepository.add(LibresiliconTechnologies.MagicScmos.TECHNOLOGY);
-        Workbench workbench = new Workbench(technologyRepository);
-        Design design = new StandardCellTemplateGeneratorBase().generate(LibresiliconTechnologies.CONCEPT_TECHNOLOGY);
-        new MainWindow(workbench, design).setVisible(true);
+        Design design = new StandardCellTemplateGeneratorBase().generate(LibreSiliconTechnologies.TEST000_CONCEPT_MG_70_7_TECHNOLOGY);
+        new MainWindow(Main.WORKBENCH, design).setVisible(true);
     }
 
 }

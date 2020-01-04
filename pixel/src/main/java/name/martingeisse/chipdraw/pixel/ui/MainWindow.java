@@ -15,7 +15,7 @@ import name.martingeisse.chipdraw.pixel.global_tools.stdcell.StandardCellExtende
 import name.martingeisse.chipdraw.pixel.global_tools.stdcell.StandardCellPruner;
 import name.martingeisse.chipdraw.pixel.global_tools.stdcell.StandardCellTemplateGeneratorBase;
 import name.martingeisse.chipdraw.pixel.icons.Icons;
-import name.martingeisse.chipdraw.pixel.libresilicon.LibresiliconTechnologies;
+import name.martingeisse.chipdraw.pixel.libre_silicon.LibreSiliconTechnologies;
 import name.martingeisse.chipdraw.pixel.operation.DesignOperation;
 import name.martingeisse.chipdraw.pixel.operation.OutOfPlaceDesignOperation;
 import name.martingeisse.chipdraw.pixel.operation.mouse.DrawTool;
@@ -484,7 +484,8 @@ public class MainWindow extends JFrame implements Editor.Ui {
                     return new Autocropper(oldDesign, true, false).autocrop();
                 }
             }));
-            builder.add("New StdCell", () -> new MainWindow(workbench, new StandardCellTemplateGeneratorBase().generate(LibresiliconTechnologies.CONCEPT_TECHNOLOGY)).setVisible(true));
+            builder.add("New StdCell", () -> new MainWindow(workbench,
+                    new StandardCellTemplateGeneratorBase().generate(LibreSiliconTechnologies.TEST000_CONCEPT_MG_70_7_TECHNOLOGY)).setVisible(true));
             builder.add("Prune StdCell", () -> performOperation(new OutOfPlaceDesignOperation() {
                 @Override
                 protected Design createNewDesign(Design oldDesign) throws UserVisibleMessageException {
