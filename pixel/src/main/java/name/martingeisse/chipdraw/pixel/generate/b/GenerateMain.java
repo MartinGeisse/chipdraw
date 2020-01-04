@@ -1,5 +1,8 @@
 package name.martingeisse.chipdraw.pixel.generate.b;
 
+import name.martingeisse.chipdraw.pixel.design.Design;
+import name.martingeisse.chipdraw.pixel.global_tools.magic.MagicFileIo;
+
 import java.io.File;
 
 public class GenerateMain {
@@ -17,12 +20,12 @@ public class GenerateMain {
         generate("Nor", 1, 1);
     }
 
-    private static void generate(String name, int... mintermArities) {
+    private static void generate(String name, int... mintermArities) throws Exception {
         Integer[] convertedMintermArities = new Integer[mintermArities.length];
         for (int i = 0; i < mintermArities.length; i++) {
             convertedMintermArities[i] = mintermArities[i];
         }
-        new Generator(new File(folder, name), convertedMintermArities).generate();
+        new Generator(new File(folder, name + ".mag"), convertedMintermArities).generate();
     }
 
 }
