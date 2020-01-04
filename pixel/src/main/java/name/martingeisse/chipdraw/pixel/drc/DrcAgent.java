@@ -2,8 +2,6 @@ package name.martingeisse.chipdraw.pixel.drc;
 
 import com.google.common.collect.ImmutableList;
 import name.martingeisse.chipdraw.pixel.design.Design;
-import name.martingeisse.chipdraw.pixel.design.Technologies;
-import name.martingeisse.chipdraw.pixel.drc.concept.ConceptDrc;
 
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicReference;
@@ -54,11 +52,8 @@ public final class DrcAgent {
             while (!stopped) {
                 waitForTrigger();
                 DrcContext context = new DrcContext(design);
-                if (design.getTechnology() == Technologies.Concept.TECHNOLOGY) {
-                    new ConceptDrc().perform(context);
-                } else {
-                    new SampleDrc().perform(context);
-                }
+                Drc drc = design.getTechnology().getBehavior().getDrc();
+                drc.perform(context);
                 ImmutableList<Violation> violations = context.getViolations();
                 for (Consumer<ImmutableList<Violation>> resultListener : resultListeners.values()) {
                     resultListener.accept(violations);

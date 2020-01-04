@@ -5,6 +5,7 @@ import name.martingeisse.chipdraw.pixel.design.ConceptSchemas;
 import name.martingeisse.chipdraw.pixel.design.Design;
 import name.martingeisse.chipdraw.pixel.design.Material;
 import name.martingeisse.chipdraw.pixel.design.Plane;
+import name.martingeisse.chipdraw.pixel.drc.Drc;
 import name.martingeisse.chipdraw.pixel.drc.DrcContext;
 import name.martingeisse.chipdraw.pixel.drc.rule.*;
 
@@ -17,7 +18,7 @@ import name.martingeisse.chipdraw.pixel.drc.rule.*;
  * and we only know lambdas (i.e. we don't know how many pixels a micron is, so we cannot check those rules). For a
  * specific technology node, pad rules should be added.
  */
-public class ConceptDrc {
+public class ConceptDrc implements Drc {
 
     private static boolean isTransistorPixel(Design design, int x, int y) {
         if (design.getPlane(ConceptSchemas.PLANE_POLY).getPixelAutoclip(x, y) == Material.NONE) {

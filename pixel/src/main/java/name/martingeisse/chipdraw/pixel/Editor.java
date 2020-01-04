@@ -1,12 +1,14 @@
 package name.martingeisse.chipdraw.pixel;
 
 import com.google.common.collect.ImmutableList;
+import name.martingeisse.chipdraw.pixel.design.ConceptSchemas;
 import name.martingeisse.chipdraw.pixel.design.Design;
-import name.martingeisse.chipdraw.pixel.operation.DesignOperation;
-import name.martingeisse.chipdraw.pixel.operation.UndoRedoOperationExecutor;
+import name.martingeisse.chipdraw.pixel.design.Technology;
+import name.martingeisse.chipdraw.pixel.design.TechnologyBehavior;
 import name.martingeisse.chipdraw.pixel.drc.DrcAgent;
 import name.martingeisse.chipdraw.pixel.drc.Violation;
-import name.martingeisse.chipdraw.pixel.design.Technologies;
+import name.martingeisse.chipdraw.pixel.operation.DesignOperation;
+import name.martingeisse.chipdraw.pixel.operation.UndoRedoOperationExecutor;
 import name.martingeisse.chipdraw.pixel.util.UserVisibleMessageException;
 
 /**
@@ -29,7 +31,8 @@ public class Editor {
         }
         this.ui = ui;
         this.drcAgent = new DrcAgent();
-        this.operationExecutor = new UndoRedoOperationExecutor(new Design(Technologies.Concept.TECHNOLOGY, 1, 1));
+        Technology dummyTechnology = new Technology(".-.DUMMY.-.", ConceptSchemas.PLANE_LIST, TechnologyBehavior.DEFAULT);
+        this.operationExecutor = new UndoRedoOperationExecutor(new Design(dummyTechnology, 1, 1));
         drcAgent.addResultListener(this::consumeDrcResult);
     }
 

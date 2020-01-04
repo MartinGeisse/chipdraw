@@ -2,6 +2,8 @@ package name.martingeisse.chipdraw.pixel.libresilicon;
 
 import com.google.common.collect.ImmutableList;
 import name.martingeisse.chipdraw.pixel.design.*;
+import name.martingeisse.chipdraw.pixel.drc.Drc;
+import name.martingeisse.chipdraw.pixel.drc.concept.ConceptDrc;
 
 public final class LibresiliconTechnologies {
 
@@ -9,6 +11,7 @@ public final class LibresiliconTechnologies {
 
     static {
         TechnologyBehavior technologyBehavior = new TechnologyBehavior() {
+
             @Override
             public ImmutableList<ImmutableList<PlaneSchema>> getPlaneGroups() {
                 return ImmutableList.of(
@@ -18,6 +21,12 @@ public final class LibresiliconTechnologies {
                         ImmutableList.of(ConceptSchemas.PLANE_POLY, ConceptSchemas.PLANE_DIFF, ConceptSchemas.PLANE_WELL)
                 );
             }
+
+            @Override
+            public Drc getDrc() {
+                return new ConceptDrc();
+            }
+
         };
         CONCEPT_TECHNOLOGY = new Technology("concept", ConceptSchemas.PLANE_LIST, technologyBehavior);
     }
