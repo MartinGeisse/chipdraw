@@ -17,51 +17,35 @@ import java.util.List;
 public final class Technology {
 
     private final String id;
-    private final ImmutableList<PlaneSchema> planeSchemas;
+    private final PlaneListSchema planeListSchema;
     private final TechnologyBehavior behavior;
 
-    public Technology(String id, ImmutableList<PlaneSchema> planeSchemas, TechnologyBehavior behavior) {
+    public Technology(String id, PlaneListSchema planeListSchema, TechnologyBehavior behavior) {
         if (id == null || id.isEmpty()) {
             throw new IllegalArgumentException("id cannot be null or empty");
         }
-        if (planeSchemas == null) {
-            throw new IllegalArgumentException("planeSchemas cannot be null");
-        }
-        if (planeSchemas.isEmpty()) {
-            throw new IllegalArgumentException("technology must have at least one plane");
+        if (planeListSchema == null) {
+            throw new IllegalArgumentException("planeListSchema cannot be null");
         }
         this.id = id;
-        this.planeSchemas = planeSchemas;
-        this.behavior = new TechnologyBehavior.SafeWrapper(
-            behavior == null ? TechnologyBehavior.DEFAULT : behavior);
-
-        // make sure that none of the plane schemas is already in use
-        for (PlaneSchema planeSchema : planeSchemas) {
-            if (planeSchema.index >= 0) {
-                throw new IllegalArgumentException("plane schema is already used by a Technology object: " + planeSchema.getName());
-            }
-        }
-
-        // assign plane and material indices
-        for (int i = 0; i < planeSchemas.size(); i++) {
-            PlaneSchema planeSchema = planeSchemas.get(i);
-            planeSchema.technology = this;
-            planeSchema.index = i;
-            planeSchema.initialize();
-        }
-
+        this.planeListSchema = planeListSchema;
+        this.behavior = new TechnologyBehavior.SafeWrapper(behavior == null ? TechnologyBehavior.DEFAULT : behavior);
     }
 
     public String getId() {
         return id;
     }
 
+    public PlaneListSchema getPlaneListSchema() {
+        return planeListSchema;
+    }
+
     public int getPlaneCount() {
-        return planeSchemas.size();
+        return planeListSchema.getPlaneCount();
     }
 
     public ImmutableList<PlaneSchema> getPlaneSchemas() {
-        return planeSchemas;
+        return planeListSchema.getPlaneSchemas();
     }
 
     public TechnologyBehavior getBehavior() {
@@ -69,24 +53,15 @@ public final class Technology {
     }
 
     public boolean isPlaneSchemaValid(PlaneSchema planeSchema) {
-        if (planeSchema == null) {
-            throw new IllegalArgumentException("planeSchema is null");
-        }
-        return planeSchema.technology == this;
+        return planeListSchema.isPlaneSchemaValid(planeSchema);
     }
 
     public void validatePlaneSchema(PlaneSchema planeSchema) {
-        if (!isPlaneSchemaValid(planeSchema)) {
-            throw new IllegalArgumentException("unknown plane schema: " + planeSchema);
-        }
+        planeListSchema.validatePlaneSchema(planeSchema);
     }
 
     public ImmutableList<Material> getFlattenedMaterialList() {
-        List<Material> result = new ArrayList<>();
-        for (PlaneSchema planeSchema : planeSchemas) {
-            result.addAll(planeSchema.getMaterials());
-        }
-        return ImmutableList.copyOf(result);
+        return planeListSchema.getFlattenedMaterialList();
     }
 
 }

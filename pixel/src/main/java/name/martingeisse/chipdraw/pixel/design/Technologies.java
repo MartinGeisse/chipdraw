@@ -68,7 +68,7 @@ public final class Technologies {
                 }
             };
             TECHNOLOGY = new Technology("concept",
-                    ImmutableList.of(PLANE_PAD, PLANE_METAL2, PLANE_METAL1, PLANE_POLY, PLANE_DIFF, PLANE_WELL),
+                    new PlaneListSchema(ImmutableList.of(PLANE_PAD, PLANE_METAL2, PLANE_METAL1, PLANE_POLY, PLANE_DIFF, PLANE_WELL)),
                     technologyBehavior);
         }
 
@@ -135,7 +135,7 @@ public final class Technologies {
             MATERIAL_METAL2 = PLANE_METAL2.getMaterials().get(0);
             MATERIAL_PAD = PLANE_METAL2.getMaterials().get(1);
             TECHNOLOGY = new Technology("libresilicon-magic-scmos",
-                    ImmutableList.of(PLANE_WELL, PLANE_ACTIVE, PLANE_METAL1, PLANE_METAL2),
+                    new PlaneListSchema(ImmutableList.of(PLANE_WELL, PLANE_ACTIVE, PLANE_METAL1, PLANE_METAL2)),
                     null);
         }
 

@@ -9,7 +9,7 @@ public final class PlaneSchema {
 
     private final String name;
     private final ImmutableList<Material> materials;
-    Technology technology;
+    PlaneListSchema planeListSchema;
     int index = -1;
 
     /**
@@ -54,8 +54,8 @@ public final class PlaneSchema {
         return materials;
     }
 
-    public Technology getTechnology() {
-        return technology;
+    public PlaneListSchema getPlaneListSchema() {
+        return planeListSchema;
     }
 
     public boolean isMaterialValid(Material material) {
