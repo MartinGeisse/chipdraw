@@ -78,6 +78,7 @@ public class Generator {
     private void drawContact() {
         rectangleConsumer.consume(currentX + 1, currentY + 1, 4, 4, ConceptSchemas.MATERIAL_METAL1);
         rectangleConsumer.consume(currentX + 2, currentY + 2, 2, 2, ConceptSchemas.MATERIAL_CONTACT);
+        currentX += 6;
     }
 
     private void drawGates(int number) {
@@ -88,6 +89,7 @@ public class Generator {
 
     private void drawGate() {
         rectangleConsumer.consume(currentX + 1, currentY - 2, 2, 8, ConceptSchemas.MATERIAL_POLY);
+        currentX += 4;
     }
 
     private interface RectangleConsumer {
