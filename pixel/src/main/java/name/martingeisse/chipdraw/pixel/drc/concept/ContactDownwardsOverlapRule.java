@@ -1,8 +1,8 @@
 package name.martingeisse.chipdraw.pixel.drc.concept;
 
+import name.martingeisse.chipdraw.pixel.design.ConceptSchemas;
 import name.martingeisse.chipdraw.pixel.design.Material;
 import name.martingeisse.chipdraw.pixel.design.Plane;
-import name.martingeisse.chipdraw.pixel.design.Technologies;
 import name.martingeisse.chipdraw.pixel.drc.DrcContext;
 import name.martingeisse.chipdraw.pixel.drc.rule.AbstractPerPixelRule;
 
@@ -19,7 +19,7 @@ public class ContactDownwardsOverlapRule extends AbstractPerPixelRule {
     private Plane polyPlane;
 
     public ContactDownwardsOverlapRule() {
-        super(Technologies.Concept.PLANE_METAL1);
+        super(ConceptSchemas.PLANE_METAL1);
     }
 
     @Override
@@ -29,14 +29,14 @@ public class ContactDownwardsOverlapRule extends AbstractPerPixelRule {
 
     @Override
     public void check(DrcContext context) {
-        diffPlane = context.getDesign().getPlane(Technologies.Concept.PLANE_DIFF);
-        polyPlane = context.getDesign().getPlane(Technologies.Concept.PLANE_POLY);
+        diffPlane = context.getDesign().getPlane(ConceptSchemas.PLANE_DIFF);
+        polyPlane = context.getDesign().getPlane(ConceptSchemas.PLANE_POLY);
         super.check(context);
     }
 
     @Override
     protected boolean checkPixel() {
-        if (getPivotMaterial() != Technologies.Concept.MATERIAL_CONTACT) {
+        if (getPivotMaterial() != ConceptSchemas.MATERIAL_CONTACT) {
             return true;
         }
         Plane overlappingPlane;

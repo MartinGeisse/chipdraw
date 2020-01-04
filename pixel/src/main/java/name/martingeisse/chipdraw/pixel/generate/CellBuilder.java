@@ -1,18 +1,17 @@
 package name.martingeisse.chipdraw.pixel.generate;
 
-import name.martingeisse.chipdraw.pixel.Editor;
+import name.martingeisse.chipdraw.pixel.design.ConceptSchemas;
 import name.martingeisse.chipdraw.pixel.design.Design;
 import name.martingeisse.chipdraw.pixel.design.Material;
-import name.martingeisse.chipdraw.pixel.design.Technologies;
 import name.martingeisse.chipdraw.pixel.global_tools.magic.MagicFileIo;
 import name.martingeisse.chipdraw.pixel.global_tools.stdcell.StandardCellTemplateGeneratorBase;
+import name.martingeisse.chipdraw.pixel.libresilicon.LibresiliconTechnologies;
 import name.martingeisse.chipdraw.pixel.operation.SimpleOperationExecutor;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.Executor;
 
 public final class CellBuilder {
 
@@ -51,13 +50,13 @@ public final class CellBuilder {
 
         StandardCellTemplateGeneratorBase templateGenerator = new StandardCellTemplateGeneratorBase();
         templateGenerator.setWidth(totalWidth);
-        SimpleOperationExecutor executor = new SimpleOperationExecutor(templateGenerator.generate());
+        SimpleOperationExecutor executor = new SimpleOperationExecutor(templateGenerator.generate(LibresiliconTechnologies.CONCEPT_TECHNOLOGY));
 
         vddRailHeightandMargin = templateGenerator.getPowerRailTopMargin() + templateGenerator.getPowerRailHeight();
         gndRailHeightandMargin = templateGenerator.getPowerRailBottomMargin() + templateGenerator.getPowerRailHeight();
 
-        draw(executor, 5, nmosElements, Technologies.Concept.MATERIAL_NDIFF);
-        draw(executor, 5, pmosElements, Technologies.Concept.MATERIAL_PDIFF);
+        draw(executor, 5, nmosElements, ConceptSchemas.MATERIAL_NDIFF);
+        draw(executor, 5, pmosElements, ConceptSchemas.MATERIAL_PDIFF);
 
         Design design = executor.getDesign();
         try {
@@ -78,7 +77,7 @@ public final class CellBuilder {
     private void draw(SimpleOperationExecutor executor, int x, List<Element> elements, Material diffusionMaterial) throws Exception {
         for (Element element : elements) {
             int y;
-            if (diffusionMaterial == Technologies.Concept.MATERIAL_PDIFF) {
+            if (diffusionMaterial == ConceptSchemas.MATERIAL_PDIFF) {
                 y = vddRailHeightandMargin + element.getRailSpacing();
             } else {
                 y = executor.getDesign().getHeight() - gndRailHeightandMargin - element.getRailSpacing() - element.getHeight();

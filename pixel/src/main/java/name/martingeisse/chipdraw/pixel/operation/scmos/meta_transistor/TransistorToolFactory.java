@@ -1,8 +1,8 @@
 package name.martingeisse.chipdraw.pixel.operation.scmos.meta_transistor;
 
 import com.google.common.collect.ImmutableList;
+import name.martingeisse.chipdraw.pixel.design.ConceptSchemas;
 import name.martingeisse.chipdraw.pixel.design.Material;
-import name.martingeisse.chipdraw.pixel.design.Technologies;
 import name.martingeisse.chipdraw.pixel.util.UserVisibleMessageException;
 
 import java.util.ArrayList;
@@ -44,7 +44,7 @@ public class TransistorToolFactory {
         for (int i = 0; i < gateGroupCount; i++) {
             gateGroups.add(gateGroupsText.charAt(i) - '0');
         }
-        Material sourceDrainMaterial = (dopingTypeText.equals("p") ? Technologies.Concept.MATERIAL_PDIFF : Technologies.Concept.MATERIAL_NDIFF);
+        Material sourceDrainMaterial = (dopingTypeText.equals("p") ? ConceptSchemas.MATERIAL_PDIFF : ConceptSchemas.MATERIAL_NDIFF);
         boolean rotated = !rotatedText.isEmpty();
 
         // build tool

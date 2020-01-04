@@ -1,10 +1,10 @@
 package name.martingeisse.chipdraw.pixel.drc.concept;
 
 import com.google.common.collect.ImmutableList;
+import name.martingeisse.chipdraw.pixel.design.ConceptSchemas;
 import name.martingeisse.chipdraw.pixel.design.Design;
 import name.martingeisse.chipdraw.pixel.design.Material;
 import name.martingeisse.chipdraw.pixel.design.Plane;
-import name.martingeisse.chipdraw.pixel.design.Technologies;
 import name.martingeisse.chipdraw.pixel.drc.DrcContext;
 import name.martingeisse.chipdraw.pixel.drc.rule.*;
 
@@ -20,15 +20,15 @@ import name.martingeisse.chipdraw.pixel.drc.rule.*;
 public class ConceptDrc {
 
     private static boolean isTransistorPixel(Design design, int x, int y) {
-        if (design.getPlane(Technologies.Concept.PLANE_POLY).getPixelAutoclip(x, y) == Material.NONE) {
+        if (design.getPlane(ConceptSchemas.PLANE_POLY).getPixelAutoclip(x, y) == Material.NONE) {
             return false;
         }
-        Material well = design.getPlane(Technologies.Concept.PLANE_WELL).getPixelAutoclip(x, y);
-        Material diff = design.getPlane(Technologies.Concept.PLANE_DIFF).getPixelAutoclip(x, y);
-        if (well == Technologies.Concept.MATERIAL_NWELL && diff == Technologies.Concept.MATERIAL_PDIFF) {
+        Material well = design.getPlane(ConceptSchemas.PLANE_WELL).getPixelAutoclip(x, y);
+        Material diff = design.getPlane(ConceptSchemas.PLANE_DIFF).getPixelAutoclip(x, y);
+        if (well == ConceptSchemas.MATERIAL_NWELL && diff == ConceptSchemas.MATERIAL_PDIFF) {
             return true;
         }
-        if (well == Technologies.Concept.MATERIAL_PWELL && diff == Technologies.Concept.MATERIAL_NDIFF) {
+        if (well == ConceptSchemas.MATERIAL_PWELL && diff == ConceptSchemas.MATERIAL_NDIFF) {
             return true;
         }
         return false;
@@ -41,13 +41,13 @@ public class ConceptDrc {
             //
 
             // 1.1 (Minimum width: 10)
-            new MinimumRectangularWidthRule(Technologies.Concept.PLANE_WELL, 10, true),
+            new MinimumRectangularWidthRule(ConceptSchemas.PLANE_WELL, 10, true),
 
             // 1.2 (Minimum spacing between wells at different potential) -- N/A because we don't have any
             // equal-implant wells at different potentials
 
             // 1.3 (Minimum spacing between equal-implant wells at same potential: 6)
-            new MinimumSelfSpacingRule(Technologies.Concept.PLANE_WELL, MinimumSelfSpacingRule.MaterialMode.IGNORE_OTHER_MATERIALS, 6),
+            new MinimumSelfSpacingRule(ConceptSchemas.PLANE_WELL, MinimumSelfSpacingRule.MaterialMode.IGNORE_OTHER_MATERIALS, 6),
 
             // 1.4 (Minimum spacing between wells of different type) is implicitly true because they are represented as
             // different materials on the same plane -- so they cannot overlap -- and the minimum spacing is 0.
@@ -58,17 +58,17 @@ public class ConceptDrc {
             //
 
             // 2.1 (Minimum width: 3)
-            new MinimumRectangularWidthRule(Technologies.Concept.PLANE_DIFF, 3, true),
+            new MinimumRectangularWidthRule(ConceptSchemas.PLANE_DIFF, 3, true),
 
             // 2.2 (Minimum spacing, same implant: 3)
-            new MinimumSelfSpacingRule(Technologies.Concept.PLANE_DIFF, MinimumSelfSpacingRule.MaterialMode.CHECK_OTHER_MATERIAL_SPACING, 3),
+            new MinimumSelfSpacingRule(ConceptSchemas.PLANE_DIFF, MinimumSelfSpacingRule.MaterialMode.CHECK_OTHER_MATERIAL_SPACING, 3),
 
             // 2.3 (Source/drain active to well edge: 5)
             // 2.4 (Substrate/well contact active to well edge: 3)
             new ActiveByWellOverlapRule(),
 
             // 2.5 (Minimum spacing between non-abutting active of different implant: 4)
-            new AbstractPerPixelRule(Technologies.Concept.PLANE_DIFF) {
+            new AbstractPerPixelRule(ConceptSchemas.PLANE_DIFF) {
                 @Override
                 protected boolean checkPixel() {
                     return !isMaterialNearby(getPivotPlane(), getPivotX(), getPivotY(), 4, getPivotMaterial().getOther());
@@ -81,14 +81,14 @@ public class ConceptDrc {
             //
 
             // 3.1 (Minimum width: 2)
-            new MinimumRectangularWidthRule(Technologies.Concept.PLANE_POLY, 2, true),
+            new MinimumRectangularWidthRule(ConceptSchemas.PLANE_POLY, 2, true),
 
             // 3.2 / 3.2a (Minimum spacing over field / active: 2)
             // Since the minimum spacing is the same over field and active, we can use a simple spacing rule.
-            new MinimumSelfSpacingRule(Technologies.Concept.PLANE_POLY, MinimumSelfSpacingRule.MaterialMode.CHECK_OTHER_MATERIAL_SPACING, 2),
+            new MinimumSelfSpacingRule(ConceptSchemas.PLANE_POLY, MinimumSelfSpacingRule.MaterialMode.CHECK_OTHER_MATERIAL_SPACING, 2),
 
             // 3.3 (Minimum gate extension of [over] active: 2)
-            new AbstractPerPixelRule(Technologies.Concept.PLANE_POLY) {
+            new AbstractPerPixelRule(ConceptSchemas.PLANE_POLY) {
                 @Override
                 protected boolean checkPixel() {
                     int x = getPivotX(), y = getPivotY();
@@ -100,7 +100,7 @@ public class ConceptDrc {
             }.setErrorMessageOverride("Minimum gate extension over active: 2"),
 
             // 3.4 (Minimum active extension of [over] poly: 3)
-            new AbstractPerPixelRule(Technologies.Concept.PLANE_DIFF) {
+            new AbstractPerPixelRule(ConceptSchemas.PLANE_DIFF) {
                 @Override
                 protected boolean checkPixel() {
                     int x = getPivotX(), y = getPivotY();
@@ -142,24 +142,24 @@ public class ConceptDrc {
             //
 
             // 5.1 and 6.1 (Exact contact size: 2x2)
-            new ExactMaterialSizeRule(Technologies.Concept.MATERIAL_CONTACT, 2),
+            new ExactMaterialSizeRule(ConceptSchemas.MATERIAL_CONTACT, 2),
 
             // 5.2 (Minimum poly overlap: 1.5 -> 2) and 6.2 (Minimum active overlap: 1.5 -> 2)
             new ContactDownwardsOverlapRule(),
 
             // 5.3 and 6.3 (Minimum contact spacing: 2)
-            new MinimumSelfSpacingRule(Technologies.Concept.PLANE_METAL1, AbstractMinimumSelfSpacingRule.MaterialMode.IGNORE_OTHER_MATERIALS, 2) {
+            new MinimumSelfSpacingRule(ConceptSchemas.PLANE_METAL1, AbstractMinimumSelfSpacingRule.MaterialMode.IGNORE_OTHER_MATERIALS, 2) {
                 @Override
                 protected boolean affects(int x, int y, Material material) {
-                    return material == Technologies.Concept.MATERIAL_CONTACT;
+                    return material == ConceptSchemas.MATERIAL_CONTACT;
                 }
             }.setErrorMessageOverride("Minimum contact spacing: 2"),
 
             // 5.4 and 6.4 (Minimum spacing to gate of transistor: 2)
-            new AbstractPerPixelRule(Technologies.Concept.PLANE_METAL1) {
+            new AbstractPerPixelRule(ConceptSchemas.PLANE_METAL1) {
                 @Override
                 protected boolean checkPixel() {
-                    if (getPivotMaterial() != Technologies.Concept.MATERIAL_CONTACT) {
+                    if (getPivotMaterial() != ConceptSchemas.MATERIAL_CONTACT) {
                         return true;
                     }
                     int x = getPivotX(), y = getPivotY();
@@ -181,16 +181,16 @@ public class ConceptDrc {
             //
 
             // 7.1 (Minimum width: 3)
-            new MinimumRectangularWidthRule(Technologies.Concept.PLANE_METAL1, 3, false),
+            new MinimumRectangularWidthRule(ConceptSchemas.PLANE_METAL1, 3, false),
 
             // 7.2 (Minimum spacing: 2)
-            new MinimumSelfSpacingRule(Technologies.Concept.PLANE_METAL1, MinimumSelfSpacingRule.MaterialMode.MERGE_MATERIALS, 2),
+            new MinimumSelfSpacingRule(ConceptSchemas.PLANE_METAL1, MinimumSelfSpacingRule.MaterialMode.MERGE_MATERIALS, 2),
 
             // 7.3 (Minimum overlap of any contact: 1)
-            new AbstractPerPixelRule(Technologies.Concept.PLANE_METAL1) {
+            new AbstractPerPixelRule(ConceptSchemas.PLANE_METAL1) {
                 @Override
                 protected boolean checkPixel() {
-                    if (getPivotMaterial() != Technologies.Concept.MATERIAL_CONTACT) {
+                    if (getPivotMaterial() != ConceptSchemas.MATERIAL_CONTACT) {
                         return true;
                     }
                     int x = getPivotX(), y = getPivotY();
@@ -207,25 +207,25 @@ public class ConceptDrc {
             //
 
             // 8.1 (Exact size: 2x2)
-            new ExactMaterialSizeRule(Technologies.Concept.MATERIAL_VIA12, 2),
+            new ExactMaterialSizeRule(ConceptSchemas.MATERIAL_VIA12, 2),
 
             // 8.2 (Minimum via1 spacing: 3)
-            new MinimumSelfSpacingRule(Technologies.Concept.PLANE_METAL2, AbstractMinimumSelfSpacingRule.MaterialMode.IGNORE_OTHER_MATERIALS, 3) {
+            new MinimumSelfSpacingRule(ConceptSchemas.PLANE_METAL2, AbstractMinimumSelfSpacingRule.MaterialMode.IGNORE_OTHER_MATERIALS, 3) {
                 @Override
                 protected boolean affects(int x, int y, Material material) {
-                    return material == Technologies.Concept.MATERIAL_VIA12;
+                    return material == ConceptSchemas.MATERIAL_VIA12;
                 }
             }.setErrorMessageOverride("Minimum via12 spacing: 3"),
 
             // 8.3 (Minimum overlap [of via12] by metal1: 1)
             // includes 9.3 (Minimum overlap of via12 [by metal2]: 1)
-            new AbstractPerPixelRule(Technologies.Concept.PLANE_METAL2) {
+            new AbstractPerPixelRule(ConceptSchemas.PLANE_METAL2) {
                 @Override
                 protected boolean checkPixel() {
-                    if (getPivotMaterial() != Technologies.Concept.MATERIAL_VIA12) {
+                    if (getPivotMaterial() != ConceptSchemas.MATERIAL_VIA12) {
                         return true;
                     }
-                    Plane metal1 = getContext().getDesign().getPlane(Technologies.Concept.PLANE_METAL1);
+                    Plane metal1 = getContext().getDesign().getPlane(ConceptSchemas.PLANE_METAL1);
                     Plane metal2 = getPivotPlane();
                     int x = getPivotX(), y = getPivotY();
                     return isSurroundedByAnyMaterial(metal1, x, y, 1) && isSurroundedByAnyMaterial(metal2, x, y, 1);
@@ -242,10 +242,10 @@ public class ConceptDrc {
             //
 
             // 9.1 (Minimum width: 3)
-            new MinimumRectangularWidthRule(Technologies.Concept.PLANE_METAL2, 3, false),
+            new MinimumRectangularWidthRule(ConceptSchemas.PLANE_METAL2, 3, false),
 
             // 9.2 (Minimum spacing: 3)
-            new MinimumSelfSpacingRule(Technologies.Concept.PLANE_METAL2, MinimumSelfSpacingRule.MaterialMode.MERGE_MATERIALS, 3)
+            new MinimumSelfSpacingRule(ConceptSchemas.PLANE_METAL2, MinimumSelfSpacingRule.MaterialMode.MERGE_MATERIALS, 3)
 
             // 9.3 (Minimum overlap of via1: 1): grouped with 8.3
 

@@ -1,13 +1,13 @@
 package name.martingeisse.chipdraw.pixel.operation.scmos;
 
+import name.martingeisse.chipdraw.pixel.design.ConceptSchemas;
 import name.martingeisse.chipdraw.pixel.design.Material;
-import name.martingeisse.chipdraw.pixel.design.Technologies;
 
 public enum ScmosContactType {
 
-    NDIFF(Technologies.Concept.MATERIAL_NDIFF),
-    PDIFF(Technologies.Concept.MATERIAL_PDIFF),
-    POLY(Technologies.Concept.MATERIAL_POLY);
+    NDIFF(ConceptSchemas.MATERIAL_NDIFF),
+    PDIFF(ConceptSchemas.MATERIAL_PDIFF),
+    POLY(ConceptSchemas.MATERIAL_POLY);
 
     private final Material lowerMaterial;
 

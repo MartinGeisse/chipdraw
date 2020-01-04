@@ -1,8 +1,8 @@
 package name.martingeisse.chipdraw.pixel.drc.concept;
 
+import name.martingeisse.chipdraw.pixel.design.ConceptSchemas;
 import name.martingeisse.chipdraw.pixel.design.Material;
 import name.martingeisse.chipdraw.pixel.design.Plane;
-import name.martingeisse.chipdraw.pixel.design.Technologies;
 import name.martingeisse.chipdraw.pixel.drc.DrcContext;
 import name.martingeisse.chipdraw.pixel.drc.rule.AbstractPerPixelRule;
 
@@ -14,7 +14,7 @@ public class ActiveByWellOverlapRule extends AbstractPerPixelRule {
     private Plane wellPlane;
 
     public ActiveByWellOverlapRule() {
-        super(Technologies.Concept.PLANE_DIFF);
+        super(ConceptSchemas.PLANE_DIFF);
     }
 
     @Override
@@ -24,7 +24,7 @@ public class ActiveByWellOverlapRule extends AbstractPerPixelRule {
 
     @Override
     public void check(DrcContext context) {
-        wellPlane = context.getDesign().getPlane(Technologies.Concept.PLANE_WELL);
+        wellPlane = context.getDesign().getPlane(ConceptSchemas.PLANE_WELL);
         super.check(context);
     }
 
@@ -37,8 +37,8 @@ public class ActiveByWellOverlapRule extends AbstractPerPixelRule {
             return false;
         }
         Material diffPixel = getPivotMaterial();
-        boolean ndiff = (diffPixel == Technologies.Concept.MATERIAL_NDIFF);
-        boolean nwell = (wellPixel == Technologies.Concept.MATERIAL_NWELL);
+        boolean ndiff = (diffPixel == ConceptSchemas.MATERIAL_NDIFF);
+        boolean nwell = (wellPixel == ConceptSchemas.MATERIAL_NWELL);
         boolean sameType = (ndiff == nwell);
         int overlap = (sameType ? 3 : 5);
         return isSurroundedByMaterial(wellPlane, x, y, overlap, wellPixel);

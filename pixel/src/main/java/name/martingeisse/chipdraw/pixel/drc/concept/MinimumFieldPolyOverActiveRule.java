@@ -1,8 +1,8 @@
 package name.martingeisse.chipdraw.pixel.drc.concept;
 
+import name.martingeisse.chipdraw.pixel.design.ConceptSchemas;
 import name.martingeisse.chipdraw.pixel.design.Material;
 import name.martingeisse.chipdraw.pixel.design.Plane;
-import name.martingeisse.chipdraw.pixel.design.Technologies;
 import name.martingeisse.chipdraw.pixel.drc.DrcContext;
 import name.martingeisse.chipdraw.pixel.drc.rule.AbstractPerPixelRule;
 
@@ -11,7 +11,7 @@ public class MinimumFieldPolyOverActiveRule extends AbstractPerPixelRule {
     private Plane diffPlane, polyPlane;
 
     public MinimumFieldPolyOverActiveRule() {
-        super(Technologies.Concept.PLANE_POLY);
+        super(ConceptSchemas.PLANE_POLY);
     }
 
     @Override
@@ -21,8 +21,8 @@ public class MinimumFieldPolyOverActiveRule extends AbstractPerPixelRule {
 
     @Override
     public void check(DrcContext context) {
-        this.diffPlane = context.getDesign().getPlane(Technologies.Concept.PLANE_DIFF);
-        this.polyPlane = context.getDesign().getPlane(Technologies.Concept.PLANE_POLY);
+        this.diffPlane = context.getDesign().getPlane(ConceptSchemas.PLANE_DIFF);
+        this.polyPlane = context.getDesign().getPlane(ConceptSchemas.PLANE_POLY);
         super.check(context);
     }
 

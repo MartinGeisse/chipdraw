@@ -1,7 +1,7 @@
 package name.martingeisse.chipdraw.pixel.operation.scmos;
 
+import name.martingeisse.chipdraw.pixel.design.ConceptSchemas;
 import name.martingeisse.chipdraw.pixel.design.Design;
-import name.martingeisse.chipdraw.pixel.design.Technologies;
 import name.martingeisse.chipdraw.pixel.operation.SnapshottingDesignOperation;
 import name.martingeisse.chipdraw.pixel.util.UserVisibleMessageException;
 
@@ -18,11 +18,9 @@ public final class ScmosContactOperation extends SnapshottingDesignOperation {
 
     @Override
     protected void doPerform(Design design) throws UserVisibleMessageException {
-        if (design.getTechnology() != Technologies.Concept.TECHNOLOGY) {
-            throw new UserVisibleMessageException("this operation can only be performed on a CONCEPT design");
-        }
-        design.getPlane(Technologies.Concept.PLANE_METAL1).drawRectangleAutoclip(x + 1, y + 1, 4, 4, Technologies.Concept.MATERIAL_METAL1);
-        design.getPlane(Technologies.Concept.PLANE_METAL1).drawRectangleAutoclip(x + 2, y + 2, 2, 2, Technologies.Concept.MATERIAL_CONTACT);
+        ConceptSchemas.validateConformsUserVisible(design.getTechnology());
+        design.getPlane(ConceptSchemas.PLANE_METAL1).drawRectangleAutoclip(x + 1, y + 1, 4, 4, ConceptSchemas.MATERIAL_METAL1);
+        design.getPlane(ConceptSchemas.PLANE_METAL1).drawRectangleAutoclip(x + 2, y + 2, 2, 2, ConceptSchemas.MATERIAL_CONTACT);
         design.getPlane(contactType.getLowerMaterial().getPlaneSchema()).drawRectangleAutoclip(x, y, 6, 6, contactType.getLowerMaterial());
     }
 

@@ -1,8 +1,8 @@
 package name.martingeisse.chipdraw.pixel.generate;
 
 import com.google.common.collect.ImmutableList;
+import name.martingeisse.chipdraw.pixel.design.ConceptSchemas;
 import name.martingeisse.chipdraw.pixel.design.Material;
-import name.martingeisse.chipdraw.pixel.design.Technologies;
 import name.martingeisse.chipdraw.pixel.operation.SimpleOperationExecutor;
 import name.martingeisse.chipdraw.pixel.operation.scmos.meta_transistor.ConfigurableTransistorTool;
 import org.apache.commons.lang3.mutable.MutableInt;
@@ -65,9 +65,9 @@ public class TransistorElement implements Element {
     @Override
     public int getWidth() {
         MutableInt result = new MutableInt(0);
-        ConfigurableTransistorTool tool = new ConfigurableTransistorTool(Technologies.Concept.MATERIAL_NDIFF, size, gateGroups, rotated);
+        ConfigurableTransistorTool tool = new ConfigurableTransistorTool(ConceptSchemas.MATERIAL_NDIFF, size, gateGroups, rotated);
         tool.produceRectangles((dx, dy, w, h, material) -> {
-            if (material == Technologies.Concept.MATERIAL_NDIFF) {
+            if (material == ConceptSchemas.MATERIAL_NDIFF) {
                 result.setValue(w);
             }
         });
@@ -77,9 +77,9 @@ public class TransistorElement implements Element {
     @Override
     public int getHeight() {
         MutableInt result = new MutableInt(0);
-        ConfigurableTransistorTool tool = new ConfigurableTransistorTool(Technologies.Concept.MATERIAL_NDIFF, size, gateGroups, rotated);
+        ConfigurableTransistorTool tool = new ConfigurableTransistorTool(ConceptSchemas.MATERIAL_NDIFF, size, gateGroups, rotated);
         tool.produceRectangles((dx, dy, w, h, material) -> {
-            if (material == Technologies.Concept.MATERIAL_NDIFF) {
+            if (material == ConceptSchemas.MATERIAL_NDIFF) {
                 result.setValue(h);
             }
         });

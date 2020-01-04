@@ -1,9 +1,9 @@
 package name.martingeisse.chipdraw.pixel.operation.scmos.meta_transistor;
 
 import com.google.common.collect.ImmutableList;
+import name.martingeisse.chipdraw.pixel.design.ConceptSchemas;
 import name.martingeisse.chipdraw.pixel.design.Design;
 import name.martingeisse.chipdraw.pixel.design.Material;
-import name.martingeisse.chipdraw.pixel.design.Technologies;
 import name.martingeisse.chipdraw.pixel.operation.DesignOperation;
 import name.martingeisse.chipdraw.pixel.operation.SnapshottingDesignOperation;
 import name.martingeisse.chipdraw.pixel.operation.mouse.AbstractClickTool;
@@ -74,23 +74,23 @@ public final class ConfigurableTransistorTool extends AbstractClickTool {
 
     	// initial contacts
     	int totalLength = 5;
-		consumer.consume(1, 1, 4, metalHeight, Technologies.Concept.MATERIAL_METAL1);
+		consumer.consume(1, 1, 4, metalHeight, ConceptSchemas.MATERIAL_METAL1);
         for (int j = 0; j < transistorWidth; j++) {
-            consumer.consume(2, 2 + 4 * j, 2, 2, Technologies.Concept.MATERIAL_CONTACT);
+            consumer.consume(2, 2 + 4 * j, 2, 2, ConceptSchemas.MATERIAL_CONTACT);
         }
 
 		for (int gateGroup : gateGroups) {
 
 			// gates
 			for (int i = 0; i < gateGroup; i++) {
-				consumer.consume(totalLength + 1, -2, 2, polyHeight, Technologies.Concept.MATERIAL_POLY);
+				consumer.consume(totalLength + 1, -2, 2, polyHeight, ConceptSchemas.MATERIAL_POLY);
 				totalLength += 4;
 			}
 
 			// contacts
-			consumer.consume(totalLength, 1, 4, metalHeight, Technologies.Concept.MATERIAL_METAL1);
+			consumer.consume(totalLength, 1, 4, metalHeight, ConceptSchemas.MATERIAL_METAL1);
             for (int j = 0; j < transistorWidth; j++) {
-                consumer.consume(totalLength + 1, 2 + 4 * j, 2, 2, Technologies.Concept.MATERIAL_CONTACT);
+                consumer.consume(totalLength + 1, 2 + 4 * j, 2, 2, ConceptSchemas.MATERIAL_CONTACT);
             }
 			totalLength += 4;
 
