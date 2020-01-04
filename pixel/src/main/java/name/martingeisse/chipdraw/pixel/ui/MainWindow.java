@@ -15,6 +15,7 @@ import name.martingeisse.chipdraw.pixel.global_tools.stdcell.StandardCellExtende
 import name.martingeisse.chipdraw.pixel.global_tools.stdcell.StandardCellPruner;
 import name.martingeisse.chipdraw.pixel.global_tools.stdcell.StandardCellTemplateGeneratorBase;
 import name.martingeisse.chipdraw.pixel.icons.Icons;
+import name.martingeisse.chipdraw.pixel.libresilicon.LibresiliconTechnologies;
 import name.martingeisse.chipdraw.pixel.operation.DesignOperation;
 import name.martingeisse.chipdraw.pixel.operation.OutOfPlaceDesignOperation;
 import name.martingeisse.chipdraw.pixel.operation.mouse.DrawTool;
@@ -148,8 +149,8 @@ public class MainWindow extends JFrame implements Editor.Ui {
         }
         {
             ToolbarBuilder builder = new ToolbarBuilder();
-            builder.add("transistor_n.png", event -> mouseTool = new ScmosTransistorTool(Technologies.Concept.MATERIAL_NDIFF));
-            builder.add("transistor_p.png", event -> mouseTool = new ScmosTransistorTool(Technologies.Concept.MATERIAL_PDIFF));
+            builder.add("transistor_n.png", event -> mouseTool = new ScmosTransistorTool(ConceptSchemas.MATERIAL_NDIFF));
+            builder.add("transistor_p.png", event -> mouseTool = new ScmosTransistorTool(ConceptSchemas.MATERIAL_PDIFF));
             builder.add("transistor_meta.png", event -> invokeMetaTransistorTool());
             sideBar.add(builder.build());
         }
@@ -194,23 +195,23 @@ public class MainWindow extends JFrame implements Editor.Ui {
             protected void drawPixel(Graphics2D g, int pixelX, int pixelY, int screenX, int screenY, int screenSize) {
 
                 // read pixel per plane
-                Material wellPlane = getPixel(Technologies.Concept.PLANE_WELL, pixelX, pixelY);
-                Material diffPlane = getPixel(Technologies.Concept.PLANE_DIFF, pixelX, pixelY);
-                Material polyPlane = getPixel(Technologies.Concept.PLANE_POLY, pixelX, pixelY);
-                Material metal1Plane = getPixel(Technologies.Concept.PLANE_METAL1, pixelX, pixelY);
-                Material metal2Plane = getPixel(Technologies.Concept.PLANE_METAL2, pixelX, pixelY);
-                Material padPlane = getPixel(Technologies.Concept.PLANE_PAD, pixelX, pixelY);
+                Material wellPlane = getPixel(ConceptSchemas.PLANE_WELL, pixelX, pixelY);
+                Material diffPlane = getPixel(ConceptSchemas.PLANE_DIFF, pixelX, pixelY);
+                Material polyPlane = getPixel(ConceptSchemas.PLANE_POLY, pixelX, pixelY);
+                Material metal1Plane = getPixel(ConceptSchemas.PLANE_METAL1, pixelX, pixelY);
+                Material metal2Plane = getPixel(ConceptSchemas.PLANE_METAL2, pixelX, pixelY);
+                Material padPlane = getPixel(ConceptSchemas.PLANE_PAD, pixelX, pixelY);
 
                 if (wellPlane != Material.NONE) {
-                    g.setPaint(wellPlane == Technologies.Concept.MATERIAL_NWELL ? getHatching(0x0000ff, 0) : getHatching(0xff0000, 0));
+                    g.setPaint(wellPlane == ConceptSchemas.MATERIAL_NWELL ? getHatching(0x0000ff, 0) : getHatching(0xff0000, 0));
                     g.fillRect(screenX, screenY, screenSize, screenSize);
                 }
                 if (diffPlane != Material.NONE) {
-                    g.setPaint(diffPlane == Technologies.Concept.MATERIAL_NDIFF ? new Color(0x0000ff) : new Color(0xff0000));
+                    g.setPaint(diffPlane == ConceptSchemas.MATERIAL_NDIFF ? new Color(0x0000ff) : new Color(0xff0000));
                     g.fillRect(screenX, screenY, screenSize, screenSize);
                 }
                 if (polyPlane != Material.NONE) {
-                    if (materialUiState.isPlaneVisible(Technologies.Concept.PLANE_METAL1)) {
+                    if (materialUiState.isPlaneVisible(ConceptSchemas.PLANE_METAL1)) {
                         g.setPaint(new Color(0, 128, 0));
                     } else {
                         g.setPaint(getHatching(0x008000, 2, true));
@@ -218,9 +219,9 @@ public class MainWindow extends JFrame implements Editor.Ui {
                     g.fillRect(screenX, screenY, screenSize, screenSize);
                 }
                 if (metal1Plane != Material.NONE) {
-                    if (metal1Plane == Technologies.Concept.MATERIAL_CONTACT) {
+                    if (metal1Plane == ConceptSchemas.MATERIAL_CONTACT) {
                         g.setPaint(Color.GRAY);
-                    } else if (materialUiState.isPlaneVisible(Technologies.Concept.PLANE_METAL2)) {
+                    } else if (materialUiState.isPlaneVisible(ConceptSchemas.PLANE_METAL2)) {
                         g.setPaint(Color.LIGHT_GRAY);
                     } else {
                         g.setPaint(getHatching(0xc0c0c0, 4));
@@ -228,9 +229,9 @@ public class MainWindow extends JFrame implements Editor.Ui {
                     g.fillRect(screenX, screenY, screenSize, screenSize);
                 }
                 if (metal2Plane != Material.NONE) {
-                    if (metal2Plane == Technologies.Concept.MATERIAL_VIA12) {
+                    if (metal2Plane == ConceptSchemas.MATERIAL_VIA12) {
                         g.setPaint(new Color(0x008080));
-                    } else if (materialUiState.isPlaneVisible(Technologies.Concept.PLANE_PAD)) {
+                    } else if (materialUiState.isPlaneVisible(ConceptSchemas.PLANE_PAD)) {
                         g.setPaint(new Color(0x00c0c0));
                     } else {
                         g.setPaint(getHatching(0x00c0c0, 0, true));
@@ -483,7 +484,7 @@ public class MainWindow extends JFrame implements Editor.Ui {
                     return new Autocropper(oldDesign, true, false).autocrop();
                 }
             }));
-            builder.add("New StdCell", () -> new MainWindow(workbench, new StandardCellTemplateGeneratorBase().generate()).setVisible(true));
+            builder.add("New StdCell", () -> new MainWindow(workbench, new StandardCellTemplateGeneratorBase().generate(LibresiliconTechnologies.CONCEPT_TECHNOLOGY)).setVisible(true));
             builder.add("Prune StdCell", () -> performOperation(new OutOfPlaceDesignOperation() {
                 @Override
                 protected Design createNewDesign(Design oldDesign) throws UserVisibleMessageException {
