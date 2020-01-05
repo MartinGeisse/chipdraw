@@ -25,7 +25,7 @@ synth -run check:
 # tech mapping
 #
 dfflibmap -liberty own.lib
-abc -liberty own.lib
+abc -liberty own.lib -nocleanup
 clean
 stat -liberty own.lib
 

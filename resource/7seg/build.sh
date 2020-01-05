@@ -1,4 +1,2 @@
-rm show.dot
-rm show.svg
-rm out.v
+. clean.sh
 yosys -s build.yosys
