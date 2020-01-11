@@ -36,6 +36,11 @@ public class Generator {
     private List<Integer> nmosGateX = new ArrayList<>();
     private int nmosGateY = 0;
 
+    private List<Integer> pmosContactMetalX = new ArrayList<>();
+    private int pmosContactMetalY = 0;
+    private List<Integer> nmosContactMetalX = new ArrayList<>();
+    private int nmosContactMetalY = 0;
+
     public Generator pmos(int[][] pmosTransistors) {
         this.pmosTransistors = pmosTransistors;
         return this;
@@ -69,6 +74,9 @@ public class Generator {
         };
         generateRectangles();
         width += FINAL_X_MARGIN;
+        if (width % 7 != 0) {
+            width += 7 - (width % 7);
+        }
 
         // generate cell
         templateGenerator.setWidth(width);
@@ -89,13 +97,15 @@ public class Generator {
         currentY = templateGenerator.getPowerRailTopMargin() + templateGenerator.getPowerRailHeight() +
                 (hasPmosBackSideTrace ? 6 : 1);
         pmosGateY = currentY;
-        generateTransistorRectangles(pmosTransistors, ConceptSchemas.MATERIAL_PDIFF, 2, pmosGateX);
+        pmosContactMetalY = currentY + 1;
+        generateTransistorRectangles(pmosTransistors, ConceptSchemas.MATERIAL_PDIFF, 2, pmosGateX, pmosContactMetalX);
 
         // NMOS
         currentY = templateGenerator.getHeight() - templateGenerator.getPowerRailBottomMargin()
                 - templateGenerator.getPowerRailHeight() - (hasNmosBackSideTrace ? 6 : 1) - 6;
         nmosGateY = currentY;
-        generateTransistorRectangles(nmosTransistors, ConceptSchemas.MATERIAL_NDIFF, 1, nmosGateX);
+        nmosContactMetalY = currentY + 1;
+        generateTransistorRectangles(nmosTransistors, ConceptSchemas.MATERIAL_NDIFF, 1, nmosGateX, nmosContactMetalX);
 
         // post-processing
         if (postProcessor != null) {
@@ -104,23 +114,25 @@ public class Generator {
 
     }
 
-    private void generateTransistorRectangles(int[][] transistorSpec, Material diffusionMaterial, int size, List<Integer> gateXDestination) {
+    private void generateTransistorRectangles(int[][] transistorSpec, Material diffusionMaterial, int size,
+                                              List<Integer> gateXDestination, List<Integer> contactMetalXDestination) {
         currentX = INITIAL_X_MARGIN - INTER_ROW_X_MARGIN;
         for (int[] rowSpec : transistorSpec) {
             currentX += INTER_ROW_X_MARGIN;
             int rowStartX = currentX;
-            drawContact(size);
+            drawContact(size, contactMetalXDestination);
             for (int gateGroup : rowSpec) {
                 currentX--;
                 drawGates(gateGroup, size, gateXDestination);
                 currentX--;
-                drawContact(size);
+                drawContact(size, contactMetalXDestination);
             }
             rectangleConsumer.consume(rowStartX, currentY, currentX - rowStartX, 2 + size * 4, diffusionMaterial);
         }
     }
 
-    private void drawContact(int size) {
+    private void drawContact(int size, List<Integer> contactMetalXDestination) {
+        contactMetalXDestination.add(currentX + 1);
         rectangleConsumer.consume(currentX + 1, currentY + 1, 4, size * 4, ConceptSchemas.MATERIAL_METAL1);
         for (int i = 0; i < size; i++) {
             rectangleConsumer.consume(currentX + 2, currentY + 2 + i * 4, 2, 2, ConceptSchemas.MATERIAL_CONTACT);
@@ -202,6 +214,24 @@ public class Generator {
             crossConnectGatesWithMetal(pmosGlobalGateIndex, nmosGlobalGateIndex,
                     portTileX * 7 + 1, portTileY * 7 + 1, polyPadDisplacementX, polyPadDisplacementY);
 
+        }
+
+        @Override
+        public void connectPmosContactToPower(int... pmosGlobalContactIndexes) {
+            int height = (hasPmosBackSideTrace ? 7 : 2);
+            for (int pmosGlobalContactIndex : pmosGlobalContactIndexes) {
+                rectangleConsumer.consume(pmosContactMetalX.get(pmosGlobalContactIndex), pmosContactMetalY - height,
+                        4, height, ConceptSchemas.MATERIAL_METAL1);
+            }
+        }
+
+        @Override
+        public void connectNmosContactToPower(int... nmosGlobalContactIndexes) {
+            int height = (hasNmosBackSideTrace ? 7 : 2);
+            for (int nmosGlobalContactIndex : nmosGlobalContactIndexes) {
+                rectangleConsumer.consume(nmosContactMetalX.get(nmosGlobalContactIndex), nmosContactMetalY + 4,
+                        4, height, ConceptSchemas.MATERIAL_METAL1);
+            }
         }
 
     }

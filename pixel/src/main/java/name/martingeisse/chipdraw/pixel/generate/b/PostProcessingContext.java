@@ -65,4 +65,12 @@ public interface PostProcessingContext {
     void crossConnectGatesWithPort(int pmosGlobalGateIndex, int nmosGlobalGateIndex, int portTileX, int portTileY,
                                    int polyPadDisplacementX, int polyPadDisplacementY);
 
+    //
+    // connect transistor contacts to the power rail
+    //
+
+    void connectPmosContactToPower(int... pmosGlobalContactIndexes);
+
+    void connectNmosContactToPower(int... nmosGlobalContactIndexes);
+
 }

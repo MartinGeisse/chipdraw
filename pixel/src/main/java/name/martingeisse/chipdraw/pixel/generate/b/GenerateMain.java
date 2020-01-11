@@ -16,7 +16,11 @@ public class GenerateMain {
         new Generator()
                 .pmos(new int[][] {{1}})
                 .nmos(new int[][] {{1}})
-                .post(c -> c.directConnectGatesWithPort(0, 1, 4))
+                .post(c -> {
+                    c.directConnectGatesWithPort(0, 1, 4);
+                    c.connectPmosContactToPower(0);
+                    c.connectNmosContactToPower(0);
+                })
                 .generate(file("Inverter"));
         new Generator()
                 .pmos(new int[][] {{1, 1}})
@@ -24,6 +28,8 @@ public class GenerateMain {
                 .post(c -> {
                     c.directConnectGatesWithPort(0, 1, 4);
                     c.directConnectGatesWithPort(1, 2, 4, 1, 0);
+                    c.connectPmosContactToPower(0, 2);
+                    c.connectNmosContactToPower(0);
                 })
                 .generate(file("Nand"));
         new Generator()
@@ -32,6 +38,8 @@ public class GenerateMain {
                 .post(c -> {
                     c.directConnectGatesWithPort(0, 1, 4);
                     c.directConnectGatesWithPort(1, 2, 4, 1, 0);
+                    c.connectPmosContactToPower(0);
+                    c.connectNmosContactToPower(0, 2);
                 })
                 .generate(file("Nor"));
     }
