@@ -174,17 +174,34 @@ public class Generator {
         }
 
         @Override
-        public void crossConnectGatesWithMetalContact(int pmosGlobalGateIndex, int nmosGlobalGateIndex, int contactX, int contactY) {
-            connectPmosGate(pmosGlobalGateIndex, contactX, contactY - 2);
-            connectNmosGate(pmosGlobalGateIndex, contactX, contactY + 2);
-            rectangleConsumer.consume(contactX - 2, contactY - 2, 6, 6, ConceptSchemas.MATERIAL_POLY);
-            rectangleConsumer.consume(contactX - 1, contactY - 1, 4, 4, ConceptSchemas.MATERIAL_METAL1);
-            rectangleConsumer.consume(contactX, contactY, 2, 2, ConceptSchemas.MATERIAL_CONTACT);
+        public void crossConnectGatesWithMetal(int pmosGlobalGateIndex, int nmosGlobalGateIndex, int metalX, int metalY,
+                                               int polyPadDisplacementX, int polyPadDisplacementY) {
+
+            // draw poly pad
+            int polyPadX = metalX - 1 + polyPadDisplacementX;
+            int polyPadY = metalY - 1 + polyPadDisplacementY;
+            rectangleConsumer.consume(polyPadX, polyPadY, 6, 6, ConceptSchemas.MATERIAL_POLY);
+
+            // connect gates to poly pad
+            connectPmosGate(pmosGlobalGateIndex, polyPadX + 2, polyPadY);
+            connectNmosGate(nmosGlobalGateIndex, polyPadX + 2, polyPadY + 4);
+
+            // draw metal and contact
+            int metalStartX = Math.min(metalX, polyPadX + 1);
+            int metalStartY = Math.min(metalY, polyPadY + 1);
+            int metalEndX = Math.max(metalX + 4, polyPadX + 5);
+            int metalEndY = Math.max(metalY + 4, polyPadY + 5);
+            rectangleConsumer.consume(metalStartX, metalStartY, metalEndX - metalStartX, metalEndY - metalStartY, ConceptSchemas.MATERIAL_METAL1);
+            rectangleConsumer.consume(polyPadX + 2, polyPadY + 2, 2, 2, ConceptSchemas.MATERIAL_CONTACT);
+
         }
 
         @Override
-        public void crossConnectGatesWithPort(int pmosGlobalGateIndex, int nmosGlobalGateIndex, int portTileX, int portTileY) {
-            crossConnectGatesWithMetalContact(pmosGlobalGateIndex, nmosGlobalGateIndex, portTileX * 7 + 2, portTileY * 7 + 2);
+        public void crossConnectGatesWithPort(int pmosGlobalGateIndex, int nmosGlobalGateIndex, int portTileX, int portTileY,
+                                              int polyPadDisplacementX, int polyPadDisplacementY) {
+            crossConnectGatesWithMetal(pmosGlobalGateIndex, nmosGlobalGateIndex,
+                    portTileX * 7 + 1, portTileY * 7 + 1, polyPadDisplacementX, polyPadDisplacementY);
+
         }
 
     }

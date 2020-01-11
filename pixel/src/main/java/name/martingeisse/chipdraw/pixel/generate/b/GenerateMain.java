@@ -23,17 +23,17 @@ public class GenerateMain {
                 .nmos(new int[][] {{2}})
                 .post(c -> {
                     c.directConnectGatesWithPort(0, 1, 4);
-                    c.directConnectGatesWithPort(1, 2, 4);
+                    c.directConnectGatesWithPort(1, 2, 4, 1, 0);
                 })
                 .generate(file("Nand"));
         new Generator()
                 .pmos(new int[][] {{2}})
                 .nmos(new int[][] {{1, 1}})
+                .post(c -> {
+                    c.directConnectGatesWithPort(0, 1, 4);
+                    c.directConnectGatesWithPort(1, 2, 4, 1, 0);
+                })
                 .generate(file("Nor"));
-        new Generator()
-                .pmos(new int[][] {{2}, {1, 1}})
-                .nmos(new int[][] {{1, 1}})
-                .generate(file("Foo"));
     }
 
     private static File file(String name) {
