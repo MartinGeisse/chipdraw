@@ -13,30 +13,48 @@ import java.io.IOException;
 
 public class Generator {
 
-    private final File file;
-    private final ImmutableList<Integer> mintermArities;
+    private static final int INITIAL_X_MARGIN = 5;
+    private static final int FINAL_X_MARGIN = 5;
+    private static final int INTER_ROW_X_MARGIN = 3;
+
     private final StandardCellTemplateGeneratorBase templateGenerator = new StandardCellTemplateGeneratorBase();
+    private int[][] pmosTransistors = new int[0][0];
+    private int[][] nmosTransistors = new int[0][0];
+    private boolean hasPmosBackSideTrace = false;
+    private boolean hasNmosBackSideTrace = false;
+
     private int currentX = 0, currentY = 0;
     private int width = 0;
     private RectangleConsumer rectangleConsumer;
 
-    public Generator(File file, Integer... mintermArities) {
-        this(file, ImmutableList.copyOf(mintermArities));
+    public Generator pmos(int[][] pmosTransistors) {
+        this.pmosTransistors = pmosTransistors;
+        return this;
     }
 
-    public Generator(File file, ImmutableList<Integer> mintermArities) {
-        this.file = file;
-        this.mintermArities = mintermArities;
+    public Generator nmos(int[][] nmosTransistors) {
+        this.nmosTransistors = nmosTransistors;
+        return this;
     }
 
-    public void generate() throws IOException {
+    public Generator setHasPmosBackSideTrace(boolean hasPmosBackSideTrace) {
+        this.hasPmosBackSideTrace = hasPmosBackSideTrace;
+        return this;
+    }
+
+    public Generator setHasNmosBackSideTrace(boolean hasNmosBackSideTrace) {
+        this.hasNmosBackSideTrace = hasNmosBackSideTrace;
+        return this;
+    }
+
+    public void generate(File file) throws IOException {
 
         // determine width
         rectangleConsumer = (x, y, w, h, material) -> {
             width = Math.max(width, x + w);
         };
         generateRectangles();
-        width += 5;
+        width += FINAL_X_MARGIN;
 
         // generate cell
         templateGenerator.setWidth(width);
@@ -54,98 +72,49 @@ public class Generator {
     private void generateRectangles() {
 
         // PMOS
-        // TODO we only need a back-side metal trace if any minterm except the first one has an arity >1. The first one
-        // is special because it connects to the power rail which acts as an implicit back-side trace.
-        // A reduced-height cell library might make use of that by offering only complex gates for which at most one
-        // minterm has an arity >1, so a back-side trace is never needed.
-        currentY = templateGenerator.getPowerRailTopMargin() + templateGenerator.getPowerRailHeight() + 6; // s/+6/+1 without back-side trace
-        generateMintermPmosRectangles();
+        currentY = templateGenerator.getPowerRailTopMargin() + templateGenerator.getPowerRailHeight() +
+                (hasPmosBackSideTrace ? 6 : 1);
+        generateTransistorRectangles(pmosTransistors, ConceptSchemas.MATERIAL_PDIFF, 2);
 
         // NMOS
-        currentY = templateGenerator.getHeight() - templateGenerator.getPowerRailBottomMargin() - templateGenerator.getPowerRailHeight() - 7;
-        generateMintermNmosRectangles();
+        currentY = templateGenerator.getHeight() - templateGenerator.getPowerRailBottomMargin()
+                - templateGenerator.getPowerRailHeight() - (hasNmosBackSideTrace ? 6 : 1) - 6;
+        generateTransistorRectangles(nmosTransistors, ConceptSchemas.MATERIAL_NDIFF, 1);
 
     }
 
-    private void generateMintermNmosRectangles() {
-        currentX = 5;
-        drawContact(0, 2);
-        boolean isOutput = true;
-        for (int mintermArity : mintermArities) {
-            currentX--;
-            drawGates(mintermArity);
-            currentX--;
-            drawContact(isOutput ? 5 : 0, isOutput ? 0 : 2);
-            isOutput = !isOutput;
-        }
-        rectangleConsumer.consume(5, currentY, currentX - 5, 6, ConceptSchemas.MATERIAL_NDIFF);
-    }
-
-    private void generateMintermPmosRectangles() {
-        currentX = 5;
-        boolean lastContactOfPreviousMintermIsOutput = false;
-        for (int mintermIndex = 0; mintermIndex < mintermArities.size(); mintermIndex++) {
-            int mintermArity = mintermArities.get(mintermIndex);
-
-            // If the previous minterm ends with an output contact, then we share that contact.
-            // Otherwise, we start the minterm in such a way that the last contact is an output.
-            boolean currentContactIsOutput;
-            if (lastContactOfPreviousMintermIsOutput) {
-                currentContactIsOutput = false;
-            } else {
-                currentContactIsOutput = (mintermArity % 2 == 0);
-                currentX += 2;
-            }
-
-            // draw gates and subsequent contacts
-            for (int i = 0; i < mintermArity; i++) {
-
-                // draw contact
-                // TODO share contact with previous minterm if possible
-                // TODO remove the contact altogether if possible
-                // TODO for the last minterm (or other cases?) another rule makes sense: In doubt, reduce number of output contacts (= capacity!)
-//                if (i > 0 || !lastContactOfPreviousMintermIsOutput) {
-                drawPmosContact(mintermIndex, currentContactIsOutput);
-//                }
-
-                // draw gate
+    private void generateTransistorRectangles(int[][] transistorSpec, Material diffusionMaterial, int size) {
+        currentX = INITIAL_X_MARGIN - INTER_ROW_X_MARGIN;
+        for (int[] rowSpec : transistorSpec) {
+            currentX += INTER_ROW_X_MARGIN;
+            int rowStartX = currentX;
+            drawContact(size);
+            for (int gateGroup : rowSpec) {
                 currentX--;
-                drawGate();
+                drawGates(gateGroup, size);
                 currentX--;
-
-                currentContactIsOutput = !currentContactIsOutput;
+                drawContact(size);
             }
-
-            // draw last contact
-            drawPmosContact(mintermIndex, currentContactIsOutput);
-            lastContactOfPreviousMintermIsOutput = currentContactIsOutput;
-
+            rectangleConsumer.consume(rowStartX, currentY, currentX - rowStartX, 2 + size * 4, diffusionMaterial);
         }
     }
 
-    private void drawPmosContact(int mintermIndex, boolean isOutput) {
-        boolean down = ((mintermIndex % 2 == 0) == isOutput);
-        drawContact(down ? 0 : mintermIndex == 0 ? 7 : 5, down ? 5 : 0);
-    }
-
-    private void skip(int amount) {
-        currentX += amount;
-    }
-
-    private void drawContact(int extendUpwards, int extendDownwards) {
-        rectangleConsumer.consume(currentX + 1, currentY + 1 - extendUpwards, 4, 4 + extendUpwards + extendDownwards, ConceptSchemas.MATERIAL_METAL1);
-        rectangleConsumer.consume(currentX + 2, currentY + 2, 2, 2, ConceptSchemas.MATERIAL_CONTACT);
+    private void drawContact(int size) {
+        rectangleConsumer.consume(currentX + 1, currentY + 1, 4, size * 4, ConceptSchemas.MATERIAL_METAL1);
+        for (int i = 0; i < size; i++) {
+            rectangleConsumer.consume(currentX + 2, currentY + 2 + i * 4, 2, 2, ConceptSchemas.MATERIAL_CONTACT);
+        }
         currentX += 6;
     }
 
-    private void drawGates(int number) {
+    private void drawGates(int number, int size) {
         for (int i = 0; i < number; i++) {
-            drawGate();
+            drawGate(size);
         }
     }
 
-    private void drawGate() {
-        rectangleConsumer.consume(currentX + 1, currentY - 2, 2, 10, ConceptSchemas.MATERIAL_POLY);
+    private void drawGate(int size) {
+        rectangleConsumer.consume(currentX + 1, currentY - 2, 2, 6 + size * 4, ConceptSchemas.MATERIAL_POLY);
         currentX += 4;
     }
 

@@ -219,4 +219,66 @@ library(osu05_stdcells) {
 			function: "(!((a b c)+d))";
 		}
 	}
+	cell(seg0) {
+		area: 490;
+		pin(a) {
+			direction: input;
+		}
+		pin(b) {
+			direction: input;
+		}
+		pin(c) {
+			direction: input;
+		}
+		pin(d) {
+			direction: input;
+		}
+		pin(na) {
+			direction: input;
+		}
+		pin(nb) {
+			direction: input;
+		}
+		pin(nc) {
+			direction: input;
+		}
+		pin(nd) {
+			direction: input;
+		}
+		pin(out) {
+			direction: output;
+			function: "(!((na nb nc d)+(na b nc nd)+(a b nc d)+(a nb c d)))";
+		}
+	}
+	cell(seg1) {
+		area: 490;
+		pin(a) {
+			direction: input;
+		}
+		pin(b) {
+			direction: input;
+		}
+		pin(c) {
+			direction: input;
+		}
+		pin(d) {
+			direction: input;
+		}
+		pin(na) {
+			direction: input;
+		}
+		pin(nb) {
+			direction: input;
+		}
+		pin(nc) {
+			direction: input;
+		}
+		pin(nd) {
+			direction: input;
+		}
+		pin(out) {
+			direction: output;
+			function: "(!((na nb d)+(na nb c)+(na c d)+(a b nc d)))";
+		}
+	}
 }

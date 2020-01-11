@@ -111,6 +111,20 @@ public class LibertyGeneratorMain {
                     // ?
                     // printFunctionCell("AndAndOr3Invert", 63 * 70, "(!((a b)+(c d)+e))", "a", "b", "c", "d", "e");
 
+                    // printFunctionCell("AndAndAndAndOr4Invert", 70 * 70, "(!((a b)+(c d)+(e f)+(g h)))", "a", "b", "c", "d", "e", "f", "g", "h");
+//                    printFunctionCell("seg0", 70 * 70, "(!(" +
+//                            "((!a) (!b) (!c) d)+((!a) b (!c) (!d))+(a b (!c) d)+(a (!b) c d)" +
+//                            "))", "a", "b", "c", "d");
+                    printFunctionCell("seg0", 1, "(!(" +
+                            "(na nb nc d)+(na b nc nd)+(a b nc d)+(a nb c d)" +
+                            "))", "a", "b", "c", "d", "na", "nb", "nc", "nd");
+                    printFunctionCell("seg1", 1, "(!(" +
+                            "(na nb d)+(na nb c)+(na c d)+(a b nc d)" +
+                            "))", "a", "b", "c", "d", "na", "nb", "nc", "nd");
+//                    printFunctionCell("seg2", 70 * 70, "(!(" +
+//                            "" +
+//                            "))", "a", "b", "c", "d", "na", "nb", "nc", "nd");
+
                     out.println("}");
                 }
             }

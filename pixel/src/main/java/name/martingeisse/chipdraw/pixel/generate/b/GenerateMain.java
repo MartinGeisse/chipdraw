@@ -1,8 +1,5 @@
 package name.martingeisse.chipdraw.pixel.generate.b;
 
-import name.martingeisse.chipdraw.pixel.design.Design;
-import name.martingeisse.chipdraw.pixel.global_tools.magic.MagicFileIo;
-
 import java.io.File;
 
 public class GenerateMain {
@@ -15,17 +12,27 @@ public class GenerateMain {
             folder.delete();
         }
         folder.mkdir();
-        generate("Inverter", 1);
-        generate("Nand", 2);
-        generate("Nor", 1, 1);
+
+        new Generator()
+                .pmos(new int[][] {{1}})
+                .nmos(new int[][] {{1}})
+                .generate(file("Inverter"));
+        new Generator()
+                .pmos(new int[][] {{1, 1}})
+                .nmos(new int[][] {{2}})
+                .generate(file("Nand"));
+        new Generator()
+                .pmos(new int[][] {{2}})
+                .nmos(new int[][] {{1, 1}})
+                .generate(file("Nor"));
+        new Generator()
+                .pmos(new int[][] {{2}, {1, 1}})
+                .nmos(new int[][] {{1, 1}})
+                .generate(file("Foo"));
     }
 
-    private static void generate(String name, int... mintermArities) throws Exception {
-        Integer[] convertedMintermArities = new Integer[mintermArities.length];
-        for (int i = 0; i < mintermArities.length; i++) {
-            convertedMintermArities[i] = mintermArities[i];
-        }
-        new Generator(new File(folder, name + ".mag"), convertedMintermArities).generate();
+    private static File file(String name) {
+        return new File(folder, name + ".mag");
     }
 
 }
