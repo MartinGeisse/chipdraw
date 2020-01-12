@@ -7,10 +7,6 @@ read_verilog SevenSegmentDecoder.v
 #
 # synthesis
 #
-# I expanded the 'synth' command and changed some of the opt passes to -full since this achieves better results, and without
-# that, I managed to get *worse* results just by offering more standard cells in the cell library, which is clearly absurd.
-# TODO: I still get this effect with other cells added later.
-#
 synth -top SevenSegmentDecoder -run begin:fine
 opt -fast -full
 memory_map
