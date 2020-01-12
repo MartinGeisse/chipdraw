@@ -13,6 +13,10 @@ public class GenerateMain {
         }
         folder.mkdir();
 
+        //
+        // inverters and buffers
+        //
+
         new Generator()
                 .pmos(new int[][] {{1}})
                 .nmos(new int[][] {{1}})
@@ -22,6 +26,11 @@ public class GenerateMain {
                     c.connectNmosContactToPower(0);
                 })
                 .generate(file("Inverter"));
+
+        //
+        // NANDs
+        //
+
         new Generator()
                 .pmos(new int[][] {{1, 1}})
                 .nmos(new int[][] {{2}})
@@ -32,6 +41,11 @@ public class GenerateMain {
                     c.connectNmosContactToPower(0);
                 })
                 .generate(file("Nand"));
+
+        //
+        // NORs
+        //
+
         new Generator()
                 .pmos(new int[][] {{2}})
                 .nmos(new int[][] {{1, 1}})
@@ -42,6 +56,9 @@ public class GenerateMain {
                     c.connectNmosContactToPower(0, 2);
                 })
                 .generate(file("Nor"));
+
+
+
     }
 
     private static File file(String name) {
