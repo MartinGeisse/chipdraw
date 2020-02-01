@@ -8,7 +8,7 @@
 */
 library(osu05_stdcells) {
 	cell(Inverter) {
-		area: 1;
+		area: 1960;
 		pin(a) {
 			direction: input;
 		}
@@ -248,6 +248,37 @@ library(osu05_stdcells) {
 		pin(out) {
 			direction: output;
 			function: "(!((na nb nc d)+(na b nc nd)+(a b nc d)+(a nb c d)))";
+		}
+	}
+	cell(seg1) {
+		area: 1;
+		pin(a) {
+			direction: input;
+		}
+		pin(b) {
+			direction: input;
+		}
+		pin(c) {
+			direction: input;
+		}
+		pin(d) {
+			direction: input;
+		}
+		pin(na) {
+			direction: input;
+		}
+		pin(nb) {
+			direction: input;
+		}
+		pin(nc) {
+			direction: input;
+		}
+		pin(nd) {
+			direction: input;
+		}
+		pin(out) {
+			direction: output;
+			function: "(!((na nb d)+(na nb c)+(na c d)+(a b nc d)))";
 		}
 	}
 }
