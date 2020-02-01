@@ -6,7 +6,7 @@
  capacitance model : typ
  other model :       typ
 */
-library(osu05_stdcells) {
+library(my_cells) {
 	cell(Inverter) {
 		area: 1960;
 		pin(a) {

@@ -22,7 +22,7 @@ public class LibertyGeneratorMain {
                     out.println(" capacitance model : typ");
                     out.println(" other model :       typ");
                     out.println("*/");
-                    out.println("library(osu05_stdcells) {");
+                    out.println("library(my_cells) {");
 
                     printFunctionCell("Inverter", 28 * 70, "(!a)", "a");
                     printFunctionCell("Nand", 35 * 70, "(!(a b))", "a", "b");
