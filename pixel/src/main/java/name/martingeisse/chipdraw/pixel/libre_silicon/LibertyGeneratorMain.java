@@ -24,7 +24,7 @@ public class LibertyGeneratorMain {
                     out.println("*/");
                     out.println("library(my_cells) {");
 
-                    printFunctionCell("Inverter", 1, "(!a)", "a");
+                    printFunctionCell("Inverter", 28 * 70, "(!a)", "a");
                     printFunctionCell("Nand", 35 * 70, "(!(a b))", "a", "b");
                     printFunctionCell("Nand3", 42 * 70, "(!(a b c))", "a", "b", "c");
                     printFunctionCell("Nand4", 49 * 70, "(!(a b c d))", "a", "b", "c", "d");
@@ -41,12 +41,89 @@ public class LibertyGeneratorMain {
                     printFunctionCell("AndAndOrInvert", 49 * 70, "(!((a b)+(c d)))", "a", "b", "c", "d");
                     printFunctionCell("And3OrInvert", 49 * 70, "(!((a b c)+d))", "a", "b", "c", "d");
 
-//                    printFunctionCell("seg0", 70 * 70_000_000, "(!(" +
+                    //
+                    // "what-if" area: These cells do not yet exist, but we want to see what happens if they do.
+                    //
+
+                    // currently not useful
+                    // printFunctionCell("And3And2OrInvert", 56 * 70, "(!((a b c)+(d e)))", "a", "b", "c", "d", "e");
+
+                    // currently not useful
+                    // printFunctionCell("Nand5", 56 * 70, "(!(a b c d e))", "a", "b", "c", "d", "e");
+
+                    // currently not useful
+                    // printFunctionCell("Nor5", 56 * 70, "(!(a+b+c+d+e))", "a", "b", "c", "d", "e");
+
+                    // TODO useful
+                    // printFunctionCell("SingleInverterNand", 42 * 70, "(!((!a) b))", "a", "b");
+
+                    // currently not useful
+                    // printFunctionCell("SingleInverterNand3", 49 * 70, "(!((!a) b c))", "a", "b", "c");
+
+                    // TODO useful
+                    // printFunctionCell("DoubleInverterNand3", 49 * 70, "(!((!a) (!b) c))", "a", "b", "c");
+
+                    // currently not useful
+                    // printFunctionCell("SingleInverterNor", 42 * 70, "(!((!a)+b))", "a", "b");
+
+                    // currently not useful
+                    // printFunctionCell("SingleInverterNor3", 42 * 70, "(!((!a)+b+c))", "a", "b", "c");
+
+                    // currently not useful
+                    // printFunctionCell("DoubleInverterNor3", 42 * 70, "(!((!a)+(!b)+c))", "a", "b", "c");
+
+                    // TODO useful
+                    // printFunctionCell("Xor", 56 * 70, "((a (!b))+((!a) b))", "a", "b");
+
+                    // TODO useful
+                    // printFunctionCell("Xnor", 56 * 70, "((a b)+((!a) (!b)))", "a", "b");
+
+                    // TODO useful
+                    // printFunctionCell("Mux", 56 * 70, "((s a)+((!s) b))", "s", "a", "b");
+
+                    // ?
+                    // printFunctionCell("And4OrInvert", 63 * 70, "(!((a b c d)+e))", "a", "b", "c", "d", "e");
+
+                    // crashes abc and in turn yosys
+                    // printFunctionCell("And3And2OrInvert", 63 * 70, "((a b c)+(d e))", "a", "b", "c", "d", "e");
+
+                    // ?
+                    // printFunctionCell("Or4AndInvert", 63 * 70, "(!((a+b+c+d) e))", "a", "b", "c", "d", "e");
+
+                    // ?
+                    // printFunctionCell("AndAndAndOr3Invert", 63 * 70, "(!((a b)+(c d)+(e f)))", "a", "b", "c", "d", "e", "f");
+
+                    // ?
+                    // printFunctionCell("OrAnd3Invert", 56 * 70, "(!((a+b) c d))", "a", "b", "c", "d");
+
+                    // ?
+                    // printFunctionCell("AndMux", 56 * 70, "((sx sy a)+(((!sx)+(!sy)) b))", "sx", "sy", "a", "b");
+
+                    // ?
+                    // printFunctionCell("OrMux", 56 * 70, "(((sx+sy) a)+((!sx) (!sy) b))", "sx", "sy", "a", "b");
+
+                    // probably useful
+                    // printFunctionCell("OrOrAnd3Invert", 56 * 70, "(!((a+b) (c+d) e))", "a", "b", "c", "d", "e");
+
+                    // ?
+                    // printFunctionCell("AndOr3Invert", 56 * 70, "(!((a b)+c+d))", "a", "b", "c", "d");
+
+                    // ?
+                    // printFunctionCell("AndAndOr3Invert", 63 * 70, "(!((a b)+(c d)+e))", "a", "b", "c", "d", "e");
+
+                    // printFunctionCell("AndAndAndAndOr4Invert", 70 * 70, "(!((a b)+(c d)+(e f)+(g h)))", "a", "b", "c", "d", "e", "f", "g", "h");
+//                    printFunctionCell("seg0", 70 * 70, "(!(" +
 //                            "((!a) (!b) (!c) d)+((!a) b (!c) (!d))+(a b (!c) d)+(a (!b) c d)" +
 //                            "))", "a", "b", "c", "d");
                     printFunctionCell("seg0", 1, "(!(" +
                             "(na nb nc d)+(na b nc nd)+(a b nc d)+(a nb c d)" +
                             "))", "a", "b", "c", "d", "na", "nb", "nc", "nd");
+                    printFunctionCell("seg1", 1, "(!(" +
+                            "(na nb d)+(na nb c)+(na c d)+(a b nc d)" +
+                            "))", "a", "b", "c", "d", "na", "nb", "nc", "nd");
+//                    printFunctionCell("seg2", 70 * 70, "(!(" +
+//                            "" +
+//                            "))", "a", "b", "c", "d", "na", "nb", "nc", "nd");
 
                     out.println("}");
                 }
