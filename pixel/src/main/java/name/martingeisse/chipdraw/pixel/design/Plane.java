@@ -140,6 +140,7 @@ public final class Plane implements Serializable, RectangularSize {
 
 	public boolean isRectangleUniform(int x, int y, int width, int height, Material material) {
 		validateRectangleSize(width, height);
+        validateMaterial(material);
 		if (width == 0 || height == 0) {
 			return true;
 		}
@@ -191,6 +192,7 @@ public final class Plane implements Serializable, RectangularSize {
 
 	public boolean isRectangleContainsMaterial(int x, int y, int width, int height, Material material) {
 		validateRectangleSize(width, height);
+        validateMaterial(material);
 		if (width == 0 || height == 0) {
 			return false;
 		}
@@ -250,6 +252,7 @@ public final class Plane implements Serializable, RectangularSize {
 	}
 
 	public boolean hasMaterial(Material material) {
+        validateMaterial(material);
 		for (byte pixelValue : pixels) {
 			if (pixelValue == material.code) {
 				return true;
