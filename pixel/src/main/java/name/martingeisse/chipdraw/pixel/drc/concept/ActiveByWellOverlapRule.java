@@ -32,7 +32,7 @@ public class ActiveByWellOverlapRule extends AbstractPerPixelRule {
     protected boolean checkPixel() {
         int x = getPivotX();
         int y = getPivotY();
-        Material wellPixel = wellPlane.getPixelAutoclip(x, y);
+        Material wellPixel = wellPlane.getPixel(x, y);
         if (wellPixel == Material.NONE) {
             return false;
         }

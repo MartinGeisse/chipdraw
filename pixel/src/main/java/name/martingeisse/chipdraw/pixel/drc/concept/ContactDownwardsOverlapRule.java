@@ -40,11 +40,11 @@ public class ContactDownwardsOverlapRule extends AbstractPerPixelRule {
             return true;
         }
         Plane overlappingPlane;
-        Material overlappingMaterial = polyPlane.getPixelAutoclip(getPivotX(), getPivotY());
+        Material overlappingMaterial = polyPlane.getPixel(getPivotX(), getPivotY());
         if (overlappingMaterial != Material.NONE) {
             overlappingPlane = polyPlane;
         } else {
-            overlappingMaterial = diffPlane.getPixelAutoclip(getPivotX(), getPivotY());
+            overlappingMaterial = diffPlane.getPixel(getPivotX(), getPivotY());
             if (overlappingMaterial != Material.NONE) {
                 overlappingPlane = diffPlane;
             } else {

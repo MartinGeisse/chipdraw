@@ -52,7 +52,7 @@ public abstract class ConnectivityExtractor extends AbstractPerPlaneExtractor {
     }
 
     private void checkPixel(int x, int y) {
-        Material pixelMaterial = planeCopy.getPixelAutoclip(x, y);
+        Material pixelMaterial = planeCopy.getPixel(x, y);
         if (mergeMaterials ? (pixelMaterial != Material.NONE) : (pixelMaterial == patchMaterial)) {
             if (todoCount == todoX.length) {
                 todoX = grow(todoX);

@@ -23,11 +23,11 @@ public final class ScmosTransistorOperation extends SnapshottingDesignOperation 
     protected void doPerform(Design design) throws UserVisibleMessageException {
         ConceptSchemas.validateConformsUserVisible(design.getTechnology());
         if (horizontal) {
-            design.getPlane(ConceptSchemas.PLANE_DIFF).drawRectangleAutoclip(x, y, 6, 6, sourceDrainMaterial);
-            design.getPlane(ConceptSchemas.PLANE_POLY).drawRectangleAutoclip(x - 2, y + 2, 10, 2, ConceptSchemas.MATERIAL_POLY);
+            design.getPlane(ConceptSchemas.PLANE_DIFF).drawRectangle(x, y, 6, 6, sourceDrainMaterial);
+            design.getPlane(ConceptSchemas.PLANE_POLY).drawRectangle(x - 2, y + 2, 10, 2, ConceptSchemas.MATERIAL_POLY);
         } else {
-            design.getPlane(ConceptSchemas.PLANE_DIFF).drawRectangleAutoclip(x, y, 6, 6, sourceDrainMaterial);
-            design.getPlane(ConceptSchemas.PLANE_POLY).drawRectangleAutoclip(x + 2, y - 2, 2, 10, ConceptSchemas.MATERIAL_POLY);
+            design.getPlane(ConceptSchemas.PLANE_DIFF).drawRectangle(x, y, 6, 6, sourceDrainMaterial);
+            design.getPlane(ConceptSchemas.PLANE_POLY).drawRectangle(x + 2, y - 2, 2, 10, ConceptSchemas.MATERIAL_POLY);
         }
     }
 

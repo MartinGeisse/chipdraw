@@ -21,11 +21,11 @@ import name.martingeisse.chipdraw.pixel.drc.rule.*;
 public class ConceptDrc implements Drc {
 
     private static boolean isTransistorPixel(Design design, int x, int y) {
-        if (design.getPlane(ConceptSchemas.PLANE_POLY).getPixelAutoclip(x, y) == Material.NONE) {
+        if (design.getPlane(ConceptSchemas.PLANE_POLY).getPixel(x, y) == Material.NONE) {
             return false;
         }
-        Material well = design.getPlane(ConceptSchemas.PLANE_WELL).getPixelAutoclip(x, y);
-        Material diff = design.getPlane(ConceptSchemas.PLANE_DIFF).getPixelAutoclip(x, y);
+        Material well = design.getPlane(ConceptSchemas.PLANE_WELL).getPixel(x, y);
+        Material diff = design.getPlane(ConceptSchemas.PLANE_DIFF).getPixel(x, y);
         if (well == ConceptSchemas.MATERIAL_NWELL && diff == ConceptSchemas.MATERIAL_PDIFF) {
             return true;
         }

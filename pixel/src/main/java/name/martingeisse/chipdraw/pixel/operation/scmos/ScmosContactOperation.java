@@ -19,9 +19,9 @@ public final class ScmosContactOperation extends SnapshottingDesignOperation {
     @Override
     protected void doPerform(Design design) throws UserVisibleMessageException {
         ConceptSchemas.validateConformsUserVisible(design.getTechnology());
-        design.getPlane(ConceptSchemas.PLANE_METAL1).drawRectangleAutoclip(x + 1, y + 1, 4, 4, ConceptSchemas.MATERIAL_METAL1);
-        design.getPlane(ConceptSchemas.PLANE_METAL1).drawRectangleAutoclip(x + 2, y + 2, 2, 2, ConceptSchemas.MATERIAL_CONTACT);
-        design.getPlane(contactType.getLowerMaterial().getPlaneSchema()).drawRectangleAutoclip(x, y, 6, 6, contactType.getLowerMaterial());
+        design.getPlane(ConceptSchemas.PLANE_METAL1).drawRectangle(x + 1, y + 1, 4, 4, ConceptSchemas.MATERIAL_METAL1);
+        design.getPlane(ConceptSchemas.PLANE_METAL1).drawRectangle(x + 2, y + 2, 2, 2, ConceptSchemas.MATERIAL_CONTACT);
+        design.getPlane(contactType.getLowerMaterial().getPlaneSchema()).drawRectangle(x, y, 6, 6, contactType.getLowerMaterial());
     }
 
 }

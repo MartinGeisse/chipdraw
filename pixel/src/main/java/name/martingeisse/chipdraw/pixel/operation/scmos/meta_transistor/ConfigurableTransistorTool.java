@@ -38,7 +38,7 @@ public final class ConfigurableTransistorTool extends AbstractClickTool {
             @Override
             protected void doPerform(Design newDesign) {
                 produceRectangles((dx, dy, w, h, material) -> {
-                    newDesign.getPlane(material.getPlaneSchema()).drawRectangleAutoclip(x + dx, y + dy, w, h, material);
+                    newDesign.getPlane(material.getPlaneSchema()).drawRectangle(x + dx, y + dy, w, h, material);
                 });
             }
         };

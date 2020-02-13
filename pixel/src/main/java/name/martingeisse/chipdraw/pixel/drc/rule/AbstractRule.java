@@ -47,7 +47,7 @@ public abstract class AbstractRule implements Rule {
     protected final boolean hasMinimumWidthWithAnyMaterial(Plane plane, int x, int y, int expectedWidth) {
         for (int dx = -expectedWidth + 1; dx <= 0; dx++) {
             for (int dy = -expectedWidth + 1; dy <= 0; dy++) {
-                if (!plane.isRectangleContainsMaterialAutoclip(x + dx, y + dy, expectedWidth, expectedWidth, Material.NONE)) {
+                if (!plane.isRectangleContainsMaterial(x + dx, y + dy, expectedWidth, expectedWidth, Material.NONE)) {
                     return true;
                 }
             }
@@ -58,7 +58,7 @@ public abstract class AbstractRule implements Rule {
     protected final boolean hasMinimumWidthWithMaterial(Plane plane, int x, int y, int expectedWidth, Material material) {
         for (int dx = -expectedWidth + 1; dx <= 0; dx++) {
             for (int dy = -expectedWidth + 1; dy <= 0; dy++) {
-                if (plane.isRectangleUniformAutoclip(x + dx, y + dy, expectedWidth, expectedWidth, material)) {
+                if (plane.isRectangleUniform(x + dx, y + dy, expectedWidth, expectedWidth, material)) {
                     return true;
                 }
             }
@@ -68,12 +68,12 @@ public abstract class AbstractRule implements Rule {
 
     protected final boolean isSurroundedByMaterial(Plane plane, int x, int y, int distance, Material material) {
         int size = 2 * distance + 1;
-        return plane.isRectangleUniformAutoclip(x - distance, y - distance, size, size, material);
+        return plane.isRectangleUniform(x - distance, y - distance, size, size, material);
     }
 
     protected final boolean isMaterialNearby(Plane plane, int x, int y, int distance, Material material) {
         int size = 2 * distance + 1;
-        return plane.isRectangleContainsMaterialAutoclip(x - distance, y - distance, size, size, material);
+        return plane.isRectangleContainsMaterial(x - distance, y - distance, size, size, material);
     }
 
     protected final boolean isSurroundedByAnyMaterial(Plane plane, int x, int y, int distance) {
@@ -99,10 +99,10 @@ public abstract class AbstractRule implements Rule {
     private boolean hasMinimumExtensionInternal(Plane plane, int x, int y, int distance, Material material) {
         boolean xOkay = true, yOkay = true;
         for (int delta = -distance; delta <= distance; delta++) {
-            if (material == null ? (plane.getPixelAutoclip(x + delta, y) == Material.NONE) : (plane.getPixelAutoclip(x + delta, y) != material)) {
+            if (material == null ? (plane.getPixel(x + delta, y) == Material.NONE) : (plane.getPixel(x + delta, y) != material)) {
                 xOkay = false;
             }
-            if (material == null ? (plane.getPixelAutoclip(x, y + delta) == Material.NONE) : (plane.getPixelAutoclip(x, y + delta) != material)) {
+            if (material == null ? (plane.getPixel(x, y + delta) == Material.NONE) : (plane.getPixel(x, y + delta) != material)) {
                 yOkay = false;
             }
         }

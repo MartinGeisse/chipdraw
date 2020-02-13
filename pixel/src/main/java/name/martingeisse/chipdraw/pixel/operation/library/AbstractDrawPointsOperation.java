@@ -46,7 +46,7 @@ public abstract class AbstractDrawPointsOperation extends InPlaceDesignOperation
     protected void doPerform(Design design) throws UserVisibleMessageException {
         Plane plane = design.getPlane(getPlaneSchema());
         backup = plane.copyToArray(x, y, width, height);
-        plane.drawRectangleAutoclip(x, y, width, height, getMaterial());
+        plane.drawRectangle(x, y, width, height, getMaterial());
     }
 
     @Override

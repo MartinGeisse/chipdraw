@@ -80,7 +80,7 @@ public abstract class AbstractMinimumSelfSpacingRule extends AbstractRule {
                         int xdx = x + dx;
                         int ydy = y + dy;
                         Point otherPoint = new Point(xdx, ydy);
-                        Material otherMaterial = plane.getPixelAutoclip(xdx, ydy);
+                        Material otherMaterial = plane.getPixel(xdx, ydy);
                         if (otherMaterial != Material.NONE && !points.contains(otherPoint)) {
                             if (otherMaterial == material || materialMode != MaterialMode.IGNORE_OTHER_MATERIALS) {
                                 context.report(x, y, getErrorMessage());

@@ -28,7 +28,7 @@ public abstract class AbstractPerPixelRule extends AbstractRule {
         pivotPlane = context.getDesign().getPlane(pivotPlaneSchema);
         for (pivotX = 0; pivotX < pivotPlane.getWidth(); pivotX++) {
             for (pivotY = 0; pivotY < pivotPlane.getHeight(); pivotY++) {
-                pivotMaterial = pivotPlane.getPixelAutoclip(pivotX, pivotY);
+                pivotMaterial = pivotPlane.getPixel(pivotX, pivotY);
                 if (pivotMaterial != Material.NONE && !checkPixel()) {
                     context.report(pivotX, pivotY, getErrorMessage());
                 }
