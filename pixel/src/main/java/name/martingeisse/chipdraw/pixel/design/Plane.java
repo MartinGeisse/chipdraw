@@ -108,19 +108,9 @@ public final class Plane implements Serializable, RectangularSize {
 		}
 	}
 
-	private void validateRectangle(int x, int y, int width, int height) {
-		validateRectangleSize(width, height);
-		validatePosition(x, y);
-		validatePosition(x + width - 1, y + height - 1);
-	}
-
 	public void drawRectangle(int x, int y, int width, int height, Material material) {
-		validateRectangle(x, y, width, height);
-		drawRectangleInternal(x, y, width, height, material);
-	}
-
-	public void drawRectangleAutoclip(int x, int y, int width, int height, Material material) {
 		validateRectangleSize(width, height);
+        validateMaterial(material);
 		if (x < 0) {
 			width += x;
 			x = 0;
@@ -141,27 +131,14 @@ public final class Plane implements Serializable, RectangularSize {
 				height = 0;
 			}
 		}
-		drawRectangleInternal(x, y, width, height, material);
+        for (int i = 0; i < width; i++) {
+            for (int j = 0; j < height; j++) {
+                setPixel(x + i, y + j, material);
+            }
+        }
 	}
 
-	private void drawRectangleInternal(int x, int y, int width, int height, Material material) {
-		validateMaterial(material);
-		for (int i = 0; i < width; i++) {
-			for (int j = 0; j < height; j++) {
-				setPixel(x + i, y + j, material);
-			}
-		}
-	}
-
-	/**
-	 * Note: to check uniformity without an expected value, get the value from (x, y) and pass that as expected value.
-	 */
 	public boolean isRectangleUniform(int x, int y, int width, int height, Material material) {
-		validateRectangle(x, y, width, height);
-		return isRectangleUniformInternal(x, y, width, height, material);
-	}
-
-	public boolean isRectangleUniformAutoclip(int x, int y, int width, int height, Material material) {
 		validateRectangleSize(width, height);
 		if (width == 0 || height == 0) {
 			return true;
@@ -213,11 +190,6 @@ public final class Plane implements Serializable, RectangularSize {
 	}
 
 	public boolean isRectangleContainsMaterial(int x, int y, int width, int height, Material material) {
-		validateRectangle(x, y, width, height);
-		return isRectangleContainsMaterialInternal(x, y, width, height, material);
-	}
-
-	public boolean isRectangleContainsMaterialAutoclip(int x, int y, int width, int height, Material material) {
 		validateRectangleSize(width, height);
 		if (width == 0 || height == 0) {
 			return false;
