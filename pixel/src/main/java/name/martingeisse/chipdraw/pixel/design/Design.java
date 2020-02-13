@@ -93,7 +93,7 @@ public final class Design implements Serializable, RectangularSize {
             throw new IllegalArgumentException("designs use different technologies");
         }
         for (int i = 0; i < design1.getPlanes().size(); i++) {
-            if (design1.getPlanes().get(i).getPixelAutoclip(x, y) != design2.getPlanes().get(i).getPixelAutoclip(x, y)) {
+            if (design1.getPlanes().get(i).getPixel(x, y) != design2.getPlanes().get(i).getPixel(x, y)) {
                 return false;
             }
         }
