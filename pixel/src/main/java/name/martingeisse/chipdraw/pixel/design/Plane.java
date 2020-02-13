@@ -84,6 +84,9 @@ public final class Plane implements Serializable, RectangularSize {
 	}
 
 	public Material getPixel(int x, int y) {
+	    if (!isValidPosition(x, y)) {
+	        return Material.NONE;
+        }
 		byte code = pixels[getIndex(x, y)];
 		if (code == Material.EMPTY_PIXEL_CODE) {
 			return Material.NONE;
@@ -92,19 +95,11 @@ public final class Plane implements Serializable, RectangularSize {
 		}
 	}
 
-	public Material getPixelAutoclip(int x, int y) {
-		return isValidPosition(x, y) ? getPixel(x, y) : Material.NONE;
-	}
-
 	public void setPixel(int x, int y, Material material) {
 		validateMaterial(material);
-		pixels[getIndex(x, y)] = material.code;
-	}
-
-	public void setPixelAutoclip(int x, int y, Material material) {
-		if (isValidPosition(x, y)) {
-			setPixel(x, y, material);
-		}
+        if (isValidPosition(x, y)) {
+            pixels[getIndex(x, y)] = material.code;
+        }
 	}
 
 	private void validateRectangleSize(int width, int height) {
@@ -377,7 +372,7 @@ public final class Plane implements Serializable, RectangularSize {
 		for (int dx = 0; dx < width; dx++) {
 			for (int dy = 0; dy < height; dy++) {
 				int x2 = x + dx, y2 = y + dy;
-				if (plane1.getPixelAutoclip(x2, y2) != plane2.getPixelAutoclip(x2, y2)) {
+				if (plane1.getPixel(x2, y2) != plane2.getPixel(x2, y2)) {
 					return false;
 				}
 			}
