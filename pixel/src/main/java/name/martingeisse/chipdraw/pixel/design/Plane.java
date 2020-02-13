@@ -84,6 +84,9 @@ public final class Plane implements Serializable, RectangularSize {
 	}
 
 	public Material getPixel(int x, int y) {
+	    if (!isValidPosition(x, y)) {
+	        return Material.NONE;
+        }
 		byte code = pixels[getIndex(x, y)];
 		if (code == Material.EMPTY_PIXEL_CODE) {
 			return Material.NONE;
@@ -92,19 +95,11 @@ public final class Plane implements Serializable, RectangularSize {
 		}
 	}
 
-	public Material getPixelAutoclip(int x, int y) {
-		return isValidPosition(x, y) ? getPixel(x, y) : Material.NONE;
-	}
-
 	public void setPixel(int x, int y, Material material) {
 		validateMaterial(material);
-		pixels[getIndex(x, y)] = material.code;
-	}
-
-	public void setPixelAutoclip(int x, int y, Material material) {
-		if (isValidPosition(x, y)) {
-			setPixel(x, y, material);
-		}
+        if (isValidPosition(x, y)) {
+            pixels[getIndex(x, y)] = material.code;
+        }
 	}
 
 	private void validateRectangleSize(int width, int height) {
@@ -113,19 +108,9 @@ public final class Plane implements Serializable, RectangularSize {
 		}
 	}
 
-	private void validateRectangle(int x, int y, int width, int height) {
-		validateRectangleSize(width, height);
-		validatePosition(x, y);
-		validatePosition(x + width - 1, y + height - 1);
-	}
-
 	public void drawRectangle(int x, int y, int width, int height, Material material) {
-		validateRectangle(x, y, width, height);
-		drawRectangleInternal(x, y, width, height, material);
-	}
-
-	public void drawRectangleAutoclip(int x, int y, int width, int height, Material material) {
 		validateRectangleSize(width, height);
+        validateMaterial(material);
 		if (x < 0) {
 			width += x;
 			x = 0;
@@ -146,28 +131,16 @@ public final class Plane implements Serializable, RectangularSize {
 				height = 0;
 			}
 		}
-		drawRectangleInternal(x, y, width, height, material);
+        for (int i = 0; i < width; i++) {
+            for (int j = 0; j < height; j++) {
+                setPixel(x + i, y + j, material);
+            }
+        }
 	}
 
-	private void drawRectangleInternal(int x, int y, int width, int height, Material material) {
-		validateMaterial(material);
-		for (int i = 0; i < width; i++) {
-			for (int j = 0; j < height; j++) {
-				setPixel(x + i, y + j, material);
-			}
-		}
-	}
-
-	/**
-	 * Note: to check uniformity without an expected value, get the value from (x, y) and pass that as expected value.
-	 */
 	public boolean isRectangleUniform(int x, int y, int width, int height, Material material) {
-		validateRectangle(x, y, width, height);
-		return isRectangleUniformInternal(x, y, width, height, material);
-	}
-
-	public boolean isRectangleUniformAutoclip(int x, int y, int width, int height, Material material) {
 		validateRectangleSize(width, height);
+        validateMaterial(material);
 		if (width == 0 || height == 0) {
 			return true;
 		}
@@ -218,12 +191,8 @@ public final class Plane implements Serializable, RectangularSize {
 	}
 
 	public boolean isRectangleContainsMaterial(int x, int y, int width, int height, Material material) {
-		validateRectangle(x, y, width, height);
-		return isRectangleContainsMaterialInternal(x, y, width, height, material);
-	}
-
-	public boolean isRectangleContainsMaterialAutoclip(int x, int y, int width, int height, Material material) {
 		validateRectangleSize(width, height);
+        validateMaterial(material);
 		if (width == 0 || height == 0) {
 			return false;
 		}
@@ -283,6 +252,7 @@ public final class Plane implements Serializable, RectangularSize {
 	}
 
 	public boolean hasMaterial(Material material) {
+        validateMaterial(material);
 		for (byte pixelValue : pixels) {
 			if (pixelValue == material.code) {
 				return true;
@@ -377,7 +347,7 @@ public final class Plane implements Serializable, RectangularSize {
 		for (int dx = 0; dx < width; dx++) {
 			for (int dy = 0; dy < height; dy++) {
 				int x2 = x + dx, y2 = y + dy;
-				if (plane1.getPixelAutoclip(x2, y2) != plane2.getPixelAutoclip(x2, y2)) {
+				if (plane1.getPixel(x2, y2) != plane2.getPixel(x2, y2)) {
 					return false;
 				}
 			}

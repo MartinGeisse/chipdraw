@@ -82,7 +82,7 @@ public class Generator {
         templateGenerator.setWidth(width);
         Design design = templateGenerator.generate(LibreSiliconTechnologies.TEST000_CONCEPT_MG_70_7_TECHNOLOGY);
         rectangleConsumer = (x, y, w, h, material) -> {
-            design.getPlane(material.getPlaneSchema()).drawRectangleAutoclip(x, y, w, h, material);
+            design.getPlane(material.getPlaneSchema()).drawRectangle(x, y, w, h, material);
         };
         generateRectangles();
 

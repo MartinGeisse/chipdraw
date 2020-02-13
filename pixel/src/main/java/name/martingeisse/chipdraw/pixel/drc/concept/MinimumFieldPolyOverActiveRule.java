@@ -31,7 +31,7 @@ public class MinimumFieldPolyOverActiveRule extends AbstractPerPixelRule {
         int x = getPivotX(), y = getPivotY();
 
         // check field poly only
-        if (diffPlane.getPixelAutoclip(x, y) != Material.NONE) {
+        if (diffPlane.getPixel(x, y) != Material.NONE) {
             return true;
         }
 
@@ -48,7 +48,7 @@ public class MinimumFieldPolyOverActiveRule extends AbstractPerPixelRule {
     }
 
     private boolean hasDiffWithoutPoly(int x, int y) {
-        return (diffPlane.getPixelAutoclip(x, y) != Material.NONE) && (polyPlane.getPixelAutoclip(x, y) == Material.NONE);
+        return (diffPlane.getPixel(x, y) != Material.NONE) && (polyPlane.getPixel(x, y) == Material.NONE);
     }
 
     private boolean checkDiagonal(int dx, int dy) {
@@ -57,8 +57,8 @@ public class MinimumFieldPolyOverActiveRule extends AbstractPerPixelRule {
         if (!hasDiffWithoutPoly(x, y)) {
             return true;
         }
-        Material diff = diffPlane.getPixelAutoclip(x, y);
-        return (diffPlane.getPixelAutoclip(getPivotX(), y) == diff || diffPlane.getPixelAutoclip(x, getPivotY()) == diff);
+        Material diff = diffPlane.getPixel(x, y);
+        return (diffPlane.getPixel(getPivotX(), y) == diff || diffPlane.getPixel(x, getPivotY()) == diff);
     }
 
 }
