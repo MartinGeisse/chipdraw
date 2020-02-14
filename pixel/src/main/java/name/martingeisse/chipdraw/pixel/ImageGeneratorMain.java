@@ -3,11 +3,13 @@ package name.martingeisse.chipdraw.pixel;
 import name.martingeisse.chipdraw.pixel.design.*;
 import name.martingeisse.chipdraw.pixel.global_tools.magic.MagicFileIo;
 import name.martingeisse.chipdraw.pixel.ui.util.DesignPainter;
+import org.apache.commons.io.FileUtils;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.util.Arrays;
 
 public class ImageGeneratorMain {
 
@@ -16,16 +18,22 @@ public class ImageGeneratorMain {
     public static void main(String[] args) throws Exception {
         File magFolder = new File("resource/cell-lib/v2");
         File pngFolder = new File("../chipdraw.wiki");
+
         for (File pngFile : pngFolder.listFiles((ignored, name) -> name.endsWith(".png"))) {
             pngFile.delete();
         }
+
+        File[] magFiles = magFolder.listFiles((ignored, name) -> name.endsWith(".mag"));
+        Arrays.sort(magFiles);
+
         StringBuilder markdownPageBuilder = new StringBuilder();
-        for (File magFile : magFolder.listFiles((ignored, name) -> name.endsWith(".mag"))) {
+        for (File magFile : magFiles) {
             String baseName = magFile.getName().substring(0, magFile.getName().length() - 4);
             File pngFile = new File(pngFolder, baseName + ".png");
             generateImage(magFile, pngFile);
-            markdownPageBuilder.append("[" + baseName + "](" + magFile.getName() + ")");
+            markdownPageBuilder.append("[" + baseName + "](" + pngFile.getName() + ")\n\n");
         }
+        FileUtils.writeStringToFile(new File(pngFolder, "Home.md"), markdownPageBuilder.toString(), "UTF-8");
     }
 
     private static void generateImage(File magFile, File pngFile) throws Exception {
