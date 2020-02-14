@@ -14,13 +14,17 @@ public class ImageGeneratorMain {
     private static final int ZOOM = 10;
 
     public static void main(String[] args) throws Exception {
-        File folder = new File("resource/cell-lib/v2");
-        for (File pngFile : folder.listFiles((ignored, name) -> name.endsWith(".png"))) {
+        File magFolder = new File("resource/cell-lib/v2");
+        File pngFolder = new File("../chipdraw.wiki");
+        for (File pngFile : pngFolder.listFiles((ignored, name) -> name.endsWith(".png"))) {
             pngFile.delete();
         }
-        for (File magFile : folder.listFiles((ignored, name) -> name.endsWith(".mag"))) {
-            File pngFile = new File(folder, magFile.getName().substring(0, magFile.getName().length() - 4));
+        StringBuilder markdownPageBuilder = new StringBuilder();
+        for (File magFile : magFolder.listFiles((ignored, name) -> name.endsWith(".mag"))) {
+            String baseName = magFile.getName().substring(0, magFile.getName().length() - 4);
+            File pngFile = new File(pngFolder, baseName + ".png");
             generateImage(magFile, pngFile);
+            markdownPageBuilder.append("[" + baseName + "](" + magFile.getName() + ")");
         }
     }
 
@@ -76,9 +80,9 @@ public class ImageGeneratorMain {
             }
             if (metal1Plane != Material.NONE) {
                 if (metal1Plane == ConceptSchemas.MATERIAL_CONTACT) {
-                    g.setPaint(getHatching(0x808080, 4));
+                    g.setPaint(getHatching(0x404040, 4, true));
                 } else {
-                    g.setPaint(getHatching(0xc0c0c0, 4));
+                    g.setPaint(getHatching(0xc0c0c0, 4, false));
                 }
                 g.fillRect(screenX, screenY, screenSize, screenSize);
             }
