@@ -180,86 +180,110 @@ public class MainWindow extends JFrame implements Editor.Ui {
 
         }
 
-        mainPanel = new DesignPixelPanel(this) {
+        mainPanel = new JPanel() {
 
-            private Material getPixel(PlaneSchema planeSchema, int x, int y) {
-                Plane plane = editor.getDesign().getPlane(planeSchema);
-                if (materialUiState.isPlaneVisible(plane.getSchema())) {
-                    return plane.getPixel(x, y);
-                } else {
-                    return Material.NONE;
-                }
-            }
+            private final DesignPainter designPainter = new DesignPainter() {
 
-            @Override
-            protected void drawPixel(Graphics2D g, int pixelX, int pixelY, int screenX, int screenY, int screenSize) {
-
-                // read pixel per plane
-                Material wellPlane = getPixel(ConceptSchemas.PLANE_WELL, pixelX, pixelY);
-                Material diffPlane = getPixel(ConceptSchemas.PLANE_DIFF, pixelX, pixelY);
-                Material polyPlane = getPixel(ConceptSchemas.PLANE_POLY, pixelX, pixelY);
-                Material metal1Plane = getPixel(ConceptSchemas.PLANE_METAL1, pixelX, pixelY);
-                Material metal2Plane = getPixel(ConceptSchemas.PLANE_METAL2, pixelX, pixelY);
-                Material padPlane = getPixel(ConceptSchemas.PLANE_PAD, pixelX, pixelY);
-
-                if (wellPlane != Material.NONE) {
-                    g.setPaint(wellPlane == ConceptSchemas.MATERIAL_NWELL ? getHatching(0x0000ff, 0) : getHatching(0xff0000, 0));
-                    g.fillRect(screenX, screenY, screenSize, screenSize);
-                }
-                if (diffPlane != Material.NONE) {
-                    g.setPaint(diffPlane == ConceptSchemas.MATERIAL_NDIFF ? new Color(0x0000ff) : new Color(0xff0000));
-                    g.fillRect(screenX, screenY, screenSize, screenSize);
-                }
-                if (polyPlane != Material.NONE) {
-                    if (materialUiState.isPlaneVisible(ConceptSchemas.PLANE_METAL1)) {
-                        g.setPaint(new Color(0, 128, 0));
+                private Material getPixel(PlaneSchema planeSchema, int x, int y) {
+                    Plane plane = editor.getDesign().getPlane(planeSchema);
+                    if (materialUiState.isPlaneVisible(plane.getSchema())) {
+                        return plane.getPixel(x, y);
                     } else {
-                        g.setPaint(getHatching(0x008000, 2, true));
+                        return Material.NONE;
                     }
-                    g.fillRect(screenX, screenY, screenSize, screenSize);
-                }
-                if (metal1Plane != Material.NONE) {
-                    if (metal1Plane == ConceptSchemas.MATERIAL_CONTACT) {
-                        g.setPaint(Color.GRAY);
-                    } else if (materialUiState.isPlaneVisible(ConceptSchemas.PLANE_METAL2)) {
-                        g.setPaint(Color.LIGHT_GRAY);
-                    } else {
-                        g.setPaint(getHatching(0xc0c0c0, 4));
-                    }
-                    g.fillRect(screenX, screenY, screenSize, screenSize);
-                }
-                if (metal2Plane != Material.NONE) {
-                    if (metal2Plane == ConceptSchemas.MATERIAL_VIA12) {
-                        g.setPaint(new Color(0x008080));
-                    } else if (materialUiState.isPlaneVisible(ConceptSchemas.PLANE_PAD)) {
-                        g.setPaint(new Color(0x00c0c0));
-                    } else {
-                        g.setPaint(getHatching(0x00c0c0, 0, true));
-                    }
-                    g.fillRect(screenX, screenY, screenSize, screenSize);
-                }
-                if (padPlane != Material.NONE) {
-                    g.setPaint(new Color(0xff00ff));
-                    g.fillRect(screenX, screenY, screenSize, screenSize);
                 }
 
-                if (positionedDrcViolations.get(new name.martingeisse.chipdraw.pixel.util.Point(pixelX, pixelY)) != null) {
-                    int centerX = screenX + screenSize / 2 - 2;
-                    int centerY = screenY + screenSize / 2 - 2;
-                    g.setColor(Color.RED);
-                    g.fillOval(centerX, centerY, 4, 4);
-                    g.setColor(Color.BLACK);
-                    g.drawOval(centerX, centerY, 4, 4);
+                @Override
+                protected void drawPixel(Graphics2D g, int pixelX, int pixelY, int screenX, int screenY, int screenSize) {
+
+                    // read pixel per plane
+                    Material wellPlane = getPixel(ConceptSchemas.PLANE_WELL, pixelX, pixelY);
+                    Material diffPlane = getPixel(ConceptSchemas.PLANE_DIFF, pixelX, pixelY);
+                    Material polyPlane = getPixel(ConceptSchemas.PLANE_POLY, pixelX, pixelY);
+                    Material metal1Plane = getPixel(ConceptSchemas.PLANE_METAL1, pixelX, pixelY);
+                    Material metal2Plane = getPixel(ConceptSchemas.PLANE_METAL2, pixelX, pixelY);
+                    Material padPlane = getPixel(ConceptSchemas.PLANE_PAD, pixelX, pixelY);
+
+                    if (wellPlane != Material.NONE) {
+                        g.setPaint(wellPlane == ConceptSchemas.MATERIAL_NWELL ? getHatching(0x0000ff, 0) : getHatching(0xff0000, 0));
+                        g.fillRect(screenX, screenY, screenSize, screenSize);
+                    }
+                    if (diffPlane != Material.NONE) {
+                        g.setPaint(diffPlane == ConceptSchemas.MATERIAL_NDIFF ? new Color(0x0000ff) : new Color(0xff0000));
+                        g.fillRect(screenX, screenY, screenSize, screenSize);
+                    }
+                    if (polyPlane != Material.NONE) {
+                        if (materialUiState.isPlaneVisible(ConceptSchemas.PLANE_METAL1)) {
+                            g.setPaint(new Color(0, 128, 0));
+                        } else {
+                            g.setPaint(getHatching(0x008000, 2, true));
+                        }
+                        g.fillRect(screenX, screenY, screenSize, screenSize);
+                    }
+                    if (metal1Plane != Material.NONE) {
+                        if (metal1Plane == ConceptSchemas.MATERIAL_CONTACT) {
+                            g.setPaint(Color.GRAY);
+                        } else if (materialUiState.isPlaneVisible(ConceptSchemas.PLANE_METAL2)) {
+                            g.setPaint(Color.LIGHT_GRAY);
+                        } else {
+                            g.setPaint(getHatching(0xc0c0c0, 4));
+                        }
+                        g.fillRect(screenX, screenY, screenSize, screenSize);
+                    }
+                    if (metal2Plane != Material.NONE) {
+                        if (metal2Plane == ConceptSchemas.MATERIAL_VIA12) {
+                            g.setPaint(new Color(0x008080));
+                        } else if (materialUiState.isPlaneVisible(ConceptSchemas.PLANE_PAD)) {
+                            g.setPaint(new Color(0x00c0c0));
+                        } else {
+                            g.setPaint(getHatching(0x00c0c0, 0, true));
+                        }
+                        g.fillRect(screenX, screenY, screenSize, screenSize);
+                    }
+                    if (padPlane != Material.NONE) {
+                        g.setPaint(new Color(0xff00ff));
+                        g.fillRect(screenX, screenY, screenSize, screenSize);
+                    }
+
+                    if (positionedDrcViolations.get(new name.martingeisse.chipdraw.pixel.util.Point(pixelX, pixelY)) != null) {
+                        int centerX = screenX + screenSize / 2 - 2;
+                        int centerY = screenY + screenSize / 2 - 2;
+                        g.setColor(Color.RED);
+                        g.fillOval(centerX, centerY, 4, 4);
+                        g.setColor(Color.BLACK);
+                        g.drawOval(centerX, centerY, 4, 4);
+                    }
+
                 }
 
-            }
+            };
 
             @Override
             protected void paintComponent(Graphics _g) {
-                super.paintComponent(_g);
-                if (mouseTool != null) {
-                    mouseTool.draw((Graphics2D)_g, zoom, isShiftDown);
+                Graphics2D g = (Graphics2D) _g;
+                Design design = getCurrentDesign();
+
+                // get width / height / pixel size
+                int zoom = getZoom();
+                int panelWidth = getWidth();
+                int panelHeight = getHeight();
+                int designDisplayWidth = design.getWidth() * zoom;
+                int designDisplayHeight = design.getHeight() * zoom;
+
+                // draw background outside the design area if this panel is larger than that
+                if (designDisplayWidth < panelWidth || designDisplayHeight < panelHeight) {
+                    g.setColor(Color.LIGHT_GRAY);
+                    g.fillRect(0, 0, panelWidth, panelHeight);
                 }
+
+                // draw design
+                designPainter.paintDesign(g, design, zoom);
+
+                // draw mouse tool
+                if (mouseTool != null) {
+                    mouseTool.draw(g, zoom, isShiftDown);
+                }
+
             }
 
         };
