@@ -3,7 +3,7 @@ package name.martingeisse.chipdraw.pixel.ui;
 import name.martingeisse.chipdraw.pixel.design.Design;
 import name.martingeisse.chipdraw.pixel.design.NoSuchTechnologyException;
 import name.martingeisse.chipdraw.pixel.design.TechnologyRepository;
-import name.martingeisse.chipdraw.pixel.global_tools.magic.MagicFileIo;
+import name.martingeisse.chipdraw.pixel.scmos.magic.MagicFileIo;
 import name.martingeisse.chipdraw.pixel.util.UserVisibleMessageException;
 
 import javax.swing.*;

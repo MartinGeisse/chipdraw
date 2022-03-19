@@ -1,4 +1,4 @@
-package name.martingeisse.chipdraw.pixel.global_tools.magic;
+package name.martingeisse.chipdraw.pixel.scmos.magic;
 
 import name.martingeisse.chipdraw.pixel.util.UserVisibleMessageException;
 import org.apache.commons.lang3.StringUtils;

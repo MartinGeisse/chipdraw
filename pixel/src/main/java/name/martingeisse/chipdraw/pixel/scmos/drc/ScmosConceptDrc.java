@@ -1,4 +1,4 @@
-package name.martingeisse.chipdraw.pixel.drc.concept;
+package name.martingeisse.chipdraw.pixel.scmos.drc;
 
 import com.google.common.collect.ImmutableList;
 import name.martingeisse.chipdraw.pixel.design.ConceptSchemas;
@@ -18,7 +18,7 @@ import name.martingeisse.chipdraw.pixel.drc.rule.*;
  * and we only know lambdas (i.e. we don't know how many pixels a micron is, so we cannot check those rules). For a
  * specific technology node, pad rules should be added.
  */
-public class ConceptDrc implements Drc {
+public class ScmosConceptDrc implements Drc {
 
     private static boolean isTransistorPixel(Design design, int x, int y) {
         if (design.getPlane(ConceptSchemas.PLANE_POLY).getPixel(x, y) == Material.NONE) {

@@ -1,8 +1,7 @@
-package name.martingeisse.chipdraw.pixel.global_tools.magic;
+package name.martingeisse.chipdraw.pixel.scmos.magic;
 
 import name.martingeisse.chipdraw.pixel.design.ConceptSchemas;
 import name.martingeisse.chipdraw.pixel.design.Design;
-import name.martingeisse.chipdraw.pixel.libre_silicon.LibreSiliconTechnologies;
 
 import javax.swing.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
@@ -27,16 +26,16 @@ public final class MagicExportDialog {
 		try {
 			Design convertedDesign;
 			if (ConceptSchemas.conforms(design.getTechnology())) {
-				convertedDesign = new ConceptToLibreSiliconConverter(design).convert();
-			} else if (design.getTechnology() == LibreSiliconTechnologies.MagicScmos.TECHNOLOGY) {
+				convertedDesign = new ConceptToMagicConverter(design).convert();
+			} else if (design.getTechnology() == ScmosMagic.TECHNOLOGY) {
 				convertedDesign = design;
 			} else {
 				throw new IllegalArgumentException("design for Magic export must use either the concept plane list schema" +
-						" or the 'LibreSilicon-test000-scmos' technology");
+						" or the 'ScmosMagic' technology");
 			}
 			MagicFileIo.write(convertedDesign, new File(path), "scmos", false);
-		} catch (ConceptToLibreSiliconConverter.IncompatibilityException e) {
-			JOptionPane.showMessageDialog(parent, "Design is incompatible with LibreSilicon Magic SCMOS schema: " + e);
+		} catch (ConceptToMagicConverter.IncompatibilityException e) {
+			JOptionPane.showMessageDialog(parent, "Design is incompatible with Magic/SCMOS schema: " + e);
 		} catch (IOException e) {
 			JOptionPane.showMessageDialog(parent, "Error while exporting: " + e);
 		}

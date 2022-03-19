@@ -10,12 +10,12 @@ import name.martingeisse.chipdraw.pixel.drc.PositionedViolation;
 import name.martingeisse.chipdraw.pixel.drc.Violation;
 import name.martingeisse.chipdraw.pixel.global_tools.Autocropper;
 import name.martingeisse.chipdraw.pixel.global_tools.Enlarger;
-import name.martingeisse.chipdraw.pixel.global_tools.magic.MagicExportDialog;
+import name.martingeisse.chipdraw.pixel.scmos.magic.MagicExportDialog;
 import name.martingeisse.chipdraw.pixel.global_tools.stdcell.StandardCellExtender;
 import name.martingeisse.chipdraw.pixel.global_tools.stdcell.StandardCellPruner;
 import name.martingeisse.chipdraw.pixel.global_tools.stdcell.StandardCellTemplateGeneratorBase;
 import name.martingeisse.chipdraw.pixel.icons.Icons;
-import name.martingeisse.chipdraw.pixel.libre_silicon.LibreSiliconTechnologies;
+import name.martingeisse.chipdraw.pixel.scmos.ScmosConcept;
 import name.martingeisse.chipdraw.pixel.operation.DesignOperation;
 import name.martingeisse.chipdraw.pixel.operation.OutOfPlaceDesignOperation;
 import name.martingeisse.chipdraw.pixel.operation.mouse.DrawTool;
@@ -509,7 +509,7 @@ public class MainWindow extends JFrame implements Editor.Ui {
                 }
             }));
             builder.add("New StdCell", () -> new MainWindow(workbench,
-                    new StandardCellTemplateGeneratorBase().generate(LibreSiliconTechnologies.TEST000_CONCEPT_MG_70_7_TECHNOLOGY)).setVisible(true));
+                    new StandardCellTemplateGeneratorBase().generate(ScmosConcept.TEST000_CONCEPT_MG_70_7_TECHNOLOGY)).setVisible(true));
             builder.add("Prune StdCell", () -> performOperation(new OutOfPlaceDesignOperation() {
                 @Override
                 protected Design createNewDesign(Design oldDesign) throws UserVisibleMessageException {

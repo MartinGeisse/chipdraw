@@ -1,4 +1,4 @@
-package name.martingeisse.chipdraw.pixel.drc.concept;
+package name.martingeisse.chipdraw.pixel.scmos.drc;
 
 import name.martingeisse.chipdraw.pixel.design.ConceptSchemas;
 import name.martingeisse.chipdraw.pixel.design.Material;

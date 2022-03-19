@@ -1,7 +1,7 @@
 package name.martingeisse.chipdraw.pixel;
 
 import name.martingeisse.chipdraw.pixel.design.*;
-import name.martingeisse.chipdraw.pixel.global_tools.magic.MagicFileIo;
+import name.martingeisse.chipdraw.pixel.scmos.magic.MagicFileIo;
 import name.martingeisse.chipdraw.pixel.ui.util.DesignPainter;
 import org.apache.commons.io.FileUtils;
 
