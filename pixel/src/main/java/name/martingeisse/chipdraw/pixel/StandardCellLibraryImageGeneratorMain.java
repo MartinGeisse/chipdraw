@@ -11,7 +11,7 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.util.Arrays;
 
-public class ImageGeneratorMain {
+public class StandardCellLibraryImageGeneratorMain {
 
     private static final int ZOOM = 10;
 
