@@ -12,7 +12,7 @@ public class StandardCellMain {
 
     public static void main(String[] args) {
         LoadAndSaveDialogs.SUGGESTED_FOLDER = new File("resource/cell-lib/v2");
-        Design design = new StandardCellTemplateGeneratorBase().generate(ScmosConcept.TEST000_CONCEPT_MG_70_7_TECHNOLOGY);
+        Design design = new StandardCellTemplateGeneratorBase().generate(ScmosConcept.TECHNOLOGY);
         new MainWindow(Main.WORKBENCH, design).setVisible(true);
     }
 

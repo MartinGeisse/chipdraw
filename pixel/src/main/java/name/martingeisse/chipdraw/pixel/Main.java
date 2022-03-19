@@ -10,14 +10,14 @@ public class Main {
 
     public static final SimpleTechnologyRepository TECHNOLOGY_REPOSITORY = new SimpleTechnologyRepository();
     static {
-        TECHNOLOGY_REPOSITORY.add(ScmosMagic.TECHNOLOGY);
+        TECHNOLOGY_REPOSITORY.add(ScmosConcept.TECHNOLOGY);
         TECHNOLOGY_REPOSITORY.add(ScmosMagic.TECHNOLOGY);
     }
 
     public static final Workbench WORKBENCH = new Workbench(TECHNOLOGY_REPOSITORY);
 
     public static void main(String[] args) {
-        Design design = new Design(ScmosConcept.TEST000_CONCEPT_TECHNOLOGY, 200, 200);
+        Design design = new Design(ScmosConcept.TECHNOLOGY, 200, 200);
         new MainWindow(WORKBENCH, design).setVisible(true);
     }
 

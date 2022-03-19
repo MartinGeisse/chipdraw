@@ -509,7 +509,7 @@ public class MainWindow extends JFrame implements Editor.Ui {
                 }
             }));
             builder.add("New StdCell", () -> new MainWindow(workbench,
-                    new StandardCellTemplateGeneratorBase().generate(ScmosConcept.TEST000_CONCEPT_MG_70_7_TECHNOLOGY)).setVisible(true));
+                    new StandardCellTemplateGeneratorBase().generate(ScmosConcept.TECHNOLOGY)).setVisible(true));
             builder.add("Prune StdCell", () -> performOperation(new OutOfPlaceDesignOperation() {
                 @Override
                 protected Design createNewDesign(Design oldDesign) throws UserVisibleMessageException {
